@@ -5,10 +5,10 @@ Vagrant.configure(2) do |config|
   # You can only have one config.vm.box uncommented at a time
 
   # Comment this and uncomment another if you don't want to use the minimal Arch box
-  config.vm.box = "dragon788/arch-ala-elasticdog"
+  #config.vm.box = "dragon788/arch-ala-elasticdog"
 
   # VMware/Virtualbox 64 bit
-  # config.vm.box = "phusion/ubuntu-14.04-amd64"
+  config.vm.box = "phusion/ubuntu-14.04-amd64"
   #
   # VMware/Virtualbox 64 bit
   #config.vm.box = "puphpet/centos65-x64"
@@ -78,7 +78,7 @@ Vagrant.configure(2) do |config|
   # add a # before ,args: and run 'vagrant up' to get a working
   # non-updated box and then attempt to troubleshoot or open a Github issue
 
-  config.vm.provision "shell", run: "always", path: "./util/avr_setup.sh", args: "-update"
+  config.vm.provision "shell", run: "always", path: "./util/install_dependencies.sh", args: "-update"
 
   config.vm.post_up_message = <<-EOT
   Log into the VM using 'vagrant ssh' on OSX or from Git Bash (Win)
@@ -91,7 +91,7 @@ Vagrant.configure(2) do |config|
 
   Or you can copy and paste the example line below.
 
-  cd /vagrant; cd keyboard; cd ergodox_ez; make clean; make
+  cd /vagrant; cd keyboards; cd ergodox; make clean; make
 
 
   EOT
