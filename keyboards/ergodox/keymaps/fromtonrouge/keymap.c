@@ -3,26 +3,17 @@
 #include "action_layer.h"
 #include "action_util.h"
 #include "keymap_extras/keymap_french.h"
-
-// By default my layouts are designed for an AZERTY OS
-// But if you want to build an .hex file for a QWERTY OS you can undefine AZERTY
-// This AZERTY define must be set before lookup tables
-#define AZERTY
 #include "lookup_tables/shelton_tables.h"
 #include "lookup_tables/misc_tables.h"
 #include "lookup_tables/user_tables.h"
-
-// By default the base layer is a Programmer Colemak layout
-// But if you want a QWERTY layout as a base layer you can undefine BASE_LAYER_COLEMAK and AZERTY
-#define BASE_LAYER_COLEMAK
 
 // Layer indexes
 #define LAYER_BASE 0
 #define LAYER_STENO 1
 
-#ifdef BASE_LAYER_COLEMAK
+#ifdef PROGRAMMER_COLEMAK_ENABLE
     #define LAYER_SHIFT_COLEMAK 2
-    #ifdef AZERTY
+    #ifdef AZERTY_OS_ENABLE
         #define LAYER_ACCENTS 3
         #define LAYER_FN 4
     #else
@@ -34,10 +25,10 @@
 
 // Macro indexes
 #define STENO 0
-#ifdef BASE_LAYER_COLEMAK
+#ifdef PROGRAMMER_COLEMAK_ENABLE
     #define GO_SFT 1
     #define SP_SFT 2
-    #ifdef AZERTY
+    #ifdef AZERTY_OS_ENABLE
         #define CIRC 3
     #endif
 #endif
@@ -230,7 +221,7 @@ void* g_all_tables[NB_FAMILY] =
 };
 
 // For the Programmer Colemak layout
-#ifdef AZERTY
+#ifdef AZERTY_OS_ENABLE
 #define SPECIAL_SHIFT_TABLE_SIZE 18
 
 // This table was computed externally
@@ -341,7 +332,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // If it accepts an argument (i.e, is a function), it doesn't need KC_.
 // Otherwise, it needs KC_*
 
-#ifdef BASE_LAYER_COLEMAK
+#ifdef PROGRAMMER_COLEMAK_ENABLE
 // PROGRAMMER COLEMAK
 [LAYER_BASE ] = KEYMAP(
         // left hand
@@ -352,7 +343,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL,        _AMP,       KC_LALT,    KC_UP,      KC_DOWN,    
                                                                                     MO(LAYER_FN),       TG(LAYER_FN),
                                                                                                         KC_PSCR,
-#ifdef AZERTY
+#ifdef AZERTY_OS_ENABLE
                                                                             KC_ENT, KC_BSPC,            MO(LAYER_ACCENTS),
 #else
                                                                             KC_ENT, KC_BSPC,            KC_NO,
@@ -365,7 +356,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                     KC_LEFT,    KC_RIGHT,   _BSLS,      _AT,      KC_RCTL,
         TG(LAYER_FN),   MO(LAYER_FN),
         KC_NO,
-#ifdef AZERTY
+#ifdef AZERTY_OS_ENABLE
         MO(LAYER_ACCENTS),  KC_DEL,     KC_SPC
 #else
         KC_NO,              KC_DEL,     KC_SPC
@@ -419,8 +410,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         ST_ON,    ST_ON,    ST_ON 
 ),
 
-#ifdef BASE_LAYER_COLEMAK
-#ifdef AZERTY
+#ifdef PROGRAMMER_COLEMAK_ENABLE
+#ifdef AZERTY_OS_ENABLE
 // PROGRAMMER COLEMAK SHIFTED LAYER (for AZERTY OS)
 [LAYER_SHIFT_COLEMAK] = KEYMAP(
         FR_UGRV,        KC_7,       KC_5,       KC_3,       KC_1,       KC_9,           KC_TRNS,
@@ -531,7 +522,7 @@ void send_mods_and_code(uint8_t mods, uint8_t code)
 
 bool is_letter(uint8_t code)
 {
-#ifdef AZERTY
+#ifdef AZERTY_OS_ENABLE
     return (code != FR_COMM) && (((code >= KC_A) && (code <= KC_Z)) || (code == FR_M));
 #else
     return (code >= KC_A) && (code <= KC_Z);
@@ -805,7 +796,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
             }
             break;
         }
-#ifdef BASE_LAYER_COLEMAK
+#ifdef PROGRAMMER_COLEMAK_ENABLE
     case GO_SFT: // Apply SHIFT and go to LAYER_SHIFT_COLEMAK
         {
 			const uint8_t shift_key = record->event.key.row == 0 ? KC_LSFT : KC_RSFT;
@@ -836,7 +827,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
             }
             break;
         }
-#ifdef AZERTY
+#ifdef AZERTY_OS_ENABLE
     case CIRC:
         {
             if (record->event.pressed)
@@ -863,7 +854,6 @@ void matrix_scan_user(void)
 {
     uint8_t layer = biton32(layer_state);
 
-    ergodox_board_led_on();
     ergodox_right_led_1_off();
     ergodox_right_led_2_off();
     ergodox_right_led_3_off();

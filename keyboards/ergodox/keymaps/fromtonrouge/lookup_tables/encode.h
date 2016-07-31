@@ -14,7 +14,7 @@
 #define _S2(c1, c2) {c1, c2, 0}
 #define _S3(c1, c2, c3) {c1, c2, c3}
 
-#ifdef AZERTY
+#ifdef AZERTY_OS_ENABLE
 
 #include "keymap_extras/keymap_french.h"
 
