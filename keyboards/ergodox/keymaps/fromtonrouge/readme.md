@@ -25,6 +25,11 @@ The TEENSY key (RESET) is define in this layer
 (Inspired by the Jackdaw steno theory https://sites.google.com/site/ploverdoc/jackdaw)
 
 Numbers are binary numbers : you can stroke 2 numbers at the same time (from 0 to 15 for each hand)
+By default a space is added automatically after a stroke (AUTO_SPACE_ENABLE=yes)
+MSPC is the MetaSpace key:
+    - When used in a stroke it cancels the space added automatically.
+    - When used alone it adds a space.
+    - When used with the STAR key, MSPC becomes a Backspace key.
 
 ![Programmer Steno](programmer-steno.png)
 
