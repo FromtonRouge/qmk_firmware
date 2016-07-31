@@ -97,13 +97,13 @@ enum key_family
 
 // 3 bits for space control keys
 #define OFFSET_SPACE_CONTROLS 26
-#define S_SPC  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
+#define S_MSPC (0 | (FAMILY_SPACES << 4) | STENO_BIT) // META SPACE = No space key when AUTO_SPACE_ENABLE==yes, Backspace when used with SC_STAR, space key otherwise
 #define S_TAB  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
 #define S_ENT  (2 | (FAMILY_SPACES << 4) | STENO_BIT)
 
 // 2 bits for case control keys (upper case, initial case)
 #define OFFSET_CASE_CONTROLS 29
-#define C_UC   (0 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
+#define C_UC  (0 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
 #define C_IC  (1 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
 
 // 6 bits for left user symbols
@@ -294,11 +294,11 @@ KEYMAP(
                                                                                                     T_O,
                                                                                   SC_PLUS, T_E,     T_A,
                 // Right hand
-                            0,     NR_B3,      NR_B2,      NR_B1,      NR_B0,      NR_N0,      0,
-                            S_SPC, USRR_5,     USRR_4,     USRR_3,     USRR_2,     0,          0,
-                                   R_R,        R_L,        R_C,        USRR_1,     USRR_0,     0, 
-                            S_SPC, R_N,        R_G,        R_H,        R_T,        RP_E,       RP_S,
-                                               0,          0,          R_S,        RP_Y,       RP_S,
+                            0,          NR_B3,      NR_B2,      NR_B1,      NR_B0,      NR_N0,      0,
+                            S_MSPC,     USRR_5,     USRR_4,     USRR_3,     USRR_2,     0,          0,
+                                        R_R,        R_L,        R_C,        USRR_1,     USRR_0,     0, 
+                            S_MSPC,     R_N,        R_G,        R_H,        R_T,        RP_E,       RP_S,
+                                                    0,          0,          R_S,        RP_Y,       RP_S,
                 SC_STAR,    SC_STAR,
                 T_A,
                 T_U,        T_I,       SC_PLUS 
@@ -543,6 +543,7 @@ void stroke(void)
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
     const bool has_star = special_controls_bits & (1 << (SC_STAR & 0xF));
     const bool has_plus = special_controls_bits & (1 << (SC_PLUS & 0xF));
+    const bool has_meta_space = g_family_bits[FAMILY_SPACES] & (1 << (S_MSPC & 0xF));
     const uint8_t case_controls_bits = g_family_bits[FAMILY_CASE_CONTROLS];
     if (case_controls_bits)
     {
@@ -659,6 +660,17 @@ void stroke(void)
         }
     }
 
+#ifdef AUTO_SPACE_ENABLE
+    // Send automatically a space after a stroke or send explicitely when S_MSPC is the only pressed key
+    const bool send_space = (sent_count > 0 && !has_meta_space) || (sent_count == 0 && has_meta_space && !has_star);
+    if (send_space)
+    {
+        register_code(KC_SPC);
+        unregister_code(KC_SPC);
+        sent_count++;
+    }
+#endif
+
     if (sent_count > 0)
     {
         // Undo history
@@ -669,7 +681,7 @@ void stroke(void)
 
         g_undo_stack[g_undo_stack_index++] = sent_count;
     }
-    else if (has_star && undo_allowed)
+    else if (has_star)
     {
         // Compute the previous index
         int8_t previous_index = g_undo_stack_index - 1;
@@ -679,19 +691,41 @@ void stroke(void)
         }
 
         // Check if we have data to undo at previous_index
-        const uint8_t chars_to_delete = g_undo_stack[previous_index];
+        uint8_t chars_to_delete = g_undo_stack[previous_index];
         if (chars_to_delete)
         {
-            // We have data to undo
-            for (uint8_t i = 0; i < chars_to_delete; ++i)
+            if (has_meta_space)
             {
+                // Metaspace becomes a Backspace
                 register_code(KC_BSPC);
                 unregister_code(KC_BSPC);
-            }
+                g_undo_stack[previous_index]--; // Patch chars to delete for the next undo
 
-            // Reset data and update the undo stack index
-            g_undo_stack[previous_index] = 0;
-            g_undo_stack_index = previous_index;
+                // If there is no more data to remove at previous_index we can go to the previous stroke undo data 
+                if (g_undo_stack[previous_index] == 0)
+                {
+                    g_undo_stack_index = previous_index;
+                }
+            }
+            else if (undo_allowed)
+            {
+                // We have data to undo
+                for (uint8_t i = 0; i < chars_to_delete; ++i)
+                {
+                    register_code(KC_BSPC);
+                    unregister_code(KC_BSPC);
+                }
+
+                // Reset data and update the undo stack index
+                g_undo_stack[previous_index] = 0;
+                g_undo_stack_index = previous_index;
+            }
+        }
+        else if (has_meta_space)
+        {
+            // No data to remove in the undo stack, but we allow the Metaspace to become a Backspace
+            register_code(KC_BSPC);
+            unregister_code(KC_BSPC);
         }
     }
 
@@ -799,15 +833,15 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
 #ifdef PROGRAMMER_COLEMAK_ENABLE
     case GO_SFT: // Apply SHIFT and go to LAYER_SHIFT_COLEMAK
         {
-			const uint8_t shift_key = record->event.key.row == 0 ? KC_LSFT : KC_RSFT;
+            const uint8_t shift_key = record->event.key.row == 0 ? KC_LSFT : KC_RSFT;
             if (record->event.pressed)
             {
-				register_code(shift_key);
+                register_code(shift_key);
                 layer_on(LAYER_SHIFT_COLEMAK);
             }
             else
             {
-				unregister_code(shift_key);
+                unregister_code(shift_key);
                 layer_off(LAYER_SHIFT_COLEMAK);
             }
             break;
@@ -832,7 +866,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
         {
             if (record->event.pressed)
             {
-				const uint16_t keycode = keymap_key_to_keycode(LAYER_BASE , record->event.key);
+                const uint16_t keycode = keymap_key_to_keycode(LAYER_BASE , record->event.key);
                 register_code(KC_LBRC);
                 unregister_code(KC_LBRC);
                 register_code(keycode);
