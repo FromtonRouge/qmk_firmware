@@ -24,8 +24,7 @@ The TEENSY key (RESET) is define in this layer
 
 (Inspired by the Jackdaw steno theory https://sites.google.com/site/ploverdoc/jackdaw)
 
-By default the keyboard is 6KRO, to enable full NKRO you have to press Space+N for 3 seconds when powering the keyboard.
-You can go here to check your NKRO setting https://www.microsoft.com/appliedsciences/KeyboardGhostingDemo.mspx
+By default the keyboard is in full NKRO, you can test the keyboard here https://www.microsoft.com/appliedsciences/KeyboardGhostingDemo.mspx
 
 By default a space is added automatically after a stroke (AUTO_SPACE_ENABLE=yes)
 
