@@ -12,13 +12,13 @@ You can directly download .hex files from the release page : https://github.com/
 
 It's basically a Colemak layout with the Programmer Dvorak numbers and symbols row.
 
-![Programmer Colemak](programmer-colemak.png)
+![Programmer Colemak](images/programmer-colemak.png)
 
 ## Fn Layer
 
 The TEENSY key (RESET) is define in this layer
 
-![Fn Layer](fn-layer.png)
+![Fn Layer](images/fn-layer.png)
 
 ## Programmer Steno layout (experimental)
 
@@ -36,15 +36,15 @@ MSPC is the MetaSpace key :
 
 Numbers are binary numbers : you can stroke 2 numbers at the same time (from 0 to 15 for each hand)
 
-![Programmer Steno](programmer-steno.png)
+![Programmer Steno](images/programmer-steno.png)
 
 Home position :    
     
-![Programmer Steno Home Position](programmer-steno-home.png)
+![Programmer Steno Home Position](images/programmer-steno-home.png)
 
 Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]:
 
-![Programmer Steno Home Position](programmer-steno-punctuations.png)
+![Programmer Steno Home Position](images/programmer-steno-punctuations.png)
 
 ### Lookup table for the left hand (Shelton table)
 
