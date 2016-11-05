@@ -6,11 +6,7 @@
 const uint16_t PROGMEM g_spaces_ctl_table[8][MAX_SYMBOLS] =
 {
     NO_ENTRY,                               // [0]
-#ifdef AUTO_SPACE_ENABLE
     NO_ENTRY,                               // [1]
-#else
-    _S1(KC_SPC),                            // [1]
-#endif
     _S1(KC_TAB),                            // [2]
     NO_ENTRY,                               // [3]
     _S1(KC_ENT),                            // [4]

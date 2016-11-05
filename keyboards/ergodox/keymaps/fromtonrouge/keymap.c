@@ -97,7 +97,7 @@ enum key_family
 
 // 3 bits for space control keys
 #define OFFSET_SPACE_CONTROLS 26
-#define S_MSPC (0 | (FAMILY_SPACES << 4) | STENO_BIT) // META SPACE = No space key when AUTO_SPACE_ENABLE==yes, Backspace when used with SC_STAR, space key otherwise
+#define S_MSPC (0 | (FAMILY_SPACES << 4) | STENO_BIT) // META SPACE = No space key, Backspace when used with SC_STAR, space key otherwise
 #define S_TAB  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
 #define S_ENT  (2 | (FAMILY_SPACES << 4) | STENO_BIT)
 
@@ -660,7 +660,6 @@ void stroke(void)
         }
     }
 
-#ifdef AUTO_SPACE_ENABLE
     // Send automatically a space after a stroke or send explicitely when S_MSPC is the only pressed key
     const bool send_space = (sent_count > 0 && !has_meta_space) || (sent_count == 0 && has_meta_space && !has_star);
     if (send_space)
@@ -669,7 +668,6 @@ void stroke(void)
         unregister_code(KC_SPC);
         sent_count++;
     }
-#endif
 
     if (sent_count > 0)
     {

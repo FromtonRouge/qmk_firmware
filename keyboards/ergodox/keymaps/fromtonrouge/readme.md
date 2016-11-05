@@ -26,7 +26,7 @@ The TEENSY key (RESET) is define in this layer
 
 By default the keyboard is in full NKRO, you can test the keyboard here https://www.microsoft.com/appliedsciences/KeyboardGhostingDemo.mspx
 
-By default a space is added automatically after a stroke (AUTO_SPACE_ENABLE=yes)
+Space is added automatically after a stroke
 
 MSPC is the MetaSpace key :
 
