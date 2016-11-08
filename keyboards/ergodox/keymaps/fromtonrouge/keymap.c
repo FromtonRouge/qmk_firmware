@@ -54,13 +54,14 @@ enum key_family
 // Bit to identify a steno key
 #define STENO_BIT (1L << 31) 
 
-// 2 bits for star and the plus key
+// 3 bits for star and the plus key
 #define OFFSET_SPECIAL_CONTROLS 0
 #define SC_STAR (0 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
 #define SC_PLUS (1 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+#define SC_MSPC (2 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT) // META SPACE = No space key, Backspace when used with SC_STAR, space key otherwise
 
 // 8 bits for the left hand
-#define OFFSET_LEFT_HAND 2
+#define OFFSET_LEFT_HAND 3
 #define L_A (0 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 #define L_S (1 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 #define L_C (2 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
@@ -71,7 +72,7 @@ enum key_family
 #define L_R (7 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 
 // 5 bits for thumbs
-#define OFFSET_THUMBS 10
+#define OFFSET_THUMBS 11
 #define T_E (0 | (FAMILY_THUMBS << 4) | STENO_BIT)
 #define T_O (1 | (FAMILY_THUMBS << 4) | STENO_BIT)
 #define T_A (2 | (FAMILY_THUMBS << 4) | STENO_BIT)
@@ -79,7 +80,7 @@ enum key_family
 #define T_I (4 | (FAMILY_THUMBS << 4) | STENO_BIT)
 
 // 8 bits for the right hand
-#define OFFSET_RIGHT_HAND 15
+#define OFFSET_RIGHT_HAND 16
 #define R_R (0 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_N (1 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_L (2 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
@@ -90,16 +91,15 @@ enum key_family
 #define R_S (7 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 
 // 3 bits for E and Y and S
-#define OFFSET_RIGHT_PINKY 23
+#define OFFSET_RIGHT_PINKY 24
 #define RP_E  (0 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 #define RP_Y  (1 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 #define RP_S  (2 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 
-// 3 bits for space control keys
-#define OFFSET_SPACE_CONTROLS 26
-#define S_MSPC (0 | (FAMILY_SPACES << 4) | STENO_BIT) // META SPACE = No space key, Backspace when used with SC_STAR, space key otherwise
-#define S_TAB  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
-#define S_ENT  (2 | (FAMILY_SPACES << 4) | STENO_BIT)
+// 2 bits for space control keys
+#define OFFSET_SPACE_CONTROLS 27
+#define S_TAB  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
+#define S_ENT  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
 
 // 2 bits for case control keys (upper case, initial case)
 #define OFFSET_CASE_CONTROLS 29
@@ -295,9 +295,9 @@ KEYMAP(
                                                                                   SC_PLUS, T_E,     T_A,
                 // Right hand
                             0,          NR_B3,      NR_B2,      NR_B1,      NR_B0,      NR_N0,      0,
-                            S_MSPC,     USRR_5,     USRR_4,     USRR_3,     USRR_2,     0,          0,
+                            SC_MSPC,     USRR_5,     USRR_4,     USRR_3,     USRR_2,     0,          0,
                                         R_R,        R_L,        R_C,        USRR_1,     USRR_0,     0, 
-                            S_MSPC,     R_N,        R_G,        R_H,        R_T,        RP_E,       RP_S,
+                            SC_MSPC,     R_N,        R_G,        R_H,        R_T,        RP_E,       RP_S,
                                                     0,          0,          R_S,        RP_Y,       RP_S,
                 SC_STAR,    SC_STAR,
                 T_A,
@@ -543,7 +543,7 @@ void stroke(void)
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
     const bool has_star = special_controls_bits & (1 << (SC_STAR & 0xF));
     const bool has_plus = special_controls_bits & (1 << (SC_PLUS & 0xF));
-    const bool has_meta_space = g_family_bits[FAMILY_SPACES] & (1 << (S_MSPC & 0xF));
+    const bool has_meta_space = special_controls_bits & (1 << (SC_MSPC & 0xF));
     const uint8_t case_controls_bits = g_family_bits[FAMILY_CASE_CONTROLS];
     if (case_controls_bits)
     {
@@ -660,7 +660,7 @@ void stroke(void)
         }
     }
 
-    // Send automatically a space after a stroke or send explicitely when S_MSPC is the only pressed key
+    // Send automatically a space after a stroke or send explicitely when SC_MSPC is the only pressed key
     const bool send_space = (sent_count > 0 && !has_meta_space) || (sent_count == 0 && has_meta_space && !has_star);
     if (send_space)
     {

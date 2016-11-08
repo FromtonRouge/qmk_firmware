@@ -3,16 +3,12 @@
 
 #include "encode.h"
 
-const uint16_t PROGMEM g_spaces_ctl_table[8][MAX_SYMBOLS] =
+const uint16_t PROGMEM g_spaces_ctl_table[4][MAX_SYMBOLS] =
 {
     NO_ENTRY,                               // [0]
-    NO_ENTRY,                               // [1]
-    _S1(KC_TAB),                            // [2]
-    NO_ENTRY,                               // [3]
-    _S1(KC_ENT),                            // [4]
-    NO_ENTRY,                               // [5]
-    NO_ENTRY,                               // [6]
-    NO_ENTRY,                               // [7]
+    _S1(KC_TAB),                            // [1]
+    _S1(KC_ENT),                            // [2]
+    NO_ENTRY                                // [3]
 };
 
 const uint16_t PROGMEM g_left_numbers[32][MAX_SYMBOLS] =
