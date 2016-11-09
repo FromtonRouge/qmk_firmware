@@ -162,7 +162,8 @@ enum kind_table
 {
     KIND_UNKNOWN,
     KIND_LETTERS,
-    KIND_SYMBOLS
+    KIND_SYMBOLS,
+    KIND_PUNCTUATIONS
 };
 
 const uint8_t g_family_to_kind_table[NB_FAMILY] =
@@ -204,6 +205,7 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
 uint8_t g_family_bits[NB_FAMILY] = {0};
 typedef const uint8_t letters_table_t[MAX_LETTERS];
 typedef const uint16_t symbols_table_t[MAX_SYMBOLS];
+typedef const uint16_t punctuations_table_t[MAX_PUNCTUATIONS];
 void* g_all_tables[NB_FAMILY] = 
 {
     0,
@@ -554,6 +556,7 @@ void stroke(void)
 
     // Evaluate stroke
     bool undo_allowed = true;
+    bool no_space_code_detected = false;
     for (int family_id = 0; family_id < NB_FAMILY; ++family_id)
     {
         uint8_t family_bits = g_family_bits[family_id];
@@ -574,12 +577,12 @@ void stroke(void)
         {
             any_table = g_left_punctuations_table;
             family_bits = family_bits >> 2;
-            kind = KIND_SYMBOLS;
+            kind = KIND_PUNCTUATIONS;
         }
         else if (family_id == FAMILY_RIGHT_HAND && has_star && !thumbs_bits)
         {
             any_table = g_right_punctuations_table;
-            kind = KIND_SYMBOLS;
+            kind = KIND_PUNCTUATIONS;
         }
         else
         {
@@ -588,73 +591,106 @@ void stroke(void)
 
         if (any_table)
         {
-            if (kind == KIND_LETTERS)
+            switch (kind)
             {
-                uint8_t register_count = 0;
-                uint8_t last_byte = 0;
-                letters_table_t* letters_table = (letters_table_t*)any_table;
-                for (int code_pos = 0; code_pos < MAX_LETTERS; ++code_pos)
+            case KIND_LETTERS:
                 {
-                    const uint8_t byte = pgm_read_byte(&(letters_table[family_bits][code_pos]));
-                    if (byte)
+                    uint8_t register_count = 0;
+                    uint8_t last_byte = 0;
+                    letters_table_t* letters_table = (letters_table_t*)any_table;
+                    for (int code_pos = 0; code_pos < MAX_LETTERS; ++code_pos)
                     {
-                        register_code(byte);
-                        unregister_code(byte);
-                        last_byte = byte;
-                        register_count++;
-                        sent_count++;
-
-                        if ((initial_case_1 && sent_count == 1) || (initial_case_2 && sent_count == 2))
+                        const uint8_t byte = pgm_read_byte(&(letters_table[family_bits][code_pos]));
+                        if (byte)
                         {
-                            del_mods(MOD_LSFT);
-                        }
-                    }
-                    else
-                    {
-                        // Double the consonnant for the right hand only
-                        if (    has_plus && (register_count == 1)
-                                && (family_id == FAMILY_RIGHT_HAND)
-                                && (last_byte != 0))
-                        {
-                            register_code(last_byte);
-                            unregister_code(last_byte);
+                            register_code(byte);
+                            unregister_code(byte);
+                            last_byte = byte;
+                            register_count++;
                             sent_count++;
-                        }
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                symbols_table_t* symbols_table = (symbols_table_t*)any_table;
-                for (int code_pos = 0; code_pos < MAX_SYMBOLS; ++code_pos)
-                {
-                    const uint16_t word = pgm_read_word(&(symbols_table[family_bits][code_pos]));
-                    if (word)
-                    {
-                        const uint8_t code = (uint8_t)word;
-                        if (is_letter(code))
-                        {
-                            // By doing this the shift mod can be applied on letter code
-                            register_code(code);
+
+                            if ((initial_case_1 && sent_count == 1) || (initial_case_2 && sent_count == 2))
+                            {
+                                del_mods(MOD_LSFT);
+                            }
                         }
                         else
                         {
-                            send_mods_and_code(word >> 8, code);
-                        }
-
-                        unregister_code(code);
-                        sent_count++;
-
-                        if ((initial_case_1 && sent_count == 1) || (initial_case_2 && sent_count == 2))
-                        {
-                            del_mods(MOD_LSFT);
+                            // Double the consonnant for the right hand only
+                            if (    has_plus && (register_count == 1)
+                                    && (family_id == FAMILY_RIGHT_HAND)
+                                    && (last_byte != 0))
+                            {
+                                register_code(last_byte);
+                                unregister_code(last_byte);
+                                sent_count++;
+                            }
+                            break;
                         }
                     }
-                    else
+                    break;
+                }
+
+            case KIND_SYMBOLS:
+                {
+                    symbols_table_t* symbols_table = (symbols_table_t*)any_table;
+                    for (int code_pos = 0; code_pos < MAX_SYMBOLS; ++code_pos)
                     {
-                        break;
+                        const uint16_t word = pgm_read_word(&(symbols_table[family_bits][code_pos]));
+                        if (word)
+                        {
+                            const uint8_t code = (uint8_t)word;
+                            if (is_letter(code))
+                            {
+                                // By doing this the shift mod can be applied on letter code
+                                register_code(code);
+                            }
+                            else
+                            {
+                                send_mods_and_code(word >> 8, code);
+                            }
+
+                            unregister_code(code);
+                            sent_count++;
+
+                            if ((initial_case_1 && sent_count == 1) || (initial_case_2 && sent_count == 2))
+                            {
+                                del_mods(MOD_LSFT);
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
+                    break;
+                }
+            case KIND_PUNCTUATIONS:
+                {
+                    punctuations_table_t* punctuations_table = (punctuations_table_t*)any_table;
+                    for (int code_pos = 0; code_pos < MAX_PUNCTUATIONS; ++code_pos)
+                    {
+                        const uint16_t word = pgm_read_word(&(punctuations_table[family_bits][code_pos]));
+                        if (word)
+                        {
+                            if (word == _NOSPC)
+                            {
+                                no_space_code_detected = true;
+                            }
+                            else
+                            {
+                                const uint8_t code = (uint8_t)word;
+                                send_mods_and_code(word >> 8, code);
+                                unregister_code(code);
+                                sent_count++;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    break;
                 }
             }
         }
@@ -662,7 +698,7 @@ void stroke(void)
 
     // Send automatically a space after a stroke or send explicitely when SC_MSPC is the only pressed key
     const bool send_space = (sent_count > 0 && !has_meta_space) || (sent_count == 0 && has_meta_space && !has_star);
-    if (send_space)
+    if (send_space && !no_space_code_detected)
     {
         register_code(KC_SPC);
         unregister_code(KC_SPC);
