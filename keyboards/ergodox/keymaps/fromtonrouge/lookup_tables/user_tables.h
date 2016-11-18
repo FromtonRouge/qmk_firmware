@@ -142,138 +142,138 @@ const uint16_t PROGMEM g_right_user_symbols_table[64][MAX_SYMBOLS] =
 
 const uint16_t PROGMEM g_left_punctuations_table[64][MAX_PUNCTUATIONS] =
 {
-    NO_ENTRY,                               // [0]
-    _P1(_LPRN),                             // [1]
-    _P1(_UNDS),                             // [2]
-    NO_ENTRY,                               // [3]
-    _P1(_RPRN),                             // [4]
-    _P2(_LPRN, _RPRN),                      // [5]
-    NO_ENTRY,                               // [6]
-    NO_ENTRY,                               // [7]
-    _P1(_MINS),                             // [8]
-    NO_ENTRY,                               // [9]
-    NO_ENTRY,                               // [10]
-    NO_ENTRY,                               // [11]
-    NO_ENTRY,                               // [12]
-    NO_ENTRY,                               // [13]
-    NO_ENTRY,                               // [14]
-    NO_ENTRY,                               // [15]
-    _P1(_DOT),                              // [16]
-    NO_ENTRY,                               // [17]
-    NO_ENTRY,                               // [18]
-    NO_ENTRY,                               // [19]
-    _P2(_RPRN, _DOT),                       // [20]
-    _P3(_LPRN, _RPRN, _DOT),                // [21]
-    NO_ENTRY,                               // [22]
-    NO_ENTRY,                               // [23]
-    NO_ENTRY,                               // [24]
-    NO_ENTRY,                               // [25]
-    NO_ENTRY,                               // [26]
-    NO_ENTRY,                               // [27]
-    NO_ENTRY,                               // [28]
-    NO_ENTRY,                               // [29]
-    NO_ENTRY,                               // [30]
-    NO_ENTRY,                               // [31]
-    _P1(_COMM),                             // [32]
-    NO_ENTRY,                               // [33]
-    NO_ENTRY,                               // [34]
-    NO_ENTRY,                               // [35]
-    _P2(_RPRN, _COMM),                      // [36]
-    _P3(_LPRN, _RPRN, _COMM),               // [37]
-    NO_ENTRY,                               // [38]
-    NO_ENTRY,                               // [39]
-    NO_ENTRY,                               // [40]
-    NO_ENTRY,                               // [41]
-    NO_ENTRY,                               // [42]
-    NO_ENTRY,                               // [43]
-    NO_ENTRY,                               // [44]
-    NO_ENTRY,                               // [45]
-    NO_ENTRY,                               // [46]
-    NO_ENTRY,                               // [47]
-    _P1(_SCLN),                             // [48]
-    NO_ENTRY,                               // [49]
-    NO_ENTRY,                               // [50]
-    NO_ENTRY,                               // [51]
-    _P2(_RPRN, _SCLN),                      // [52]
-    _P3(_LPRN, _RPRN, _SCLN),               // [53]
-    NO_ENTRY,                               // [54]
-    NO_ENTRY,                               // [55]
-    NO_ENTRY,                               // [56]
-    NO_ENTRY,                               // [57]
-    NO_ENTRY,                               // [58]
-    NO_ENTRY,                               // [59]
-    NO_ENTRY,                               // [60]
-    NO_ENTRY,                               // [61]
-    NO_ENTRY,                               // [62]
-    NO_ENTRY                                // [63]
+    NO_ENTRY,
+    _P1(_DOT),
+    _P1(_COMM),
+    _P1(_SCLN),
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY
 };
 
 const uint16_t PROGMEM g_right_punctuations_table[64][MAX_PUNCTUATIONS] =
 {
-    NO_ENTRY,                               // [0]
-    _P1(_DOT),                              // [1]
-    _P1(_DOT),                              // [2]
-    _P1(_COLN),                             // [3]
-    _P1(_LPRN),                             // [4]
-    NO_ENTRY,                               // [5]
-    _P1(_LESS),                             // [6]
-    NO_ENTRY,                               // [7]
-    _P1(_APOS),                             // [8]
-    NO_ENTRY,                               // [9]
-    NO_ENTRY,                               // [10]
-    NO_ENTRY,                               // [11]
-    _P1(_DQUOT),                            // [12]
-    NO_ENTRY,                               // [13]
-    NO_ENTRY,                               // [14]
-    NO_ENTRY,                               // [15]
-    _P1(_RPRN),                             // [16]
-    NO_ENTRY,                               // [17]
-    NO_ENTRY,                               // [18]
-    NO_ENTRY,                               // [19]
-    _P4(_LPRN, _RPRN, KC_LEFT, _NOSPC),     // [20]
-    NO_ENTRY,                               // [21]
-    NO_ENTRY,                               // [22]
-    NO_ENTRY,                               // [23]
-    NO_ENTRY,                               // [24]
-    NO_ENTRY,                               // [25]
-    NO_ENTRY,                               // [26]
-    NO_ENTRY,                               // [27]
-    NO_ENTRY,                               // [28]
-    NO_ENTRY,                               // [29]
-    NO_ENTRY,                               // [30]
-    NO_ENTRY,                               // [31]
-    _P1(_QUES),                             // [32]
-    NO_ENTRY,                               // [33]
-    NO_ENTRY,                               // [34]
-    NO_ENTRY,                               // [35]
-    _P1(_GRTR),                             // [36]
-    NO_ENTRY,                               // [37]
-    _P4(_LESS, _GRTR, KC_LEFT, _NOSPC),     // [38]
-    NO_ENTRY,                               // [39]
-    _P4(_APOS, _APOS, KC_LEFT, _NOSPC),     // [40]
-    NO_ENTRY,                               // [41]
-    NO_ENTRY,                               // [42]
-    NO_ENTRY,                               // [43]
-    _P4(_DQUOT, _DQUOT, KC_LEFT, _NOSPC),   // [44]
-    NO_ENTRY,                               // [45]
-    NO_ENTRY,                               // [46]
-    NO_ENTRY,                               // [47]
-    _P1(_EXLM),                             // [48]
-    NO_ENTRY,                               // [49]
-    NO_ENTRY,                               // [50]
-    NO_ENTRY,                               // [51]
-    NO_ENTRY,                               // [52]
-    NO_ENTRY,                               // [53]
-    NO_ENTRY,                               // [54]
-    NO_ENTRY,                               // [55]
-    NO_ENTRY,                               // [56]
-    NO_ENTRY,                               // [57]
-    NO_ENTRY,                               // [58]
-    NO_ENTRY,                               // [59]
-    NO_ENTRY,                               // [60]
-    NO_ENTRY,                               // [61]
-    NO_ENTRY,                               // [62]
-    NO_ENTRY                                // [63]
+    NO_ENTRY,
+    NO_ENTRY,
+    _P1(_DOT),
+    _P1(_COLN),
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY,
+    NO_ENTRY
 };
 
 #endif

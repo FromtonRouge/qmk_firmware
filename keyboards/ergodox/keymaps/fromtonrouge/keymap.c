@@ -62,14 +62,14 @@ enum key_family
 
 // 8 bits for the left hand
 #define OFFSET_LEFT_HAND 3
-#define L_A (0 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
-#define L_S (1 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
-#define L_C (2 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
-#define L_T (3 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
-#define L_W (4 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
-#define L_H (5 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
-#define L_N (6 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
-#define L_R (7 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_N (0 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_R (1 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_W (2 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_H (3 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_C (4 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_T (5 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_A (6 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_S (7 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 
 // 5 bits for thumbs
 #define OFFSET_THUMBS 11
@@ -583,7 +583,6 @@ void stroke(void)
         else if (family_id == FAMILY_LEFT_HAND && has_star && !thumbs_bits)
         {
             any_table = g_left_punctuations_table;
-            family_bits = family_bits >> 2;
             kind = KIND_PUNCTUATIONS;
         }
         else if (family_id == FAMILY_RIGHT_HAND && has_star && !thumbs_bits)
