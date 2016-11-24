@@ -1,13 +1,14 @@
 #ifndef ENCODE_H
 #define ENCODE_H
 
-#define MAX_LETTERS 5
+#define MAX_LETTERS 6
 #define NO_ENTRY {0}
-#define _1(c1) {c1, 0, 0, 0, 0}
-#define _2(c1, c2) {c1, c2, 0, 0, 0}
-#define _3(c1, c2, c3) {c1, c2, c3, 0, 0}
-#define _4(c1, c2, c3, c4) {c1, c2, c3, c4, 0}
-#define _5(c1, c2, c3, c4, c5) {c1, c2, c3, c4, c5}
+#define _1(c1) {c1, 0, 0, 0, 0, 0}
+#define _2(c1, c2) {c1, c2, 0, 0, 0, 0}
+#define _3(c1, c2, c3) {c1, c2, c3, 0, 0, 0}
+#define _4(c1, c2, c3, c4) {c1, c2, c3, c4, 0, 0}
+#define _5(c1, c2, c3, c4, c5) {c1, c2, c3, c4, c5, 0}
+#define _6(c1, c2, c3, c4, c5, c6) {c1, c2, c3, c4, c5, c6}
 
 #define MAX_SYMBOLS 3
 #define _S1(c1) {c1, 0, 0}
@@ -15,10 +16,10 @@
 #define _S3(c1, c2, c3) {c1, c2, c3}
 
 #define MAX_PUNCTUATIONS 5
-#define _P1(c1) {c1, 0, 0}
-#define _P2(c1, c2) {c1, c2, 0}
-#define _P3(c1, c2, c3) {c1, c2, c3}
-#define _P4(c1, c2, c3, c4) {c1, c2, c3, c4}
+#define _P1(c1) {c1, 0, 0, 0, 0}
+#define _P2(c1, c2) {c1, c2, 0, 0, 0}
+#define _P3(c1, c2, c3) {c1, c2, c3, 0, 0}
+#define _P4(c1, c2, c3, c4) {c1, c2, c3, c4, 0}
 #define _P5(c1, c2, c3, c4, c5) {c1, c2, c3, c4, c5}
 
 #define _NOSPC QK_MODS_MAX

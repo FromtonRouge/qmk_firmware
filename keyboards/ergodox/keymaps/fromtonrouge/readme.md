@@ -60,7 +60,7 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     ACCL            =       A|C|H|N|R
     ACCR            =       A|C|H|R
     ACH             =       A|C|H
-    ACL             =       A|C|N|R                 not in the original Shelton table
+    ACL             =       A|C|N|R                 (*)
     ACKN            =       A|T|W|H|N
     ACQ             =       A|C|T|N|R
     ACR             =       A|C|R
@@ -325,9 +325,10 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     DTH             =       N|L|G|H|T
     DTHS            =       N|L|G|H|T|S
     F               =       G|C|H
+    FL              =       R|L|G|C|H           (*)
     FT              =       G|C|H|T
-    FTEN            =       N|G|C|H|T           not in the original Shelton table 
-    FTER            =       R|G|C|H|T           not in the original Shelton table
+    FTEN            =       N|G|C|H|T           (*)
+    FTER            =       R|G|C|H|T           (*)
     G               =       G
     GG              =       N|G|C
     GGS             =       N|G|C|S
@@ -337,6 +338,7 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     GHTS            =       G|H|T|S
     GN              =       R|N|G
     GNS             =       R|N|G|S
+    GR              =       R|N|G|C     (*)
     GS              =       G|S
     H               =       H
     HS              =       H|S
@@ -367,8 +369,8 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     LVES            =       R|N|L|H|S
     M               =       N|G|H
     MB              =       N|G|C|H
-    MBER            =       R|N|G|C|H               not in the original Shelton table
-    MBERS           =       R|N|G|C|H|S             not in the original Shelton table
+    MBER            =       R|N|G|C|H               (*)
+    MBERS           =       R|N|G|C|H|S             (*)
     MBS             =       N|G|C|H|S
     MP              =       N|L|G|C|H
     MPS             =       N|L|G|C|H|S
@@ -398,6 +400,9 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     PHS             =       L|C|H|S
     PL              =       R|N|L|C
     PLES            =       R|N|L|C|S
+    PM              =       R|N|L|G|C|H         (*)
+    PMENT           =       R|N|L|G|C|H|T       (*)
+    PMENTS          =       R|N|L|G|C|H|T|S     (*)
     PS              =       L|C|S
     PT              =       L|C|T
     PTH             =       L|C|H|T
@@ -452,8 +457,10 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     TCH             =       C|H|T
     TH              =       H|T
     THS             =       H|T|S
+    TL              =       R|L|T               (*)
+    TLY             =       R|L|T|S             (*)
     TION            =       N|C|T
-    TIONS           =       N|C|T|S             not in the original Shelton table
+    TIONS           =       N|C|T|S             (*)
     TS              =       T|S
     V               =       N|H
     VES             =       N|H|S
@@ -521,3 +528,4 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     'D                  =       1|5
     ER                  =       4|5     For words ending with ER
 
+    (*) = not in the original Shelton table
