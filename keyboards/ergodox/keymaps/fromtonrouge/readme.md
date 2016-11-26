@@ -338,7 +338,7 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     GHTS            =       G|H|T|S
     GN              =       R|N|G
     GNS             =       R|N|G|S
-    GR              =       R|N|G|C     (*)
+    GR              =       R|L|G     (*)
     GS              =       G|S
     H               =       H
     HS              =       H|S
