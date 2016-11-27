@@ -313,6 +313,7 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     CKL             =       L|G|C|T
     CKLES           =       L|G|C|T|S
     CKS             =       G|C|T|S
+    CR              =       R|C|T
     CS              =       C|S
     CT              =       C|T
     CTS             =       C|T|S
@@ -381,6 +382,7 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     NC              =       N|C
     NCES            =       N|C|S
     NCH             =       N|C|H
+    NCR             =       N|R|C
     ND              =       N|C|H|S
     NDS             =       N|C|H|T|S
     NG              =       N|G
@@ -442,6 +444,7 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     RV              =       R|N|C|H
     S               =       N|L
     S               =       S
+    SD              =       N|L|C|H|S           (*)
     SH              =       N|L|H
     SHES            =       N|L|H|S
     SK              =       N|L|G|T
