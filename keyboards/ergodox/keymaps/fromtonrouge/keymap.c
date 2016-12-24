@@ -601,8 +601,6 @@ void stroke(void)
             {
             case KIND_LETTERS:
                 {
-                    uint8_t register_count = 0;
-                    uint8_t last_byte = 0;
                     letters_table_t* letters_table = (letters_table_t*)any_table;
                     for (int code_pos = 0; code_pos < MAX_LETTERS; ++code_pos)
                     {
@@ -611,27 +609,20 @@ void stroke(void)
                         {
                             register_code(byte);
                             unregister_code(byte);
-                            last_byte = byte;
-                            register_count++;
                             new_undo_command.inserted_chars_count++;
+
+                            // Double the first letter for the right hand only
+                            if (has_plus && (family_id == FAMILY_RIGHT_HAND) && !code_pos)
+                            {
+                                register_code(byte);
+                                unregister_code(byte);
+                                new_undo_command.inserted_chars_count++;
+                            }
 
                             if ((initial_case_1 && new_undo_command.inserted_chars_count == 1) || (initial_case_2 && new_undo_command.inserted_chars_count == 2))
                             {
                                 del_mods(MOD_LSFT);
                             }
-                        }
-                        else
-                        {
-                            // Double the consonnant for the right hand only
-                            if (    has_plus && (register_count == 1)
-                                    && (family_id == FAMILY_RIGHT_HAND)
-                                    && (last_byte != 0))
-                            {
-                                register_code(last_byte);
-                                unregister_code(last_byte);
-                                new_undo_command.inserted_chars_count++;
-                            }
-                            break;
                         }
                     }
                     break;
