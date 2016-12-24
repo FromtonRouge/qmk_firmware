@@ -231,6 +231,8 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     Y               =       H|N
     Z               =       C|N
 
+(*) = not in the original Shelton table
+
 ### Lookup table for thumbs vowels
 
     A               =       A
@@ -302,6 +304,8 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
 ### Lookup table for the right hand (Shelton table)
 
     B               =       G|C
+    BER             =       R|N|G|C             (*)
+    BERS            =       R|N|G|C|S           (*)
     BL              =       L|G|C
     BLES            =       L|G|C|S
     BS              =       G|C|S
@@ -339,7 +343,7 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     GHTS            =       G|H|T|S
     GN              =       R|N|G
     GNS             =       R|N|G|S
-    GR              =       R|L|G     (*)
+    GR              =       R|L|G               (*)
     GS              =       G|S
     H               =       H
     HS              =       H|S
@@ -370,8 +374,8 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     LVES            =       R|N|L|H|S
     M               =       N|G|H
     MB              =       N|G|C|H
-    MBER            =       R|N|G|C|H               (*)
-    MBERS           =       R|N|G|C|H|S             (*)
+    MBER            =       R|N|G|C|H           (*)
+    MBERS           =       R|N|G|C|H|S         (*)
     MBS             =       N|G|C|H|S
     MP              =       N|L|G|C|H
     MPS             =       N|L|G|C|H|S
@@ -485,6 +489,8 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     Z               =       L|H
     ZES             =       L|H|S
 
+(*) = not in the original Shelton table
+
 ### Lookup table for right pinky
 
     E               =       E
@@ -530,5 +536,3 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     ING                 =       5       For words ending with ING
     'D                  =       1|5
     ER                  =       4|5     For words ending with ER
-
-    (*) = not in the original Shelton table
