@@ -377,6 +377,8 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     MBER            =       R|N|G|C|H           (*)
     MBERS           =       R|N|G|C|H|S         (*)
     MBS             =       N|G|C|H|S
+    MENT            =       R|N|G|H|T           (*)
+    MENTS           =       R|N|G|H|T|S         (*)
     MP              =       N|L|G|C|H
     MPS             =       N|L|G|C|H|S
     MPT             =       N|L|G|C|H|T
