@@ -611,7 +611,15 @@ void stroke(void)
                             unregister_code(byte);
                             new_undo_command.inserted_chars_count++;
 
-                            // Double the first letter for the right hand only
+                            // Jackdaw rule: If a 'Q' is detected on the left hand followed by a thumb vowel => add a 'U'
+                            if (byte == _Q && thumbs_bits)
+                            {
+                                register_code(_U);
+                                unregister_code(_U);
+                                new_undo_command.inserted_chars_count++;
+                            }
+
+                            // Jackdaw rule: Double the first letter for the right hand only if + is in the stroke
                             if (has_plus && (family_id == FAMILY_RIGHT_HAND) && !code_pos)
                             {
                                 register_code(byte);
