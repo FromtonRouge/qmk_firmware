@@ -306,6 +306,8 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     B               =       G|C
     BER             =       R|N|G|C             (*)
     BERS            =       R|N|G|C|S           (*)
+    BERT            =       R|N|G|C|T           (*)
+    BERTS           =       R|N|G|C|T|S         (*)
     BL              =       L|G|C
     BLES            =       L|G|C|S
     BS              =       G|C|S

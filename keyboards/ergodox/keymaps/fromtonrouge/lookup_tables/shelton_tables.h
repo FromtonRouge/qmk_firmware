@@ -433,7 +433,7 @@ const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS] =
     _2(_C, _K),                             // [88]
     NO_ENTRY,                               // [89]
     _2(_B, _T),                             // [90]
-    NO_ENTRY,                               // [91]
+    _4(_B, _E, _R, _T),                     // [91]     (*)
     _3(_C, _K, _L),                         // [92]
     NO_ENTRY,                               // [93]
     NO_ENTRY,                               // [94]
@@ -561,7 +561,7 @@ const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS] =
     _3(_C, _K, _S),                         // [216]
     NO_ENTRY,                               // [217]
     _3(_B, _T, _S),                         // [218]
-    NO_ENTRY,                               // [219]
+    _5(_B, _E, _R, _T, _S),                 // [219]    (*)
     _5(_C, _K, _L, _E, _S),                 // [220]
     NO_ENTRY,                               // [221]
     NO_ENTRY,                               // [222]
