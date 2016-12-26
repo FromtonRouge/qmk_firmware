@@ -233,17 +233,17 @@ const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS] =
     NO_ENTRY, // [222]
     NO_ENTRY, // [223]
     _3(_A, _S, _T), // [224]
-    NO_ENTRY, // [225]
-    NO_ENTRY, // [226]
+    _3(_I, _N, _V), // [225]    (*)
+    _2(_I, _R), // [226]        (*)
     _3(_A, _S, _Q), // [227]
     _2(_A, _X), // [228]
     NO_ENTRY, // [229]
     NO_ENTRY, // [230]
     NO_ENTRY, // [231]
     _4(_A, _S, _T, _H), // [232]
-    NO_ENTRY, // [233]
-    NO_ENTRY, // [234]
-    NO_ENTRY, // [235]
+    _3(_I, _N, _T), // [233]    (*)
+    _3(_I, _R, _R), // [234]    (*)
+    _5(_I, _N, _T, _E, _R), // [235]    (*)
     _3(_A, _S, _K), // [236]
     NO_ENTRY, // [237]
     NO_ENTRY, // [238]
@@ -444,7 +444,7 @@ const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS] =
     _3(_W, _T, _H),                         // [99]
     _3(_L, _T, _H),                         // [100]
     NO_ENTRY,                               // [101]
-    NO_ENTRY,                               // [102]
+    _2(_N, _V),                             // [102]    (*)
     NO_ENTRY,                               // [103]
     _3(_G, _H, _T),                         // [104]
     _2(_W, _K),                             // [105]
@@ -453,7 +453,7 @@ const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS] =
     _2(_X, _T),                             // [108]
     NO_ENTRY,                               // [109]
     _3(_D, _T, _H),                         // [110]
-    NO_ENTRY,                               // [111]
+    _5(_N, _M, _E, _N, _T),                 // [111]    (*)
     _3(_T, _C, _H),                         // [112]
     NO_ENTRY,                               // [113]
     NO_ENTRY,                               // [114]
@@ -581,7 +581,7 @@ const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS] =
     NO_ENTRY,                               // [236]
     NO_ENTRY,                               // [237]
     _4(_D, _T, _H, _S),                     // [238]
-    NO_ENTRY,                               // [239]
+    _6(_N, _M, _E, _N, _T, _S),             // [239]    (*)
     _2(_D, _S),                             // [240]
     _3(_R, _D, _S),                         // [241]
     _3(_N, _D, _S),                         // [242]

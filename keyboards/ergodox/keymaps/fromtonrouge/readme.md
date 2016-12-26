@@ -164,6 +164,11 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     GW              =       S|C|T|W
     GY              =       S|C|T|H|N
     H               =       H
+    INT             =       A|S|T|H|N       (*)
+    INTER           =       A|S|T|H|N|R     (*)
+    INV             =       A|S|T|N         (*)
+    IR              =       A|S|T|R         (*)
+    IRR             =       A|S|T|H|R       (*)
     J               =       T|W|N
     JER             =       T|W|N|R
     K               =       T|W|H
@@ -319,7 +324,7 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     CKL             =       L|G|C|T
     CKLES           =       L|G|C|T|S
     CKS             =       G|C|T|S
-    CR              =       R|C|T
+    CR              =       R|C|T               (*)
     CS              =       C|S
     CT              =       C|T
     CTS             =       C|T|S
@@ -399,12 +404,15 @@ Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]
     NGTHS           =       N|G|H|T|S
     NK              =       N|G|T
     NKS             =       N|G|T|S
+    NMENT           =       R|N|L|G|H|T     (*)
+    NMENTS          =       R|N|L|G|H|T|S   (*)
     NS              =       N|S
     NST             =       N|L|C|T
     NT              =       N|T
     NTH             =       N|H|T
     NTHS            =       N|H|T|S
     NTS             =       N|T|S
+    NV              =       N|L|H|T             (*)
     P               =       L|C
     PH              =       L|C|H
     PHS             =       L|C|H|S
