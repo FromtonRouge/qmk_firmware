@@ -7,6 +7,10 @@
 #include "lookup_tables/misc_tables.h"
 #include "lookup_tables/user_tables.h"
 
+#ifdef SUBPROJECT_infinity
+#include "visualizer/lcd_backlight.h"
+#endif
+
 // Layer indexes
 #define LAYER_BASE 0
 #define LAYER_STENO 1
@@ -31,6 +35,12 @@
     #ifdef AZERTY_OS_ENABLE
         #define CIRC 3
     #endif
+#endif
+
+#ifdef SUBPROJECT_infinity
+#ifndef pgm_read_dword
+#define pgm_read_dword(addr) (*(const unsigned long *)(addr))
+#endif
 #endif
 
 // Keys family
@@ -545,7 +555,8 @@ void stroke(void)
     bool initial_case_1 = false;
     bool initial_case_2 = false;
     undo_command_t new_undo_command;
-    memset(&new_undo_command, 0, sizeof(undo_command_t));
+    new_undo_command.inserted_chars_count = 0;
+    new_undo_command.left_arrow_count = 0;
 
     // Get *, + and case controls info
     const uint8_t special_controls_bits = g_family_bits[FAMILY_SPECIAL_CONTROLS];
@@ -962,13 +973,26 @@ void matrix_scan_user(void)
     ergodox_right_led_2_off();
     ergodox_right_led_3_off();
 
+#ifdef SUBPROJECT_infinity
+    const uint16_t COLOR_AMOUNT = 10000;
+    uint16_t red = 0;
+    uint16_t green = 0;
+    uint16_t blue = 0;
+#endif
+
     switch (layer)
     {
     case LAYER_STENO:
         ergodox_right_led_1_on();
+#ifdef SUBPROJECT_infinity
+        red = COLOR_AMOUNT;
+#endif
         break;
     case LAYER_FN:
         ergodox_right_led_2_on();
+#ifdef SUBPROJECT_infinity
+        green = COLOR_AMOUNT;
+#endif
         break;
     default:
         break;
@@ -977,5 +1001,12 @@ void matrix_scan_user(void)
     if (!can_stroke())
     {
         ergodox_right_led_3_on();
+#ifdef SUBPROJECT_infinity
+        blue = COLOR_AMOUNT;
+#endif
     }
+
+#ifdef SUBPROJECT_infinity
+    lcd_backlight_hal_color(red, green, blue);
+#endif
 }

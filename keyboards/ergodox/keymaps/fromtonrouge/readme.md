@@ -2,9 +2,14 @@
 
 It's a firmware-implemented custom Programmer Colemak layout and a firmware-implemented custom Programmer Steno layout (no Plover needed)
 
+This keymap is compatible with :
+    * Standard ErgoDox
+    * ErgoDox EZ
+    * Infinity ErgoDox
+
 ## Downloads
 
-You can directly download .hex files from the release page : https://github.com/FromtonRouge/qmk_firmware/releases
+You can directly download binaries from the release page : https://github.com/FromtonRouge/qmk_firmware/releases
 
 ## Programmer Colemak layout
 
