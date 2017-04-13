@@ -7,10 +7,6 @@
 #include "lookup_tables/misc_tables.h"
 #include "lookup_tables/user_tables.h"
 
-#ifdef SUBPROJECT_infinity
-#include "visualizer/lcd_backlight.h"
-#endif
-
 // Layer indexes
 #define LAYER_BASE 0
 #define LAYER_STENO 1
@@ -973,26 +969,13 @@ void matrix_scan_user(void)
     ergodox_right_led_2_off();
     ergodox_right_led_3_off();
 
-#ifdef SUBPROJECT_infinity
-    const uint16_t COLOR_AMOUNT = 10000;
-    uint16_t red = 0;
-    uint16_t green = 0;
-    uint16_t blue = 0;
-#endif
-
     switch (layer)
     {
     case LAYER_STENO:
         ergodox_right_led_1_on();
-#ifdef SUBPROJECT_infinity
-        red = COLOR_AMOUNT;
-#endif
         break;
     case LAYER_FN:
         ergodox_right_led_2_on();
-#ifdef SUBPROJECT_infinity
-        green = COLOR_AMOUNT;
-#endif
         break;
     default:
         break;
@@ -1001,12 +984,5 @@ void matrix_scan_user(void)
     if (!can_stroke())
     {
         ergodox_right_led_3_on();
-#ifdef SUBPROJECT_infinity
-        blue = COLOR_AMOUNT;
-#endif
     }
-
-#ifdef SUBPROJECT_infinity
-    lcd_backlight_hal_color(red, green, blue);
-#endif
 }
