@@ -1,8 +1,9 @@
 ## Summary
 
-It's a firmware-implemented custom Programmer Colemak layout and a firmware-implemented custom Programmer Steno layout (no Plover needed)
+It's a firmware-implemented Programmer Colemak layout and a firmware-implemented Programmer Steno layout (no Plover needed)
 
 This keymap is compatible with :
+
     * Standard ErgoDox
     * ErgoDox EZ
     * Infinity ErgoDox
@@ -39,6 +40,7 @@ MSPC is the MetaSpace key :
     * When used alone it adds a space.
     * When used with the STAR key, MSPC becomes a Backspace key.
 
+To write numbers stroke left and right + and use SATHR and/or NGHTS
 Numbers are binary numbers : you can stroke 2 numbers at the same time (from 0 to 15 for each hand)
 
 ![Programmer Steno](images/programmer-steno.png)

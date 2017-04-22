@@ -4,7 +4,6 @@
 #include "action_util.h"
 #include "keymap_extras/keymap_french.h"
 #include "lookup_tables/shelton_tables.h"
-#include "lookup_tables/misc_tables.h"
 #include "lookup_tables/user_tables.h"
 
 // Layer indexes
@@ -50,8 +49,6 @@ enum key_family
     FAMILY_THUMBS,
     FAMILY_RIGHT_HAND,
     FAMILY_RIGHT_PINKY,
-    FAMILY_LEFT_NUMBERS,
-    FAMILY_RIGHT_NUMBERS,
     FAMILY_RIGHT_USER_SYMBOLS,
     FAMILY_SPACES,
     NB_FAMILY
@@ -60,14 +57,15 @@ enum key_family
 // Bit to identify a steno key
 #define STENO_BIT (1L << 31) 
 
-// 3 bits for star and the plus key
+// 4 bits for star and the plus key
 #define OFFSET_SPECIAL_CONTROLS 0
 #define SC_STAR (0 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
-#define SC_PLUS (1 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
-#define SC_MSPC (2 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT) // META SPACE = No space key, Backspace when used with SC_STAR, space key otherwise
+#define SC_LPLUS (1 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+#define SC_RPLUS (2 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+#define SC_MSPC (3 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT) // META SPACE = No space key, Backspace when used with SC_STAR, space key otherwise
 
 // 8 bits for the left hand
-#define OFFSET_LEFT_HAND 3
+#define OFFSET_LEFT_HAND 4
 #define L_N (0 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 #define L_R (1 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 #define L_W (2 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
@@ -78,7 +76,7 @@ enum key_family
 #define L_S (7 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 
 // 5 bits for thumbs
-#define OFFSET_THUMBS 11
+#define OFFSET_THUMBS 12
 #define T_E (0 | (FAMILY_THUMBS << 4) | STENO_BIT)
 #define T_O (1 | (FAMILY_THUMBS << 4) | STENO_BIT)
 #define T_A (2 | (FAMILY_THUMBS << 4) | STENO_BIT)
@@ -86,7 +84,7 @@ enum key_family
 #define T_I (4 | (FAMILY_THUMBS << 4) | STENO_BIT)
 
 // 8 bits for the right hand
-#define OFFSET_RIGHT_HAND 16
+#define OFFSET_RIGHT_HAND 17
 #define R_R (0 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_N (1 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_L (2 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
@@ -97,18 +95,18 @@ enum key_family
 #define R_S (7 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 
 // 3 bits for E and Y and S
-#define OFFSET_RIGHT_PINKY 24
+#define OFFSET_RIGHT_PINKY 25
 #define RP_E  (0 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 #define RP_Y  (1 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 #define RP_S  (2 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 
 // 2 bits for space control keys
-#define OFFSET_SPACE_CONTROLS 27
+#define OFFSET_SPACE_CONTROLS 28
 #define S_TAB  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
 #define S_ENT  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
 
 // 2 bits for case control keys (upper case, initial case)
-#define OFFSET_CASE_CONTROLS 29
+#define OFFSET_CASE_CONTROLS 30
 #define C_UC  (0 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
 #define C_IC  (1 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
 
@@ -130,21 +128,7 @@ enum key_family
 #define USRR_4  (4 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRR_5  (5 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 
-// 5 bits for left numbers
-#define OFFSET_LEFT_NUMBERS 12
-#define NL_B0  (0 | (FAMILY_LEFT_NUMBERS << 4) | STENO_BIT)
-#define NL_B1  (1 | (FAMILY_LEFT_NUMBERS << 4) | STENO_BIT)
-#define NL_B2  (2 | (FAMILY_LEFT_NUMBERS << 4) | STENO_BIT)
-#define NL_B3  (3 | (FAMILY_LEFT_NUMBERS << 4) | STENO_BIT)
-#define NL_N0  (4 | (FAMILY_LEFT_NUMBERS << 4) | STENO_BIT)
-
-// 5 bits for right numbers
-#define OFFSET_RIGHT_NUMBERS 17
-#define NR_B0  (0 | (FAMILY_RIGHT_NUMBERS << 4) | STENO_BIT)
-#define NR_B1  (1 | (FAMILY_RIGHT_NUMBERS << 4) | STENO_BIT)
-#define NR_B2  (2 | (FAMILY_RIGHT_NUMBERS << 4) | STENO_BIT)
-#define NR_B3  (3 | (FAMILY_RIGHT_NUMBERS << 4) | STENO_BIT)
-#define NR_N0  (4 | (FAMILY_RIGHT_NUMBERS << 4) | STENO_BIT)
+#define CONVERT_TO_NUMBERS_BITS(hand_bits) ((((((hand_bits & 0xE0) >> 1) | (hand_bits & 0xF)) & 0x78) >> 1 | (hand_bits & 0x3)) >> 1)
 
 // Table to convert family id to bit offset
 const uint8_t g_family_to_bit_offset[NB_FAMILY] =
@@ -157,8 +141,6 @@ const uint8_t g_family_to_bit_offset[NB_FAMILY] =
     OFFSET_THUMBS,
     OFFSET_RIGHT_HAND,
     OFFSET_RIGHT_PINKY,
-    OFFSET_LEFT_NUMBERS,
-    OFFSET_RIGHT_NUMBERS,
     OFFSET_RIGHT_USER_SYMBOLS,
     OFFSET_SPACE_CONTROLS
 };
@@ -183,8 +165,6 @@ const uint8_t g_family_to_kind_table[NB_FAMILY] =
     KIND_LETTERS,
     KIND_LETTERS,
     KIND_SYMBOLS,
-    KIND_SYMBOLS,
-    KIND_SYMBOLS,
     KIND_SYMBOLS
 };
 
@@ -203,8 +183,6 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
     &g_bits_keys_pressed_part1,
     &g_bits_keys_pressed_part1,
     &g_bits_keys_pressed_part2,
-    &g_bits_keys_pressed_part2,
-    &g_bits_keys_pressed_part2,
     &g_bits_keys_pressed_part1
 };
 
@@ -222,8 +200,6 @@ void* g_all_tables[NB_FAMILY] =
     g_thumbs_table,
     g_right_hand_table,
     g_right_pinky_table,
-    g_left_numbers,
-    g_right_numbers,
     g_right_user_symbols_table,
     g_spaces_ctl_table
 };
@@ -293,53 +269,31 @@ bool can_undo(undo_command_t undo) { return (undo.inserted_chars_count > 0) || (
 undo_command_t g_undo_stack[MAX_UNDO] = { {0} };
 int8_t g_undo_stack_index = 0;
 
+bool g_force_punctuations_on_right_hand = false; // Must be global for the Ergodox Infinity (avoid a lock)
+bool g_has_left_plus = false; // Must be global for the Ergodox Infinity (avoid a lock)
+bool g_has_right_plus = false; // Must be global for the Ergodox Infinity (avoid a lock)
+
 // Steno keymap
-const uint32_t PROGMEM g_steno_keymap[2][MATRIX_ROWS][MATRIX_COLS] = {
-
-// BASE STENO MAP
-KEYMAP(
-                // Left hand
-                0,      NL_N0,      NL_B0,      NL_B1,      NL_B2,      NL_B3,        0,
-                0,      0,          USRL_2,     USRL_3,     USRL_4,     USRL_5,       S_ENT,
-                0,      USRL_0,     USRL_1,     L_C,        L_W,        L_N,        
-                C_UC,   C_IC,       L_A,        L_T,        L_H,        L_R,          SC_STAR,
-                C_UC,   C_IC,       L_S,        0,          0,
-                                                                                           SC_STAR, SC_STAR,
-                                                                                                    T_O,
-                                                                                  SC_PLUS, T_E,     T_A,
-                // Right hand
-                            0,          NR_B3,      NR_B2,      NR_B1,      NR_B0,      NR_N0,      0,
-                            SC_MSPC,     USRR_5,     USRR_4,     USRR_3,     USRR_2,     0,          0,
-                                        R_R,        R_L,        R_C,        USRR_1,     USRR_0,     0, 
-                            SC_MSPC,     R_N,        R_G,        R_H,        R_T,        RP_E,       RP_S,
-                                                    0,          0,          R_S,        RP_Y,       RP_S,
-                SC_STAR,    SC_STAR,
-                T_A,
-                T_U,        T_I,       SC_PLUS 
-),
-
-// SHIFT STENO MAP (when C_IC or C_UC are pressed)
-KEYMAP(
-                // Left hand
-                0,      0,         0,          0,          0,          0,           0,
-                0,      0,         0,          0,          0,          0,           0,
-                0,      0,         0,          0,          0,          0,
-                0,      0,         0,          0,          0,          0,           0,
-                0,      0,         0,          0,          0,
-                                                                                           0,     0,
-                                                                                                  0,
-                                                                                      0,   0,     0,
-                // Right hand
-                            0,     0,          0,          0,              0,              0,           0,
-                            0,     0,          0,          0,              0,              0,           0,
-                                   0,          0,          0,              0,              0,           0,
-                            0,     0,          0,          0,              0,              0,           0,
-                            0,          0,              0,              0,     0,
-                0,     0,
-                0,
-                0,     0,   0
-)
-};
+const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
+        // Left hand
+        0,      0,          0,          0,          0,          0,          0,
+        0,      0,          USRL_2,     USRL_3,     USRL_4,     USRL_5,     S_ENT,
+        0,      USRL_0,     USRL_1,     L_C,        L_W,        L_N,        
+        C_UC,   C_IC,       L_A,        L_T,        L_H,        L_R,        SC_STAR,
+        C_UC,   C_IC,       L_S,        0,          0,
+                                                                SC_STAR,    SC_STAR,
+                                                                            T_O,
+                                                    SC_LPLUS,   T_E,        T_A,
+        // Right hand
+        0,          0,          0,          0,          0,          0,          0,
+        SC_MSPC,    USRR_5,     USRR_4,     USRR_3,     USRR_2,     0,          0,
+                    R_R,        R_L,        R_C,        USRR_1,     USRR_0,     0, 
+        SC_MSPC,    R_N,        R_G,        R_H,        R_T,        RP_E,       RP_S,
+                                0,          0,          R_S,        RP_Y,       RP_S,
+        SC_STAR,    SC_STAR,
+        T_A,
+        T_U,        T_I,       SC_RPLUS 
+);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -405,7 +359,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define ST_ON M(STENO)
 [LAYER_STENO] = KEYMAP(
         // left hand
-        MO(LAYER_FN), ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,        KC_BSPC,
+        KC_F1,        KC_F2,      KC_F3,      KC_F4,      KC_F5,      KC_F6,        KC_BSPC,
         KC_LALT,      KC_TAB,     ST_ON,      ST_ON,      ST_ON,      ST_ON,        ST_ON,
         KC_LCTL,      ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,   
         ST_ON,        ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,        ST_ON,
@@ -414,8 +368,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                   ST_ON,
                                                                             ST_ON,      ST_ON,    ST_ON,
         // right hand
-                    KC_TRNS,        ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,      KC_DEL,
-                    ST_ON,          ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,      KC_RALT,
+                    KC_TRNS,        KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_F11,     KC_F12,
+                    ST_ON,          ST_ON,      ST_ON,      ST_ON,      ST_ON,      KC_DEL,     KC_RALT,
                                     ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,      KC_RCTL,   
                     ST_ON,          ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,   
                                                 KC_TRNS,    KC_TRNS,    ST_ON,      ST_ON,      ST_ON,
@@ -557,8 +511,10 @@ void stroke(void)
     // Get *, + and case controls info
     const uint8_t special_controls_bits = g_family_bits[FAMILY_SPECIAL_CONTROLS];
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
+    const uint8_t right_hand_bits = g_family_bits[FAMILY_RIGHT_HAND]; 
     const bool has_star = special_controls_bits & (1 << (SC_STAR & 0xF));
-    const bool has_plus = special_controls_bits & (1 << (SC_PLUS & 0xF));
+    g_has_left_plus = special_controls_bits & (1 << (SC_LPLUS & 0xF));
+    g_has_right_plus = special_controls_bits & (1 << (SC_RPLUS & 0xF));
     const bool has_meta_space = special_controls_bits & (1 << (SC_MSPC & 0xF));
     const uint8_t case_controls_bits = g_family_bits[FAMILY_CASE_CONTROLS];
     if (case_controls_bits)
@@ -569,6 +525,7 @@ void stroke(void)
     }
 
     // Evaluate stroke
+    g_force_punctuations_on_right_hand = false;
     bool undo_allowed = true;
     bool no_space_code_detected = false;
     for (int family_id = 0; family_id < NB_FAMILY; ++family_id)
@@ -581,25 +538,84 @@ void stroke(void)
 
         // Get the lookup table
         undo_allowed = family_id == FAMILY_SPECIAL_CONTROLS;
-        void* any_table = 0;
+        void* any_table = g_all_tables[family_id];
         uint8_t kind = g_family_to_kind_table[family_id];
-        if (family_id == FAMILY_THUMBS && has_star)
+        bool do_numbers = false;
+        if (family_id == FAMILY_THUMBS)
         {
-            any_table = g_thumbs_bigrams_table;
+            if (g_has_left_plus && g_has_right_plus)
+            {
+                any_table = 0;
+            }
+            else if (has_star)
+            {
+                any_table = g_thumbs_bigrams_table;
+            }
         }
-        else if (family_id == FAMILY_LEFT_HAND && has_star && !thumbs_bits)
+        else if (family_id == FAMILY_LEFT_HAND)
         {
-            any_table = g_left_punctuations_table;
-            kind = KIND_PUNCTUATIONS;
+            if (!thumbs_bits)
+            {
+                if (g_has_left_plus)
+                {
+                    if (!right_hand_bits)
+                    {
+                        do_numbers = true;
+                    }
+                    else if (g_has_right_plus)
+                    {
+                        do_numbers = true;
+                    }
+                    else if (has_star)
+                    {
+                        do_numbers = true;
+                        g_force_punctuations_on_right_hand = true;
+                    }
+                }
+                else if (has_star)
+                {
+                    any_table = g_left_punctuations_table;
+                    kind = KIND_PUNCTUATIONS;
+                }
+            }
         }
-        else if (family_id == FAMILY_RIGHT_HAND && has_star && !thumbs_bits)
+        else if (family_id == FAMILY_RIGHT_HAND)
         {
-            any_table = g_right_punctuations_table;
-            kind = KIND_PUNCTUATIONS;
+            bool do_punctuations = g_force_punctuations_on_right_hand;
+            if (!thumbs_bits)
+            {
+                if (!do_punctuations && g_has_left_plus)
+                {
+                    if (g_has_right_plus)
+                    {
+                        do_numbers = true;
+                    }
+                }
+                else if (has_star)
+                {
+                    if (g_has_right_plus)
+                    {
+                        do_numbers = true;
+                    }
+                    else
+                    {
+                        do_punctuations = true;
+                    }
+                }
+            }
+
+            if (do_punctuations)
+            {
+                any_table = g_right_punctuations_table;
+                kind = KIND_PUNCTUATIONS;
+            }
         }
-        else
+
+        if (do_numbers)
         {
-            any_table = g_all_tables[family_id];
+            family_bits = CONVERT_TO_NUMBERS_BITS(family_bits);
+            any_table = g_numbers;
+            kind = KIND_SYMBOLS;
         }
 
         if (any_table)
@@ -627,7 +643,7 @@ void stroke(void)
                             }
 
                             // Jackdaw rule: Double the first letter for the right hand only if + is in the stroke
-                            if (has_plus && (family_id == FAMILY_RIGHT_HAND) && !code_pos)
+                            if ((g_has_right_plus || g_has_left_plus) && (family_id == FAMILY_RIGHT_HAND) && !code_pos)
                             {
                                 register_code(byte);
                                 unregister_code(byte);
@@ -822,86 +838,36 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
     {
     case STENO:
         {
-            const uint32_t dword = pgm_read_dword(&(g_steno_keymap[0][record->event.key.row][record->event.key.col]));
-            if (dword)
+            const uint32_t dword = pgm_read_dword(&(g_steno_keymap[record->event.key.row][record->event.key.col]));
+            if (dword & STENO_BIT)
             {
-                if (dword & STENO_BIT)
+                const uint32_t bit_key = 1L << (dword & 0x0F);
+                const uint8_t family = (dword >> 4) & 0x0F;
+                const uint8_t family_offset = g_family_to_bit_offset[family];
+                uint32_t* keys_pressed_p = g_family_to_keys_pressed[family];
+                if (record->event.pressed)
                 {
-                    const uint32_t bit_key = 1L << (dword & 0x0F);
-                    const uint8_t family = (dword >> 4) & 0x0F;
-                    const uint8_t family_offset = g_family_to_bit_offset[family];
-                    uint32_t* keys_pressed_p = g_family_to_keys_pressed[family];
-                    if (record->event.pressed)
+                    if (family == FAMILY_CASE_CONTROLS)
                     {
-                        if (family == FAMILY_CASE_CONTROLS)
-                        {
-                            register_code(KC_LSFT);
-                        }
-
-                        (*keys_pressed_p) |= (bit_key << family_offset);
-                        g_family_bits[family] |= bit_key;
+                        register_code(KC_LSFT);
                     }
-                    else
-                    {
-                        (*keys_pressed_p) &= ~(bit_key << family_offset);
 
-                        // Stroke if all steno keys are released
-                        if (can_stroke())
-                        {
-                            stroke();
-                        }
-
-                        if (family == FAMILY_CASE_CONTROLS)
-                        {
-                            unregister_code(KC_LSFT);
-                        }
-                    }
+                    (*keys_pressed_p) |= (bit_key << family_offset);
+                    g_family_bits[family] |= bit_key;
                 }
                 else
                 {
-                    const uint16_t base_word = (uint16_t)dword;
-                    const uint8_t base_code = (uint8_t)dword;
-                    const uint32_t dword_shift = pgm_read_dword(&(g_steno_keymap[1][record->event.key.row][record->event.key.col]));
-                    const uint16_t word_shift = (uint16_t)dword_shift;
-                    bool send_shift_code = false;
-                    uint8_t shift_code = 0;
-                    if (dword_shift)
+                    (*keys_pressed_p) &= ~(bit_key << family_offset);
+
+                    // Stroke if all steno keys are released
+                    if (can_stroke())
                     {
-                        shift_code = (uint8_t)word_shift;
-                        uint32_t* keys_pressed_p = g_family_to_keys_pressed[FAMILY_CASE_CONTROLS];
-                        if ((*keys_pressed_p) & ((uint32_t)(3) << OFFSET_CASE_CONTROLS))
-                        {
-                            send_shift_code = true;
-                        }
+                        stroke();
                     }
 
-                    if (send_shift_code)
+                    if (family == FAMILY_CASE_CONTROLS)
                     {
-                        if (record->event.pressed)
-                        {
-                            send_mods_and_code(word_shift >> 8, shift_code);
-                        }
-                        else
-                        {
-                            unregister_code(base_code);
-                            unregister_code(shift_code);
-                        }
-                    }
-                    else
-                    {
-                        // Send mods and key code
-                        if (record->event.pressed)
-                        {
-                            send_mods_and_code(base_word >> 8, base_code);
-                        }
-                        else
-                        {
-                            unregister_code(base_code);
-                            if (shift_code)
-                            {
-                                unregister_code(shift_code);
-                            }
-                        }
+                        unregister_code(KC_LSFT);
                     }
                 }
             }
