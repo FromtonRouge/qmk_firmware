@@ -140,176 +140,524 @@ const uint16_t PROGMEM g_right_user_symbols_table[64][MAX_SYMBOLS] =
     NO_ENTRY                                // [63]
 };
 
-const uint16_t PROGMEM g_left_punctuations_table[64][MAX_PUNCTUATIONS] =
+const uint16_t PROGMEM g_left_punctuations_table[256][MAX_PUNCTUATIONS] =
 {
-    NO_ENTRY,
-    _P1(_APOS),
-    _P1(_COMM),
-    _P1(_SCLN),
-    _P1(_LCBR),
-    _P1(_DQUOT),
-    _P1(_GRTR),
-    _P2(_GRTR, _GRTR),
-    _P1(_LPRN),
-    _P1(_LESS),
-    _P3(_MINS, _GRTR, _NOSPC),
-    _P2(_LESS, _LESS),
-    _P1(_LBRC),
-    NO_ENTRY,
-    _P1(_QUES),
-    _P1(_HASH),
-    _P1(_PLUS),
-    _P1(_GRV),
-    _P1(_TILD),
-    _P1(_DOT),
-    _P2(_PLUS, _PLUS),
-    NO_ENTRY,
-    _P1(_AMP),
-    _P2(_AMP, _AMP),
-    _P1(_BSLS),
-    NO_ENTRY,
-    _P2(_BSLS, _BSLS),
-    _P1(_AT),
-    NO_ENTRY,
-    NO_ENTRY,
-    NO_ENTRY,
-    NO_ENTRY,
-    _P1(_MINS),
-    NO_ENTRY,
-    _P1(_EQL),
-    _P1(_DLR),
-    _P1(_SLSH),
-    _P2(_SLSH, _SLSH),
-    _P1(_CIRC),
-    _P3(_SLSH, _SLSH, _SLSH),
-    _P2(_MINS, _MINS),
-    NO_ENTRY,
-    _P1(_UNDS),
-    _P2(_DLR, _LPRN),
-    _P2(_SLSH, _ASTR),
-    NO_ENTRY,
-    _P3(_SLSH, _ASTR, _ASTR),
-    _P4(_SLSH, _SLSH, _SLSH, _LESS),
-    _P1(_ASTR),
-    NO_ENTRY,
-    _P1(_EXLM),
-    _P2(_DOT, _ASTR),
-    _P2(_ASTR, _SLSH),
-    NO_ENTRY,
-    NO_ENTRY,
-    _P2(_DLR, _LCBR),
-    _P2(_ASTR, _LPRN),
-    NO_ENTRY,
-    _P1(_PIPE),
-    _P3(_ASTR, _DOT, _ASTR),
-    _P1(_PERC),
-    NO_ENTRY,
-    _P2(_PIPE, _PIPE),
-    NO_ENTRY
+    NO_ENTRY, // [0]
+    _P1(_APOS), // [1]
+    _P1(_COMM), // [2]
+    _P1(_SCLN), // [3]
+    _P1(_LCBR), // [4]
+    _P1(_DQUOT), // [5]
+    _P1(_GRTR), // [6]
+    _P2(_GRTR, _GRTR), // [7]
+    _P1(_LPRN), // [8]
+    _P1(_LESS), // [9]
+    _P3(_MINS, _GRTR, _NOSPC), // [10]
+    _P2(_LESS, _LESS), // [11]
+    _P1(_LBRC), // [12]
+    NO_ENTRY, // [13]
+    _P1(_QUES), // [14]
+    _P1(_HASH), // [15]
+    _P1(_PLUS), // [16]
+    _P1(_GRV), // [17]
+    _P1(_TILD), // [18]
+    _P1(_DOT), // [19]
+    _P2(_PLUS, _PLUS), // [20]
+    NO_ENTRY, // [21]
+    _P1(_AMP), // [22]
+    _P2(_AMP, _AMP), // [23]
+    _P1(_BSLS), // [24]
+    NO_ENTRY, // [25]
+    _P2(_BSLS, _BSLS), // [26]
+    _P1(_AT), // [27]
+    NO_ENTRY, // [28]
+    NO_ENTRY, // [29]
+    NO_ENTRY, // [30]
+    NO_ENTRY, // [31]
+    _P1(_MINS), // [32]
+    NO_ENTRY, // [33]
+    _P1(_EQL), // [34]
+    _P1(_DLR), // [35]
+    _P1(_SLSH), // [36]
+    _P2(_SLSH, _SLSH), // [37]
+    _P1(_CIRC), // [38]
+    _P3(_SLSH, _SLSH, _SLSH), // [39]
+    _P2(_MINS, _MINS), // [40]
+    NO_ENTRY, // [41]
+    _P1(_UNDS), // [42]
+    _P2(_DLR, _LPRN), // [43]
+    _P2(_SLSH, _ASTR), // [44]
+    NO_ENTRY, // [45]
+    _P3(_SLSH, _ASTR, _ASTR), // [46]
+    _P4(_SLSH, _SLSH, _SLSH, _LESS), // [47]
+    _P1(_ASTR), // [48]
+    NO_ENTRY, // [49]
+    _P1(_EXLM), // [50]
+    _P2(_DOT, _ASTR), // [51]
+    _P2(_ASTR, _SLSH), // [52]
+    NO_ENTRY, // [53]
+    NO_ENTRY, // [54]
+    _P2(_DLR, _LCBR), // [55]
+    _P2(_ASTR, _LPRN), // [56]
+    NO_ENTRY, // [57]
+    _P1(_PIPE), // [58]
+    _P3(_ASTR, _DOT, _ASTR), // [59]
+    _P1(_PERC), // [60]
+    NO_ENTRY, // [61]
+    _P2(_PIPE, _PIPE), // [62]
+    NO_ENTRY, // [63]
+    NO_ENTRY, // [64]
+    NO_ENTRY, // [65]
+    NO_ENTRY, // [66]
+    NO_ENTRY, // [67]
+    NO_ENTRY, // [68]
+    NO_ENTRY, // [69]
+    NO_ENTRY, // [70]
+    NO_ENTRY, // [71]
+    NO_ENTRY, // [72]
+    NO_ENTRY, // [73]
+    NO_ENTRY, // [74]
+    NO_ENTRY, // [75]
+    NO_ENTRY, // [76]
+    NO_ENTRY, // [77]
+    NO_ENTRY, // [78]
+    NO_ENTRY, // [79]
+    NO_ENTRY, // [80]
+    NO_ENTRY, // [81]
+    NO_ENTRY, // [82]
+    NO_ENTRY, // [83]
+    NO_ENTRY, // [84]
+    NO_ENTRY, // [85]
+    NO_ENTRY, // [86]
+    NO_ENTRY, // [87]
+    NO_ENTRY, // [88]
+    NO_ENTRY, // [89]
+    NO_ENTRY, // [90]
+    NO_ENTRY, // [91]
+    NO_ENTRY, // [92]
+    NO_ENTRY, // [93]
+    NO_ENTRY, // [94]
+    NO_ENTRY, // [95]
+    NO_ENTRY, // [96]
+    NO_ENTRY, // [97]
+    NO_ENTRY, // [98]
+    NO_ENTRY, // [99]
+    NO_ENTRY, // [100]
+    NO_ENTRY, // [101]
+    NO_ENTRY, // [102]
+    NO_ENTRY, // [103]
+    NO_ENTRY, // [104]
+    NO_ENTRY, // [105]
+    NO_ENTRY, // [106]
+    NO_ENTRY, // [107]
+    NO_ENTRY, // [108]
+    NO_ENTRY, // [109]
+    NO_ENTRY, // [110]
+    NO_ENTRY, // [111]
+    _P2(_ASTR, _ASTR), // [112]
+    NO_ENTRY, // [113]
+    NO_ENTRY, // [114]
+    NO_ENTRY, // [115]
+    NO_ENTRY, // [116]
+    NO_ENTRY, // [117]
+    NO_ENTRY, // [118]
+    NO_ENTRY, // [119]
+    NO_ENTRY, // [120]
+    NO_ENTRY, // [121]
+    NO_ENTRY, // [122]
+    NO_ENTRY, // [123]
+    NO_ENTRY, // [124]
+    NO_ENTRY, // [125]
+    NO_ENTRY, // [126]
+    NO_ENTRY, // [127]
+    _P1(_N0), // [128]
+    NO_ENTRY, // [129]
+    _P1(_N1), // [130]
+    NO_ENTRY, // [131]
+    _P2(_LCBR, _N0), // [132]
+    NO_ENTRY, // [133]
+    NO_ENTRY, // [134]
+    NO_ENTRY, // [135]
+    _P1(_N2), // [136]
+    NO_ENTRY, // [137]
+    _P1(_N3), // [138]
+    NO_ENTRY, // [139]
+    _P2(_LBRC, _N0), // [140]
+    NO_ENTRY, // [141]
+    NO_ENTRY, // [142]
+    NO_ENTRY, // [143]
+    NO_ENTRY, // [144]
+    NO_ENTRY, // [145]
+    NO_ENTRY, // [146]
+    NO_ENTRY, // [147]
+    NO_ENTRY, // [148]
+    NO_ENTRY, // [149]
+    NO_ENTRY, // [150]
+    NO_ENTRY, // [151]
+    NO_ENTRY, // [152]
+    NO_ENTRY, // [153]
+    NO_ENTRY, // [154]
+    NO_ENTRY, // [155]
+    NO_ENTRY, // [156]
+    NO_ENTRY, // [157]
+    NO_ENTRY, // [158]
+    NO_ENTRY, // [159]
+    _P1(_N4), // [160]
+    NO_ENTRY, // [161]
+    _P1(_N5), // [162]
+    NO_ENTRY, // [163]
+    NO_ENTRY, // [164]
+    NO_ENTRY, // [165]
+    NO_ENTRY, // [166]
+    NO_ENTRY, // [167]
+    _P1(_N6), // [168]
+    NO_ENTRY, // [169]
+    _P1(_N7), // [170]
+    NO_ENTRY, // [171]
+    NO_ENTRY, // [172]
+    NO_ENTRY, // [173]
+    NO_ENTRY, // [174]
+    NO_ENTRY, // [175]
+    NO_ENTRY, // [176]
+    NO_ENTRY, // [177]
+    NO_ENTRY, // [178]
+    NO_ENTRY, // [179]
+    NO_ENTRY, // [180]
+    NO_ENTRY, // [181]
+    NO_ENTRY, // [182]
+    NO_ENTRY, // [183]
+    NO_ENTRY, // [184]
+    NO_ENTRY, // [185]
+    NO_ENTRY, // [186]
+    NO_ENTRY, // [187]
+    NO_ENTRY, // [188]
+    NO_ENTRY, // [189]
+    NO_ENTRY, // [190]
+    NO_ENTRY, // [191]
+    _P1(_N8), // [192]
+    NO_ENTRY, // [193]
+    _P1(_N9), // [194]
+    NO_ENTRY, // [195]
+    NO_ENTRY, // [196]
+    NO_ENTRY, // [197]
+    NO_ENTRY, // [198]
+    NO_ENTRY, // [199]
+    _P2(_N1, _N0), // [200]
+    NO_ENTRY, // [201]
+    _P2(_N1, _N1), // [202]
+    NO_ENTRY, // [203]
+    NO_ENTRY, // [204]
+    NO_ENTRY, // [205]
+    NO_ENTRY, // [206]
+    NO_ENTRY, // [207]
+    NO_ENTRY, // [208]
+    NO_ENTRY, // [209]
+    NO_ENTRY, // [210]
+    NO_ENTRY, // [211]
+    NO_ENTRY, // [212]
+    NO_ENTRY, // [213]
+    NO_ENTRY, // [214]
+    NO_ENTRY, // [215]
+    NO_ENTRY, // [216]
+    NO_ENTRY, // [217]
+    NO_ENTRY, // [218]
+    NO_ENTRY, // [219]
+    NO_ENTRY, // [220]
+    NO_ENTRY, // [221]
+    NO_ENTRY, // [222]
+    NO_ENTRY, // [223]
+    _P2(_N1, _N2), // [224]
+    NO_ENTRY, // [225]
+    _P2(_N1, _N3), // [226]
+    NO_ENTRY, // [227]
+    NO_ENTRY, // [228]
+    NO_ENTRY, // [229]
+    NO_ENTRY, // [230]
+    NO_ENTRY, // [231]
+    _P2(_N1, _N4), // [232]
+    NO_ENTRY, // [233]
+    _P2(_N1, _N5), // [234]
+    NO_ENTRY, // [235]
+    NO_ENTRY, // [236]
+    NO_ENTRY, // [237]
+    NO_ENTRY, // [238]
+    NO_ENTRY, // [239]
+    NO_ENTRY, // [240]
+    NO_ENTRY, // [241]
+    NO_ENTRY, // [242]
+    NO_ENTRY, // [243]
+    NO_ENTRY, // [244]
+    NO_ENTRY, // [245]
+    NO_ENTRY, // [246]
+    NO_ENTRY, // [247]
+    NO_ENTRY, // [248]
+    NO_ENTRY, // [249]
+    NO_ENTRY, // [250]
+    NO_ENTRY, // [251]
+    NO_ENTRY, // [252]
+    NO_ENTRY, // [253]
+    NO_ENTRY, // [254]
+    NO_ENTRY // [255]
 };
 
-const uint16_t PROGMEM g_right_punctuations_table[64][MAX_PUNCTUATIONS] =
+const uint16_t PROGMEM g_right_punctuations_table[256][MAX_PUNCTUATIONS] =
 {
-    NO_ENTRY,
-    _P1(_APOS),
-    _P1(_DOT),
-    _P3(_APOS, KC_LEFT, _NOSPC),
-    _P1(_RCBR),
-    _P1(_DQUOT),
-    _P3(_RCBR, KC_LEFT, _NOSPC),
-    _P3(_DQUOT, KC_LEFT, _NOSPC),
-    _P1(_RPRN),
-    _P1(_GRTR),
-    _P3(_RPRN, KC_LEFT, _NOSPC),
-    _P3(_GRTR, KC_LEFT, _NOSPC),
-    _P1(_RBRC),
-    NO_ENTRY,
-    _P3(_RBRC, KC_LEFT, _NOSPC),
-    _P2(KC_SPC, KC_LEFT),
-    _P1(_DOT),
-    _P2(_APOS, _DOT),
-    _P1(_COLN),
-    _P5(_APOS, _DOT, KC_LEFT, KC_LEFT, _NOSPC),
-    _P2(_RCBR, _DOT),
-    _P2(_DQUOT, _DOT),
-    _P5(_RCBR, _DOT, KC_LEFT, KC_LEFT, _NOSPC),
-    _P5(_DQUOT, _DOT, KC_LEFT, KC_LEFT, _NOSPC),
-    _P2(_RPRN, _DOT),
-    _P2(_ASTR, _SLSH),
-    _P5(_RPRN, _DOT, KC_LEFT, KC_LEFT, _NOSPC),
-    _P5(_ASTR, _SLSH, KC_LEFT, KC_LEFT, _NOSPC),
-    _P2(_RBRC, _DOT),
-    NO_ENTRY,
-    _P5(_RBRC, _DOT, KC_LEFT, KC_LEFT, _NOSPC),
-    NO_ENTRY,
-    _P1(_COMM),
-    _P2(_APOS, _COMM),
-    _P1(_EQL),
-    _P5(_APOS, _COMM, KC_LEFT, KC_LEFT, _NOSPC),
-    _P2(_RCBR, _COMM),
-    _P2(_DQUOT, _COMM),
-    _P5(_RCBR, _COMM, KC_LEFT, KC_LEFT, _NOSPC),
-    _P5(_DQUOT, _COMM, KC_LEFT, KC_LEFT, _NOSPC),
-    _P2(_RPRN, _COMM),
-    _P2(_GRTR, _COMM),
-    _P5(_RPRN, _COMM, KC_LEFT, KC_LEFT, _NOSPC),
-    _P5(_GRTR, _COMM, KC_LEFT, KC_LEFT, _NOSPC),
-    _P2(_RBRC, _COMM),
-    NO_ENTRY,
-    _P5(_RBRC, _COMM, KC_LEFT, KC_LEFT, _NOSPC),
-    NO_ENTRY,
-    _P1(_SCLN),
-    _P2(_APOS, _SCLN),
-    _P2(_COLN, _COLN),
-    _P5(_APOS, _SCLN, KC_LEFT, KC_LEFT, _NOSPC),
-    _P2(_RCBR, _SCLN),
-    _P2(_DQUOT, _SCLN),
-    _P5(_RCBR, _SCLN, KC_LEFT, KC_LEFT, _NOSPC),
-    _P5(_DQUOT, _SCLN, KC_LEFT, KC_LEFT, _NOSPC),
-    _P2(_RPRN, _SCLN),
-    NO_ENTRY,
-    _P5(_RPRN, _SCLN, KC_LEFT, KC_LEFT, _NOSPC),
-    NO_ENTRY,
-    _P2(_RBRC, _SCLN),
-    NO_ENTRY,
-    _P5(_RBRC, _SCLN, KC_LEFT, KC_LEFT, _NOSPC),
-    NO_ENTRY
-};
-
-const uint16_t PROGMEM g_numbers[32][MAX_SYMBOLS] =
-{
-    NO_ENTRY,                               // [0]
-    _S1(_N1),                               // [1]
-    _S1(_N2),                               // [2]
-    _S1(_N3),                               // [3]
-    _S1(_N4),                               // [4]
-    _S1(_N5),                               // [5]
-    _S1(_N6),                               // [6]
-    _S1(_N7),                               // [7]
-    _S1(_N8),                               // [8]
-    _S1(_N9),                               // [9]
-    _S2(_N1,_N0),                           // [10]
-    _S2(_N1,_N1),                           // [11]
-    _S2(_N1,_N2),                           // [12]
-    _S2(_N1,_N3),                           // [13]
-    _S2(_N1,_N4),                           // [14]
-    _S2(_N1,_N5),                           // [15]
-    _S1(_N0),                               // [16]
-    _S2(_N1, _N0),                          // [17]
-    _S2(_N2, _N0),                          // [18]
-    _S2(_N3, _N0),                          // [19]
-    _S2(_N4, _N0),                          // [20]
-    _S2(_N5, _N0),                          // [21]
-    _S2(_N6, _N0),                          // [22]
-    _S2(_N7, _N0),                          // [23]
-    _S2(_N8, _N0),                          // [24]
-    _S2(_N9, _N0),                          // [25]
-    _S3(_N1, _N0, _N0),                     // [26]
-    _S3(_N1, _N1, _N0),                     // [27]
-    _S3(_N1, _N2, _N0),                     // [28]
-    _S3(_N1, _N3, _N0),                     // [29]
-    _S3(_N1, _N4, _N0),                     // [30]
-    _S3(_N1, _N5, _N0)                      // [31]
+    NO_ENTRY, // [0]
+    _P1(_APOS), // [1]
+    _P1(_DOT), // [2]
+    _P3(_APOS, KC_LEFT, _NOSPC), // [3]
+    _P1(_RCBR), // [4]
+    _P1(_DQUOT), // [5]
+    _P3(_RCBR, KC_LEFT, _NOSPC), // [6]
+    _P3(_DQUOT, KC_LEFT, _NOSPC), // [7]
+    _P1(_RPRN), // [8]
+    _P1(_GRTR), // [9]
+    _P3(_RPRN, KC_LEFT, _NOSPC), // [10]
+    _P3(_GRTR, KC_LEFT, _NOSPC), // [11]
+    _P1(_RBRC), // [12]
+    NO_ENTRY, // [13]
+    _P3(_RBRC, KC_LEFT, _NOSPC), // [14]
+    _P2(KC_SPC, KC_LEFT), // [15]
+    _P1(_DOT), // [16]
+    _P2(_APOS, _DOT), // [17]
+    _P1(_COLN), // [18]
+    _P5(_APOS, _DOT, KC_LEFT, KC_LEFT, _NOSPC), // [19]
+    _P2(_RCBR, _DOT), // [20]
+    _P2(_DQUOT, _DOT), // [21]
+    _P5(_RCBR, _DOT, KC_LEFT, KC_LEFT, _NOSPC), // [22]
+    _P5(_DQUOT, _DOT, KC_LEFT, KC_LEFT, _NOSPC), // [23]
+    _P2(_RPRN, _DOT), // [24]
+    _P2(_ASTR, _SLSH), // [25]
+    _P5(_RPRN, _DOT, KC_LEFT, KC_LEFT, _NOSPC), // [26]
+    _P5(_ASTR, _SLSH, KC_LEFT, KC_LEFT, _NOSPC), // [27]
+    _P2(_RBRC, _DOT), // [28]
+    NO_ENTRY, // [29]
+    _P5(_RBRC, _DOT, KC_LEFT, KC_LEFT, _NOSPC), // [30]
+    NO_ENTRY, // [31]
+    _P1(_COMM), // [32]
+    _P2(_APOS, _COMM), // [33]
+    _P1(_EQL), // [34]
+    _P5(_APOS, _COMM, KC_LEFT, KC_LEFT, _NOSPC), // [35]
+    _P2(_RCBR, _COMM), // [36]
+    _P2(_DQUOT, _COMM), // [37]
+    _P5(_RCBR, _COMM, KC_LEFT, KC_LEFT, _NOSPC), // [38]
+    _P5(_DQUOT, _COMM, KC_LEFT, KC_LEFT, _NOSPC), // [39]
+    _P2(_RPRN, _COMM), // [40]
+    _P2(_GRTR, _COMM), // [41]
+    _P5(_RPRN, _COMM, KC_LEFT, KC_LEFT, _NOSPC), // [42]
+    _P5(_GRTR, _COMM, KC_LEFT, KC_LEFT, _NOSPC), // [43]
+    _P2(_RBRC, _COMM), // [44]
+    NO_ENTRY, // [45]
+    _P5(_RBRC, _COMM, KC_LEFT, KC_LEFT, _NOSPC), // [46]
+    NO_ENTRY, // [47]
+    _P1(_SCLN), // [48]
+    _P2(_APOS, _SCLN), // [49]
+    _P2(_COLN, _COLN), // [50]
+    _P5(_APOS, _SCLN, KC_LEFT, KC_LEFT, _NOSPC), // [51]
+    _P2(_RCBR, _SCLN), // [52]
+    _P2(_DQUOT, _SCLN), // [53]
+    _P5(_RCBR, _SCLN, KC_LEFT, KC_LEFT, _NOSPC), // [54]
+    _P5(_DQUOT, _SCLN, KC_LEFT, KC_LEFT, _NOSPC), // [55]
+    _P2(_RPRN, _SCLN), // [56]
+    NO_ENTRY, // [57]
+    _P5(_RPRN, _SCLN, KC_LEFT, KC_LEFT, _NOSPC), // [58]
+    NO_ENTRY, // [59]
+    _P2(_RBRC, _SCLN), // [60]
+    NO_ENTRY, // [61]
+    _P5(_RBRC, _SCLN, KC_LEFT, KC_LEFT, _NOSPC), // [62]
+    NO_ENTRY, // [63]
+    _P2(KC_ENT, _NOSPC), // [64]
+    NO_ENTRY, // [65]
+    NO_ENTRY, // [66]
+    NO_ENTRY, // [67]
+    NO_ENTRY, // [68]
+    NO_ENTRY, // [69]
+    _P5(KC_ENT, _RCBR, KC_UP, KC_ENT, _NOSPC), // [70]
+    NO_ENTRY, // [71]
+    NO_ENTRY, // [72]
+    NO_ENTRY, // [73]
+    NO_ENTRY, // [74]
+    NO_ENTRY, // [75]
+    NO_ENTRY, // [76]
+    NO_ENTRY, // [77]
+    NO_ENTRY, // [78]
+    NO_ENTRY, // [79]
+    NO_ENTRY, // [80]
+    NO_ENTRY, // [81]
+    NO_ENTRY, // [82]
+    NO_ENTRY, // [83]
+    NO_ENTRY, // [84]
+    NO_ENTRY, // [85]
+    NO_ENTRY, // [86]
+    NO_ENTRY, // [87]
+    NO_ENTRY, // [88]
+    NO_ENTRY, // [89]
+    NO_ENTRY, // [90]
+    NO_ENTRY, // [91]
+    NO_ENTRY, // [92]
+    NO_ENTRY, // [93]
+    NO_ENTRY, // [94]
+    NO_ENTRY, // [95]
+    NO_ENTRY, // [96]
+    NO_ENTRY, // [97]
+    NO_ENTRY, // [98]
+    NO_ENTRY, // [99]
+    NO_ENTRY, // [100]
+    NO_ENTRY, // [101]
+    NO_ENTRY, // [102]
+    NO_ENTRY, // [103]
+    NO_ENTRY, // [104]
+    NO_ENTRY, // [105]
+    NO_ENTRY, // [106]
+    NO_ENTRY, // [107]
+    NO_ENTRY, // [108]
+    NO_ENTRY, // [109]
+    NO_ENTRY, // [110]
+    NO_ENTRY, // [111]
+    NO_ENTRY, // [112]
+    NO_ENTRY, // [113]
+    NO_ENTRY, // [114]
+    NO_ENTRY, // [115]
+    NO_ENTRY, // [116]
+    NO_ENTRY, // [117]
+    NO_ENTRY, // [118]
+    NO_ENTRY, // [119]
+    NO_ENTRY, // [120]
+    NO_ENTRY, // [121]
+    NO_ENTRY, // [122]
+    NO_ENTRY, // [123]
+    NO_ENTRY, // [124]
+    NO_ENTRY, // [125]
+    NO_ENTRY, // [126]
+    NO_ENTRY, // [127]
+    _P1(_N0), // [128]
+    NO_ENTRY, // [129]
+    _P1(_N1), // [130]
+    NO_ENTRY, // [131]
+    NO_ENTRY, // [132]
+    NO_ENTRY, // [133]
+    NO_ENTRY, // [134]
+    NO_ENTRY, // [135]
+    _P1(_N2), // [136]
+    NO_ENTRY, // [137]
+    _P1(_N3), // [138]
+    NO_ENTRY, // [139]
+    NO_ENTRY, // [140]
+    NO_ENTRY, // [141]
+    NO_ENTRY, // [142]
+    NO_ENTRY, // [143]
+    NO_ENTRY, // [144]
+    NO_ENTRY, // [145]
+    NO_ENTRY, // [146]
+    NO_ENTRY, // [147]
+    NO_ENTRY, // [148]
+    NO_ENTRY, // [149]
+    NO_ENTRY, // [150]
+    NO_ENTRY, // [151]
+    NO_ENTRY, // [152]
+    NO_ENTRY, // [153]
+    NO_ENTRY, // [154]
+    NO_ENTRY, // [155]
+    NO_ENTRY, // [156]
+    NO_ENTRY, // [157]
+    NO_ENTRY, // [158]
+    NO_ENTRY, // [159]
+    _P1(_N4), // [160]
+    NO_ENTRY, // [161]
+    _P1(_N5), // [162]
+    NO_ENTRY, // [163]
+    NO_ENTRY, // [164]
+    NO_ENTRY, // [165]
+    NO_ENTRY, // [166]
+    NO_ENTRY, // [167]
+    _P1(_N6), // [168]
+    NO_ENTRY, // [169]
+    _P1(_N7), // [170]
+    NO_ENTRY, // [171]
+    NO_ENTRY, // [172]
+    NO_ENTRY, // [173]
+    NO_ENTRY, // [174]
+    NO_ENTRY, // [175]
+    NO_ENTRY, // [176]
+    NO_ENTRY, // [177]
+    NO_ENTRY, // [178]
+    NO_ENTRY, // [179]
+    NO_ENTRY, // [180]
+    NO_ENTRY, // [181]
+    NO_ENTRY, // [182]
+    NO_ENTRY, // [183]
+    NO_ENTRY, // [184]
+    NO_ENTRY, // [185]
+    NO_ENTRY, // [186]
+    NO_ENTRY, // [187]
+    NO_ENTRY, // [188]
+    NO_ENTRY, // [189]
+    NO_ENTRY, // [190]
+    NO_ENTRY, // [191]
+    _P1(_N8), // [192]
+    NO_ENTRY, // [193]
+    _P1(_N9), // [194]
+    NO_ENTRY, // [195]
+    NO_ENTRY, // [196]
+    NO_ENTRY, // [197]
+    NO_ENTRY, // [198]
+    NO_ENTRY, // [199]
+    _P2(_N1, _N0), // [200]
+    NO_ENTRY, // [201]
+    _P2(_N1, _N1), // [202]
+    NO_ENTRY, // [203]
+    NO_ENTRY, // [204]
+    NO_ENTRY, // [205]
+    NO_ENTRY, // [206]
+    NO_ENTRY, // [207]
+    NO_ENTRY, // [208]
+    NO_ENTRY, // [209]
+    NO_ENTRY, // [210]
+    NO_ENTRY, // [211]
+    NO_ENTRY, // [212]
+    NO_ENTRY, // [213]
+    NO_ENTRY, // [214]
+    NO_ENTRY, // [215]
+    NO_ENTRY, // [216]
+    NO_ENTRY, // [217]
+    NO_ENTRY, // [218]
+    NO_ENTRY, // [219]
+    NO_ENTRY, // [220]
+    NO_ENTRY, // [221]
+    NO_ENTRY, // [222]
+    NO_ENTRY, // [223]
+    _P2(_N1, _N2), // [224]
+    NO_ENTRY, // [225]
+    _P2(_N1, _N3), // [226]
+    NO_ENTRY, // [227]
+    NO_ENTRY, // [228]
+    NO_ENTRY, // [229]
+    NO_ENTRY, // [230]
+    NO_ENTRY, // [231]
+    _P2(_N1, _N4), // [232]
+    NO_ENTRY, // [233]
+    _P2(_N1, _N5), // [234]
+    NO_ENTRY, // [235]
+    NO_ENTRY, // [236]
+    NO_ENTRY, // [237]
+    NO_ENTRY, // [238]
+    NO_ENTRY, // [239]
+    NO_ENTRY, // [240]
+    NO_ENTRY, // [241]
+    NO_ENTRY, // [242]
+    NO_ENTRY, // [243]
+    NO_ENTRY, // [244]
+    NO_ENTRY, // [245]
+    NO_ENTRY, // [246]
+    NO_ENTRY, // [247]
+    NO_ENTRY, // [248]
+    NO_ENTRY, // [249]
+    NO_ENTRY, // [250]
+    NO_ENTRY, // [251]
+    NO_ENTRY, // [252]
+    NO_ENTRY, // [253]
+    NO_ENTRY, // [254]
+    NO_ENTRY // [255]
 };
 
 const uint16_t PROGMEM g_spaces_ctl_table[4][MAX_SYMBOLS] =
