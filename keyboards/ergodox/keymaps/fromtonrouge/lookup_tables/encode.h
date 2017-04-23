@@ -15,14 +15,15 @@
 #define _S2(c1, c2) {c1, c2, 0}
 #define _S3(c1, c2, c3) {c1, c2, c3}
 
-#define MAX_PUNCTUATIONS 5
-#define _P1(c1) {c1, 0, 0, 0, 0}
-#define _P2(c1, c2) {c1, c2, 0, 0, 0}
-#define _P3(c1, c2, c3) {c1, c2, c3, 0, 0}
-#define _P4(c1, c2, c3, c4) {c1, c2, c3, c4, 0}
-#define _P5(c1, c2, c3, c4, c5) {c1, c2, c3, c4, c5}
+#define MAX_PUNCTUATIONS 4
+#define _P1(c1) {c1, 0, 0, 0}
+#define _P2(c1, c2) {c1, c2, 0, 0}
+#define _P3(c1, c2, c3) {c1, c2, c3, 0}
+#define _P4(c1, c2, c3, c4) {c1, c2, c3, c4}
 
 #define _NOSPC QK_MODS_MAX
+#define _DLEFT_NOSPC QK_MODS_MAX + 1
+#define _ENTABOVE_NOSPC QK_MODS_MAX + 2
 
 #ifdef AZERTY_OS_ENABLE
 

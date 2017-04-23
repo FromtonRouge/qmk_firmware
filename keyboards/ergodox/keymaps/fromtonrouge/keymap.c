@@ -259,14 +259,100 @@ const uint16_t g_special_shift_table[SPECIAL_SHIFT_TABLE_SIZE] =
 #endif
 
 #define MAX_UNDO 100
+
+typedef enum
+{
+    NO_CHANGE,
+    CHARACTER,
+    MOVE_LEFT,
+    MOVE_UP,
+    ENTER
+} change_kind_t;
+
+typedef struct
+{
+    change_kind_t kind  :4;
+    uint8_t count       :6;
+} change_t;
+
+#define MAX_CHANGES 6
 typedef struct 
 {
-    uint8_t inserted_chars_count    :8;
-    uint8_t left_arrow_count        :3;
+    uint8_t change_index            :3;
+    change_t changes[MAX_CHANGES];
 } undo_command_t;
-bool can_undo(undo_command_t undo) { return (undo.inserted_chars_count > 0) || (undo.left_arrow_count > 0);}
+
+void undo_command_add_change(undo_command_t* undo_command, change_kind_t kind)
+{
+    if (undo_command->change_index >= MAX_CHANGES || kind == NO_CHANGE)
+    {
+        return;
+    }
+
+    change_t* current_change = &undo_command->changes[undo_command->change_index];
+    if (current_change->kind == NO_CHANGE || current_change->kind == kind)
+    {
+        current_change->kind = kind;
+        current_change->count++;
+    }
+    else
+    {
+        undo_command->change_index++;
+        undo_command_add_change(undo_command, kind);
+    }
+}
+
+void undo_command_add_change_from_code(undo_command_t* undo_command, uint8_t code)
+{
+    change_kind_t kind = CHARACTER;
+    switch (code)
+    {
+    case KC_END:
+        {
+            kind = NO_CHANGE;
+            break;
+        }
+    case KC_ENT:
+        {
+            kind = ENTER;
+            break;
+        }
+    case KC_LEFT:
+        {
+            kind = MOVE_LEFT;
+            break;
+        }
+    case KC_UP:
+        {
+            kind = MOVE_UP;
+            break;
+        }
+    }
+    undo_command_add_change(undo_command, kind);
+}
+
+uint8_t undo_command_get_changes_count(undo_command_t* undo_command, change_kind_t kind)
+{
+    uint8_t result = 0;
+    for (int i = 0; i < MAX_CHANGES; ++i)
+    {
+        change_kind_t change_kind = undo_command->changes[i].kind;
+        if (change_kind == kind)
+        {
+            result += undo_command->changes[i].count;
+        }
+        else if (change_kind == NO_CHANGE)
+        {
+            break;
+        }
+    }
+    return result;
+}
+
+bool can_undo(undo_command_t* undo_command) { return undo_command->changes[0].kind != NO_CHANGE;}
 undo_command_t g_undo_stack[MAX_UNDO] = { {0} };
 int8_t g_undo_stack_index = 0;
+undo_command_t g_new_undo_command; // Must be global for ErgoDox Infinity to avoid a lock between the two halves
 
 // Steno keymap
 const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
@@ -499,9 +585,12 @@ void stroke(void)
     del_mods(MOD_LSFT|MOD_RSFT);
     bool initial_case_1 = false;
     bool initial_case_2 = false;
-    undo_command_t new_undo_command;
-    new_undo_command.inserted_chars_count = 0;
-    new_undo_command.left_arrow_count = 0;
+    g_new_undo_command.change_index = 0;
+    for (int i = 0; i < MAX_CHANGES; ++i)
+    {
+        g_new_undo_command.changes[i].kind = NO_CHANGE;
+        g_new_undo_command.changes[i].count = 0;
+    }
 
     // Get *, + and case controls info
     const uint8_t special_controls_bits = g_family_bits[FAMILY_SPECIAL_CONTROLS];
@@ -570,14 +659,14 @@ void stroke(void)
                         {
                             register_code(byte);
                             unregister_code(byte);
-                            new_undo_command.inserted_chars_count++;
+                            undo_command_add_change(&g_new_undo_command, CHARACTER);
 
                             // Jackdaw rule: If a 'Q' is detected on the left hand followed by a thumb vowel => add a 'U'
                             if (byte == _Q && thumbs_bits)
                             {
                                 register_code(_U);
                                 unregister_code(_U);
-                                new_undo_command.inserted_chars_count++;
+                                undo_command_add_change(&g_new_undo_command, CHARACTER);
                             }
 
                             // Jackdaw rule: Double the first letter for the right hand only if + is in the stroke
@@ -585,10 +674,11 @@ void stroke(void)
                             {
                                 register_code(byte);
                                 unregister_code(byte);
-                                new_undo_command.inserted_chars_count++;
+                                undo_command_add_change(&g_new_undo_command, CHARACTER);
                             }
 
-                            if ((initial_case_1 && new_undo_command.inserted_chars_count == 1) || (initial_case_2 && new_undo_command.inserted_chars_count == 2))
+                            const uint8_t inserted_characters = undo_command_get_changes_count(&g_new_undo_command, CHARACTER);
+                            if ((initial_case_1 && inserted_characters == 1) || (initial_case_2 && inserted_characters == 2))
                             {
                                 del_mods(MOD_LSFT);
                             }
@@ -618,16 +708,10 @@ void stroke(void)
 
                             unregister_code(code);
 
-                            if (code == KC_LEFT)
-                            {
-                                new_undo_command.left_arrow_count++;
-                            }
-                            else
-                            {
-                                new_undo_command.inserted_chars_count++;
-                            }
+                            undo_command_add_change_from_code(&g_new_undo_command, code);
 
-                            if ((initial_case_1 && new_undo_command.inserted_chars_count == 1) || (initial_case_2 && new_undo_command.inserted_chars_count == 2))
+                            const uint8_t inserted_characters = undo_command_get_changes_count(&g_new_undo_command, CHARACTER);
+                            if ((initial_case_1 && inserted_characters == 1) || (initial_case_2 && inserted_characters == 2))
                             {
                                 del_mods(MOD_LSFT);
                             }
@@ -647,24 +731,50 @@ void stroke(void)
                         const uint16_t word = pgm_read_word(&(punctuations_table[family_bits][code_pos]));
                         if (word)
                         {
-                            if (word == _NOSPC)
+                            uint8_t specific_sequence[5] = {0};
+                            switch (word)
                             {
-                                no_space_code_detected = true;
+                            case _NOSPC:
+                                {
+                                    no_space_code_detected = true;
+                                    break;
+                                }
+                            case _DLEFT_NOSPC:
+                                {
+                                    specific_sequence[0] = KC_LEFT;
+                                    specific_sequence[1] = KC_LEFT;
+                                    no_space_code_detected = true;
+                                    break;
+                                }
+                            case _ENTABOVE_NOSPC:
+                                {
+                                    specific_sequence[0] = KC_UP;
+                                    specific_sequence[1] = KC_END;
+                                    specific_sequence[2] = KC_ENT;
+                                    no_space_code_detected = true;
+                                    break;
+                                }
+                            default:
+                                {
+                                    const uint8_t code = (uint8_t)word;
+                                    send_mods_and_code(word >> 8, code);
+                                    unregister_code(code);
+                                    undo_command_add_change_from_code(&g_new_undo_command, code);
+                                    break;
+                                }
                             }
-                            else
-                            {
-                                const uint8_t code = (uint8_t)word;
-                                send_mods_and_code(word >> 8, code);
-                                unregister_code(code);
 
-                                if (code == KC_LEFT)
+                            // Specific key sequence if any
+                            for (int i = 0; i < 5; ++i)
+                            {
+                                const uint8_t code = specific_sequence[i];
+                                if (code == 0)
                                 {
-                                    new_undo_command.left_arrow_count++;
+                                    break;
                                 }
-                                else
-                                {
-                                    new_undo_command.inserted_chars_count++;
-                                }
+                                register_code(code);
+                                unregister_code(code);
+                                undo_command_add_change_from_code(&g_new_undo_command, code);
                             }
                         }
                         else
@@ -679,15 +789,16 @@ void stroke(void)
     }
 
     // Send automatically a space after a stroke or send explicitely when SC_MSPC is the only pressed key
-    const bool send_space = (new_undo_command.inserted_chars_count > 0 && !has_meta_space) || (new_undo_command.inserted_chars_count == 0 && has_meta_space && !has_star);
+    const uint8_t inserted_characters = undo_command_get_changes_count(&g_new_undo_command, CHARACTER);
+    const bool send_space = (inserted_characters > 0 && !has_meta_space) || (inserted_characters == 0 && has_meta_space && !has_star);
     if (send_space && !no_space_code_detected)
     {
         register_code(KC_SPC);
         unregister_code(KC_SPC);
-        new_undo_command.inserted_chars_count++;
+        undo_command_add_change(&g_new_undo_command, CHARACTER);
     }
 
-    if (can_undo(new_undo_command))
+    if (can_undo(&g_new_undo_command))
     {
         // Undo history
         if (g_undo_stack_index == MAX_UNDO)
@@ -695,7 +806,7 @@ void stroke(void)
             g_undo_stack_index = 0;
         }
 
-        g_undo_stack[g_undo_stack_index++] = new_undo_command;
+        g_undo_stack[g_undo_stack_index++] = g_new_undo_command;
     }
     else if (has_star)
     {
@@ -707,7 +818,7 @@ void stroke(void)
         }
 
         // Check if we have data to undo at previous_index
-        undo_command_t previous_undo_command = g_undo_stack[previous_index];
+        undo_command_t* previous_undo_command = &g_undo_stack[previous_index];
         if (can_undo(previous_undo_command))
         {
             if (has_meta_space)
@@ -715,38 +826,64 @@ void stroke(void)
                 // Metaspace becomes a Backspace
                 register_code(KC_BSPC);
                 unregister_code(KC_BSPC);
-                g_undo_stack[previous_index].inserted_chars_count--; // Patch chars to delete for the next undo
+                
+                // Patch chars to delete for the next undo
+                for (int i = previous_undo_command->change_index; i >= 0; --i)
+                {
+                    if (previous_undo_command->changes[i].kind == CHARACTER)
+                    {
+                        previous_undo_command->changes[i].count--;
+                        break;
+                    }
+                }
 
                 // If there is no more data to remove at previous_index we can go to the previous stroke undo data 
-                if (g_undo_stack[previous_index].inserted_chars_count == 0)
+                const uint8_t inserted_characters = undo_command_get_changes_count(&g_undo_stack[previous_index], CHARACTER);
+                if (inserted_characters == 0)
                 {
                     g_undo_stack_index = previous_index;
                 }
             }
             else if (undo_allowed)
             {
-                // Undo motion commands first (only left arrow at the moment)
-                if (previous_undo_command.left_arrow_count)
+                // Parse changes in reverse order and undo them
+                for (int i = previous_undo_command->change_index; i >= 0; --i)
                 {
-                    for (uint8_t i = 0; i < previous_undo_command.left_arrow_count; ++i)
+                    change_t* change = &previous_undo_command->changes[i];
+                    for (int j = 0; j < change->count; ++j)
                     {
-                        register_code(KC_RIGHT);
-                        unregister_code(KC_RIGHT);
+                        switch (change->kind)
+                        {
+                        case CHARACTER:
+                            {
+                                register_code(KC_BSPC);
+                                unregister_code(KC_BSPC);
+                                break;
+                            }
+                        case MOVE_LEFT:
+                            {
+                                register_code(KC_RIGHT);
+                                unregister_code(KC_RIGHT);
+                                break;
+                            }
+                        case ENTER:
+                            {
+                                register_code(KC_UP);
+                                unregister_code(KC_UP);
+                                register_code(KC_END);
+                                unregister_code(KC_END);
+                                register_code(KC_DEL);
+                                unregister_code(KC_DEL);
+                                break;
+                            }
+                        case MOVE_UP:
+                            {
+                                register_code(KC_DOWN);
+                                unregister_code(KC_DOWN);
+                                break;
+                            }
+                        }
                     }
-
-                    g_undo_stack[previous_index].left_arrow_count = 0;
-                }
-
-                // Undo inserted characters
-                if (previous_undo_command.inserted_chars_count)
-                {
-                    for (uint8_t i = 0; i < previous_undo_command.inserted_chars_count; ++i)
-                    {
-                        register_code(KC_BSPC);
-                        unregister_code(KC_BSPC);
-                    }
-
-                    g_undo_stack[previous_index].inserted_chars_count = 0;
                 }
 
                 g_undo_stack_index = previous_index;
