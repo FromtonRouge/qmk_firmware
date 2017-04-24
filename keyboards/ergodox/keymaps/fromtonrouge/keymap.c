@@ -731,6 +731,7 @@ void stroke(void)
                         const uint16_t word = pgm_read_word(&(punctuations_table[family_bits][code_pos]));
                         if (word)
                         {
+                            // TODO: Use another table for specific key sequences
                             uint8_t specific_sequence[5] = {0};
                             switch (word)
                             {
@@ -743,6 +744,12 @@ void stroke(void)
                                 {
                                     specific_sequence[0] = KC_LEFT;
                                     specific_sequence[1] = KC_LEFT;
+                                    no_space_code_detected = true;
+                                    break;
+                                }
+                            case _ENT_NOSPC:
+                                {
+                                    specific_sequence[0] = KC_ENT;
                                     no_space_code_detected = true;
                                     break;
                                 }

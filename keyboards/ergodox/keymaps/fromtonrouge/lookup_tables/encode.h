@@ -21,9 +21,13 @@
 #define _P3(c1, c2, c3) {c1, c2, c3, 0}
 #define _P4(c1, c2, c3, c4) {c1, c2, c3, c4}
 
-#define _NOSPC QK_MODS_MAX
-#define _DLEFT_NOSPC QK_MODS_MAX + 1
-#define _ENTABOVE_NOSPC QK_MODS_MAX + 2
+enum
+{
+    _NOSPC = QK_MODS_MAX,
+    _DLEFT_NOSPC,
+    _ENT_NOSPC,
+    _ENTABOVE_NOSPC
+};
 
 #ifdef AZERTY_OS_ENABLE
 
