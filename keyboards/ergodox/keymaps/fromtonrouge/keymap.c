@@ -127,8 +127,6 @@ enum key_family
 #define USRR_4  (4 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRR_5  (5 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 
-#define CONVERT_TO_NUMBERS_BITS(hand_bits) ((((((hand_bits & 0xE0) >> 1) | (hand_bits & 0xF)) & 0x78) >> 1 | (hand_bits & 0x3)) >> 1)
-
 // Table to convert family id to bit offset
 const uint8_t g_family_to_bit_offset[NB_FAMILY] =
 {
@@ -732,11 +730,24 @@ void stroke(void)
                         if (word)
                         {
                             // TODO: Use another table for specific key sequences
-                            uint8_t specific_sequence[5] = {0};
+                            uint16_t specific_sequence[5] = {0};
                             switch (word)
                             {
                             case _NOSPC:
                                 {
+                                    no_space_code_detected = true;
+                                    break;
+                                }
+                            case _DEL_NOSPC:
+                                {
+                                    specific_sequence[0] = KC_DEL;
+                                    no_space_code_detected = true;
+                                    break;
+                                }
+                            case _DELWORD_NOSPC:
+                                {
+                                    specific_sequence[0] = LCTL(LSFT(KC_LEFT));
+                                    specific_sequence[1] = KC_BSPC;
                                     no_space_code_detected = true;
                                     break;
                                 }
@@ -774,12 +785,13 @@ void stroke(void)
                             // Specific key sequence if any
                             for (int i = 0; i < 5; ++i)
                             {
-                                const uint8_t code = specific_sequence[i];
-                                if (code == 0)
+                                const uint16_t word = specific_sequence[i];
+                                if (word == 0)
                                 {
                                     break;
                                 }
-                                register_code(code);
+                                const uint8_t code = (uint8_t)word;
+                                send_mods_and_code(word >> 8, code);
                                 unregister_code(code);
                                 undo_command_add_change_from_code(&g_new_undo_command, code);
                             }
@@ -875,10 +887,15 @@ void stroke(void)
                             }
                         case ENTER:
                             {
+                                // We use SHIFT to select text. We have to do this for text editors
+                                // that autoindent text. Vim users needs to add : 'behave mswin' in their .vimrc file
+                                register_code(KC_LSFT);
                                 register_code(KC_UP);
                                 unregister_code(KC_UP);
                                 register_code(KC_END);
                                 unregister_code(KC_END);
+                                unregister_code(KC_LSFT);
+
                                 register_code(KC_DEL);
                                 unregister_code(KC_DEL);
                                 break;

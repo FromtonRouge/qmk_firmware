@@ -24,6 +24,8 @@
 enum
 {
     _NOSPC = QK_MODS_MAX,
+    _DEL_NOSPC,
+    _DELWORD_NOSPC,
     _DLEFT_NOSPC,
     _ENT_NOSPC,
     _ENTABOVE_NOSPC
