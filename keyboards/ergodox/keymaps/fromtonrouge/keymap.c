@@ -192,13 +192,13 @@ void* g_all_tables[NB_FAMILY] =
     0,
     0,
     0,
-    g_left_user_symbols_table,
-    g_left_hand_table,
-    g_thumbs_table,
-    g_right_hand_table,
-    g_right_pinky_table,
-    g_right_user_symbols_table,
-    g_spaces_ctl_table
+    (void*)g_left_user_symbols_table,
+    (void*)g_left_hand_table,
+    (void*)g_thumbs_table,
+    (void*)g_right_hand_table,
+    (void*)g_right_pinky_table,
+    (void*)g_right_user_symbols_table,
+    (void*)g_spaces_ctl_table
 };
 
 // For the Programmer Colemak layout
@@ -623,14 +623,14 @@ void stroke(void)
         {
             if (has_star)
             {
-                any_table = g_thumbs_bigrams_table;
+                any_table = (void*)g_thumbs_bigrams_table;
             }
         }
         else if (family_id == FAMILY_LEFT_HAND)
         {
             if (!thumbs_bits && has_star)
             {
-                any_table = g_left_punctuations_table;
+                any_table = (void*)g_left_punctuations_table;
                 kind = KIND_PUNCTUATIONS;
             }
         }
@@ -638,7 +638,7 @@ void stroke(void)
         {
             if (!thumbs_bits && has_star)
             {
-                any_table = g_right_punctuations_table;
+                any_table = (void*)g_right_punctuations_table;
                 kind = KIND_PUNCTUATIONS;
             }
         }
@@ -906,6 +906,10 @@ void stroke(void)
                                 unregister_code(KC_DOWN);
                                 break;
                             }
+						default:
+							{
+								break;
+							}
                         }
                     }
                 }
