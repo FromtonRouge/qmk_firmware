@@ -22,21 +22,19 @@
     #define LAYER_FN 2
 #endif
 
-// Macro indexes
-#define STENO 0
-#ifdef PROGRAMMER_COLEMAK_ENABLE
-    #define GO_SFT 1
-    #define SP_SFT 2
-    #ifdef AZERTY_OS_ENABLE
-        #define CIRC 3
-    #endif
-#endif
-
 #ifdef SUBPROJECT_infinity
 #ifndef pgm_read_dword
 #define pgm_read_dword(addr) (*(const unsigned long *)(addr))
 #endif
 #endif
+
+enum custom_keycodes
+{
+    CKC_STENO = SAFE_RANGE,
+    CKC_SFT,    // Custom shift
+    CKC_SFUN,   // Shift function
+    CKC_CIRC
+};
 
 // Keys family
 enum key_family
@@ -386,7 +384,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _AMP,           _LBRC,      _LCBR,      _RCBR,      _LPRN,      _EQL,           KC_LGUI,
         _DLR,           _Q,         _W,         _F,         _P,         _G,             KC_INS,
         KC_TAB,         _A,         _R,         _S,         _T,         _D,  
-        M(GO_SFT),      _Z,         _X,         _C,         _V,         _B,             KC_ESC,
+        CKC_SFT,         _Z,         _X,         _C,         _V,         _B,             KC_ESC,
         KC_LCTL,        _AMP,       KC_LALT,    KC_UP,      KC_DOWN,    
                                                                                     MO(LAYER_FN),       TG(LAYER_FN),
                                                                                                         KC_PSCR,
@@ -399,7 +397,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     TG(LAYER_STENO),    _ASTR,      _RPRN,      _PLUS,      _RBRC,      _EXLM,    _HASH,
                     KC_BSPC,            _J,         _L,         _U,         _Y,         _SCLN,    _SLSH,
                                         _H,         _N,         _E,         _I,         _O,       _MINS,
-                    KC_ENT,             _K,         _M,         _COMM,      _DOT,       _APOS,    M(GO_SFT),  
+                    KC_ENT,             _K,         _M,         _COMM,      _DOT,       _APOS,    CKC_SFT,  
                                                     KC_LEFT,    KC_RIGHT,   _BSLS,      _AT,      KC_RCTL,
         TG(LAYER_FN),   MO(LAYER_FN),
         KC_NO,
@@ -435,26 +433,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 // STENO LAYER
-#define ST_ON M(STENO)
 [LAYER_STENO] = KEYMAP(
         // left hand
         KC_F1,        KC_F2,      KC_F3,      KC_F4,      KC_F5,      KC_F6,        KC_BSPC,
-        KC_LALT,      KC_TAB,     ST_ON,      ST_ON,      ST_ON,      ST_ON,        ST_ON,
-        KC_LCTL,      ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,   
-        ST_ON,        ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,        ST_ON,
-        ST_ON,        ST_ON,      ST_ON,      KC_TRNS,    KC_TRNS,
-                                                                                        ST_ON,    ST_ON,
-                                                                                                  ST_ON,
-                                                                            ST_ON,      ST_ON,    ST_ON,
+        KC_LALT,      KC_TAB,     CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
+        KC_LCTL,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,   
+        CKC_STENO,    CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
+        CKC_STENO,    CKC_STENO,  CKC_STENO,      KC_TRNS,    KC_TRNS,
+                                                                                    CKC_STENO,    CKC_STENO,
+                                                                                                  CKC_STENO,
+                                                                        CKC_STENO,  CKC_STENO,    CKC_STENO,
         // right hand
                     KC_TRNS,        KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_F11,     KC_F12,
-                    ST_ON,          ST_ON,      ST_ON,      ST_ON,      ST_ON,      KC_DEL,     KC_RALT,
-                                    ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,      KC_RCTL,   
-                    ST_ON,          ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,      ST_ON,   
-                                                KC_TRNS,    KC_TRNS,    ST_ON,      ST_ON,      ST_ON,
-        ST_ON,    ST_ON,
-        ST_ON,
-        ST_ON,    ST_ON,    ST_ON 
+                    CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_DEL,     KC_RALT,
+                                    CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_RCTL,   
+                    CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,   
+                                                KC_TRNS,    KC_TRNS,    CKC_STENO,  CKC_STENO,  CKC_STENO,
+        CKC_STENO,    CKC_STENO,
+        CKC_STENO,
+        CKC_STENO,    CKC_STENO,    CKC_STENO 
 ),
 
 #ifdef PROGRAMMER_COLEMAK_ENABLE
@@ -462,7 +459,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // PROGRAMMER COLEMAK SHIFTED LAYER (for AZERTY OS)
 [LAYER_SHIFT_COLEMAK] = KEYMAP(
         FR_UGRV,        KC_7,       KC_5,       KC_3,       KC_1,       KC_9,           KC_TRNS,
-        M(SP_SFT),      KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
+        CKC_SFUN,       KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
         KC_TRNS,        FR_UGRV,    KC_TRNS,    KC_TRNS,    KC_TRNS,
@@ -470,11 +467,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     KC_TRNS,
                                                                             KC_TRNS,    KC_TRNS,    KC_TRNS,
     // right hand
-                    KC_NO,          KC_0,       KC_2,       KC_4,           KC_6,           KC_8,           M(SP_SFT),
-                    KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        M(SP_SFT),      FR_COMM,
-                                    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,        M(SP_SFT),   
-                    KC_TRNS,        KC_TRNS,    KC_TRNS,    M(SP_SFT),      M(SP_SFT),      M(SP_SFT),      KC_TRNS,
-                                                KC_TRNS,    KC_TRNS,        M(SP_SFT),      M(SP_SFT),      KC_TRNS,
+                    KC_NO,          KC_0,       KC_2,       KC_4,           KC_6,           KC_8,           CKC_SFUN,
+                    KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        CKC_SFUN,       FR_COMM,
+                                    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,        CKC_SFUN,
+                    KC_TRNS,        KC_TRNS,    KC_TRNS,    CKC_SFUN,       CKC_SFUN,       CKC_SFUN,         KC_TRNS,
+                                                KC_TRNS,    KC_TRNS,        CKC_SFUN,       CKC_SFUN,         KC_TRNS,
         KC_TRNS,    KC_TRNS,
         KC_TRNS,
         KC_TRNS,    KC_TRNS,    KC_TRNS
@@ -494,7 +491,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        // right hand
                     KC_NO,          KC_NO,      KC_NO,      KC_NO,      KC_NO,          KC_NO,      KC_NO,
                     KC_NO,          KC_NO,      KC_NO,      FR_UGRV,    KC_NO,          LSFT(KC_LBRC),    KC_NO,  
-                                    KC_7,       KC_2,       M(CIRC),    M(CIRC),        M(CIRC),    KC_NO,  
+                                    KC_7,       KC_2,       CKC_CIRC,   CKC_CIRC,       CKC_CIRC,   KC_NO,  
                     KC_NO,          KC_NO,      KC_NO,      KC_NO,      KC_NO,          KC_NO,      KC_NO,
                                                 KC_NO,      KC_NO,      KC_NO,          KC_NO,      KC_NO,  
         KC_NO,      KC_NO,  
@@ -505,7 +502,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #else
 // PROGRAMMER COLEMAK SHIFTED LAYER (for QWERTY OS)
 [LAYER_SHIFT_COLEMAK] = KEYMAP(
-        KC_TRNS,        M(SP_SFT),  M(SP_SFT),  M(SP_SFT),  M(SP_SFT),  M(SP_SFT),      KC_5,
+        KC_TRNS,        CKC_SFUN,   CKC_SFUN,   CKC_SFUN,   CKC_SFUN,   CKC_SFUN,       KC_5,
         KC_GRV,         KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
@@ -514,11 +511,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     KC_TRNS,
                                                                             KC_TRNS,    KC_TRNS,    KC_TRNS,
     // right hand
-                    KC_TRNS,        M(SP_SFT),  M(SP_SFT),  M(SP_SFT),      M(SP_SFT),      M(SP_SFT),      M(SP_SFT),
+                    KC_TRNS,        CKC_SFUN,   CKC_SFUN,   CKC_SFUN,       CKC_SFUN,       CKC_SFUN,       CKC_SFUN,
                     KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,        KC_TRNS,
                                     KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,        KC_TRNS,   
                     KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,        KC_TRNS,
-                                                KC_TRNS,    KC_TRNS,        KC_TRNS,        M(SP_SFT),      KC_TRNS,
+                                                KC_TRNS,    KC_TRNS,        KC_TRNS,        CKC_SFUN,       KC_TRNS,
         KC_TRNS,    KC_TRNS,
         KC_TRNS,
         KC_TRNS,    KC_TRNS,    KC_TRNS
@@ -529,14 +526,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // F1-F12 Layer
 [LAYER_FN] = KEYMAP(
        // left hand
-        KC_F1,          KC_F2,      KC_F3,      KC_F4,      KC_F5,          KC_F6,          KC_NO,
+        KC_F1,          KC_F2,      KC_F3,      KC_F4,      KC_F5,          KC_F6,          RESET,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
         KC_LSFT,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_PGUP,    KC_PGDN,
                                                                                         KC_TRNS,    KC_TRNS,
                                                                                                     KC_TRNS,
-                                                                            KC_TRNS,    KC_TRNS,    RESET,
+                                                                            KC_TRNS,    KC_TRNS,    KC_TRNS,
        // right hand
                     KC_NO,          KC_F7,      KC_F8,      KC_F9,      KC_F10,         KC_F11,     KC_F12,
                     KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_TRNS,
@@ -545,7 +542,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 KC_HOME,    KC_END,     KC_TRNS,        KC_TRNS,    KC_TRNS,
         KC_TRNS,    KC_TRNS,
         KC_TRNS,
-        RESET,    KC_TRNS,    KC_TRNS
+        KC_TRNS,    KC_TRNS,    KC_TRNS
 ),
 
 };
@@ -906,10 +903,10 @@ void stroke(void)
                                 unregister_code(KC_DOWN);
                                 break;
                             }
-						default:
-							{
-								break;
-							}
+                        default:
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -935,11 +932,11 @@ void stroke(void)
     }
 }
 
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t opt)
+bool process_record_user(uint16_t keycode, keyrecord_t* record)
 {
-    switch (macroId)
+    switch (keycode)
     {
-    case STENO:
+    case CKC_STENO:
         {
             const uint32_t dword = pgm_read_dword(&(g_steno_keymap[record->event.key.row][record->event.key.col]));
             if (dword & STENO_BIT)
@@ -974,10 +971,10 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
                     }
                 }
             }
-            break;
+            return false;
         }
 #ifdef PROGRAMMER_COLEMAK_ENABLE
-    case GO_SFT: // Apply SHIFT and go to LAYER_SHIFT_COLEMAK
+    case CKC_SFT: // Apply SHIFT and go to LAYER_SHIFT_COLEMAK
         {
             const uint8_t shift_key = record->event.key.row == 0 ? KC_LSFT : KC_RSFT;
             if (record->event.pressed)
@@ -990,9 +987,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
                 unregister_code(shift_key);
                 layer_off(LAYER_SHIFT_COLEMAK);
             }
-            break;
+            return false;
         }
-    case SP_SFT: // Handle special shift codes for the Programmer Colemak layout
+    case CKC_SFUN: // Handle special shift codes for the Programmer Colemak layout
         {
             const uint16_t keycode = keymap_key_to_keycode(LAYER_BASE , record->event.key);
             const uint16_t special_shift_code = g_special_shift_table[keycode % SPECIAL_SHIFT_TABLE_SIZE];
@@ -1005,10 +1002,10 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
             {
                 unregister_code(code);
             }
-            break;
+            return false;
         }
 #ifdef AZERTY_OS_ENABLE
-    case CIRC:
+    case CKC_CIRC:
         {
             if (record->event.pressed)
             {
@@ -1018,16 +1015,17 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t macroId, uint8_t op
                 register_code(keycode);
                 unregister_code(keycode);
             }
-            break;
+            return false;
         }
 #endif
 #endif
+    default:
+        {
+            break;
+        }
     }
-    return MACRO_NONE;
+    return true;
 }
-
-// Runs just one time when the keyboard initializes.
-void matrix_init_user(void) {}
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void)
