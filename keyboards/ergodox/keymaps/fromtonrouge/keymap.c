@@ -133,13 +133,40 @@ const uint8_t g_family_to_bit_offset[NB_FAMILY] =
 };
 
 // A lookup table can stores letters (8 bits) or symbols (16 bits)
-enum kind_table
+typedef enum
 {
     KIND_UNKNOWN,
     KIND_LETTERS,
     KIND_SYMBOLS,
     KIND_PUNCTUATIONS
-};
+} kind_table_t;
+
+typedef struct
+{
+    kind_table_t kind;
+    uint16_t keycode;
+} stroke_element_t;
+
+#define MAX_STROKE_BUFFER 64
+stroke_element_t g_stroke_buffer[MAX_STROKE_BUFFER] = {{0}};
+uint8_t g_stroke_buffer_count = 0;
+
+void stroke_init_buffer(void)
+{
+    g_stroke_buffer_count = 0;
+    for (uint8_t i = 0; i < MAX_STROKE_BUFFER; ++i)
+    {
+        g_stroke_buffer[i].kind = KIND_UNKNOWN;
+        g_stroke_buffer[i].keycode = 0;
+    }
+}
+
+void stroke_add_element(kind_table_t kind, uint16_t keycode)
+{
+    g_stroke_buffer[g_stroke_buffer_count].kind = kind;
+    g_stroke_buffer[g_stroke_buffer_count].keycode = keycode;
+    g_stroke_buffer_count++;
+}
 
 const uint8_t g_family_to_kind_table[NB_FAMILY] =
 {
@@ -290,7 +317,7 @@ void undo_command_add_change(undo_command_t* undo_command, change_kind_t kind)
     }
 }
 
-void undo_command_add_change_from_code(undo_command_t* undo_command, uint8_t code)
+change_kind_t undo_command_add_change_from_code(undo_command_t* undo_command, uint8_t code)
 {
     change_kind_t kind = CHARACTER;
     switch (code)
@@ -317,6 +344,7 @@ void undo_command_add_change_from_code(undo_command_t* undo_command, uint8_t cod
         }
     }
     undo_command_add_change(undo_command, kind);
+    return kind;
 }
 
 uint8_t undo_command_get_changes_count(undo_command_t* undo_command, change_kind_t kind)
@@ -567,11 +595,14 @@ bool is_letter(uint8_t code)
 
 void stroke(void)
 {
+    // Init stroke buffer
+    stroke_init_buffer();
+    
     // Send characters for each key family
     const uint8_t original_mods = get_mods();
     del_mods(MOD_LSFT|MOD_RSFT);
+
     bool initial_case_1 = false;
-    bool initial_case_2 = false;
     g_new_undo_command.change_index = 0;
     for (int i = 0; i < MAX_CHANGES; ++i)
     {
@@ -589,13 +620,11 @@ void stroke(void)
     if (case_controls_bits)
     {
         initial_case_1 = case_controls_bits == 2;
-        initial_case_2 = case_controls_bits == 3;
         add_mods(MOD_LSFT);
     }
 
-    // Evaluate stroke
+    // Build stroke (but we don't send it yet)
     bool undo_allowed = true;
-    bool no_space_code_detected = false;
     for (int family_id = 0; family_id < NB_FAMILY; ++family_id)
     {
         uint8_t family_bits = g_family_bits[family_id];
@@ -644,31 +673,23 @@ void stroke(void)
                         const uint8_t byte = pgm_read_byte(&(letters_table[family_bits][code_pos]));
                         if (byte)
                         {
-                            register_code(byte);
-                            unregister_code(byte);
-                            undo_command_add_change(&g_new_undo_command, CHARACTER);
+                            stroke_add_element(kind, byte);
 
                             // Jackdaw rule: If a 'Q' is detected on the left hand followed by a thumb vowel => add a 'U'
                             if (byte == _Q && thumbs_bits)
                             {
-                                register_code(_U);
-                                unregister_code(_U);
-                                undo_command_add_change(&g_new_undo_command, CHARACTER);
+                                stroke_add_element(kind, _U);
                             }
 
                             // Jackdaw rule: Double the first letter for the right hand only if + is in the stroke
                             if (has_plus && (family_id == FAMILY_RIGHT_HAND) && !code_pos)
                             {
-                                register_code(byte);
-                                unregister_code(byte);
-                                undo_command_add_change(&g_new_undo_command, CHARACTER);
+                                stroke_add_element(kind, byte);
                             }
-
-                            const uint8_t inserted_characters = undo_command_get_changes_count(&g_new_undo_command, CHARACTER);
-                            if ((initial_case_1 && inserted_characters == 1) || (initial_case_2 && inserted_characters == 2))
-                            {
-                                del_mods(MOD_LSFT);
-                            }
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                     break;
@@ -682,26 +703,7 @@ void stroke(void)
                         const uint16_t word = pgm_read_word(&(symbols_table[family_bits][code_pos]));
                         if (word)
                         {
-                            const uint8_t code = (uint8_t)word;
-                            if (is_letter(code))
-                            {
-                                // By doing this the shift mod can be applied on letter code
-                                register_code(code);
-                            }
-                            else
-                            {
-                                send_mods_and_code(word >> 8, code);
-                            }
-
-                            unregister_code(code);
-
-                            undo_command_add_change_from_code(&g_new_undo_command, code);
-
-                            const uint8_t inserted_characters = undo_command_get_changes_count(&g_new_undo_command, CHARACTER);
-                            if ((initial_case_1 && inserted_characters == 1) || (initial_case_2 && inserted_characters == 2))
-                            {
-                                del_mods(MOD_LSFT);
-                            }
+                            stroke_add_element(kind, word);
                         }
                         else
                         {
@@ -718,72 +720,7 @@ void stroke(void)
                         const uint16_t word = pgm_read_word(&(punctuations_table[family_bits][code_pos]));
                         if (word)
                         {
-                            // TODO: Use another table for specific key sequences
-                            uint16_t specific_sequence[5] = {0};
-                            switch (word)
-                            {
-                            case CKC_NOSPC:
-                                {
-                                    no_space_code_detected = true;
-                                    break;
-                                }
-                            case CKC_DEL_NOSPC:
-                                {
-                                    specific_sequence[0] = KC_DEL;
-                                    no_space_code_detected = true;
-                                    break;
-                                }
-                            case CKC_DELWORD_NOSPC:
-                                {
-                                    specific_sequence[0] = LCTL(LSFT(KC_LEFT));
-                                    specific_sequence[1] = KC_BSPC;
-                                    no_space_code_detected = true;
-                                    break;
-                                }
-                            case CKC_DLEFT_NOSPC:
-                                {
-                                    specific_sequence[0] = KC_LEFT;
-                                    specific_sequence[1] = KC_LEFT;
-                                    no_space_code_detected = true;
-                                    break;
-                                }
-                            case CKC_ENT_NOSPC:
-                                {
-                                    specific_sequence[0] = KC_ENT;
-                                    no_space_code_detected = true;
-                                    break;
-                                }
-                            case CKC_ENTABOVE_NOSPC:
-                                {
-                                    specific_sequence[0] = KC_UP;
-                                    specific_sequence[1] = KC_END;
-                                    specific_sequence[2] = KC_ENT;
-                                    no_space_code_detected = true;
-                                    break;
-                                }
-                            default:
-                                {
-                                    const uint8_t code = (uint8_t)word;
-                                    send_mods_and_code(word >> 8, code);
-                                    unregister_code(code);
-                                    undo_command_add_change_from_code(&g_new_undo_command, code);
-                                    break;
-                                }
-                            }
-
-                            // Specific key sequence if any
-                            for (int i = 0; i < 5; ++i)
-                            {
-                                const uint16_t word = specific_sequence[i];
-                                if (word == 0)
-                                {
-                                    break;
-                                }
-                                const uint8_t code = (uint8_t)word;
-                                send_mods_and_code(word >> 8, code);
-                                unregister_code(code);
-                                undo_command_add_change_from_code(&g_new_undo_command, code);
-                            }
+                            stroke_add_element(kind, word);
                         }
                         else
                         {
@@ -792,18 +729,124 @@ void stroke(void)
                     }
                     break;
                 }
+            default:
+                {
+                    break;
+                }
             }
         }
     }
 
-    // Send automatically a space after a stroke or send explicitely when SC_MSPC is the only pressed key
-    const uint8_t inserted_characters = undo_command_get_changes_count(&g_new_undo_command, CHARACTER);
-    const bool send_space = (inserted_characters > 0 && !has_meta_space) || (inserted_characters == 0 && has_meta_space && !has_star);
-    if (send_space && !no_space_code_detected)
+    // Check if we can send the separator (space, underscore...) before the stroke
+    if ((g_stroke_buffer_count && !has_meta_space) || (!g_stroke_buffer_count && has_meta_space && !has_star))
     {
         register_code(KC_SPC);
         unregister_code(KC_SPC);
         undo_command_add_change(&g_new_undo_command, CHARACTER);
+    }
+
+    // Send stroke buffer
+    uint8_t inserted_characters = 0;
+    for (uint8_t i = 0; i < g_stroke_buffer_count; ++i)
+    {
+        stroke_element_t* stroke_element = &g_stroke_buffer[i];
+        switch (stroke_element->kind)
+        {
+        case KIND_LETTERS:
+            {
+                register_code(stroke_element->keycode);
+                unregister_code(stroke_element->keycode);
+                undo_command_add_change(&g_new_undo_command, CHARACTER);
+                inserted_characters++;
+                break;
+            }
+        case KIND_SYMBOLS:
+            {
+                const uint8_t code = (uint8_t)stroke_element->keycode;
+                if (is_letter(code))
+                {
+                    // By doing this the shift mod can be applied on letter code
+                    register_code(code);
+                }
+                else
+                {
+                    send_mods_and_code(stroke_element->keycode >> 8, code);
+                }
+                unregister_code(code);
+                if (undo_command_add_change_from_code(&g_new_undo_command, code) == CHARACTER)
+                {
+                    inserted_characters++;
+                }
+                break;
+            }
+        case KIND_PUNCTUATIONS:
+            {
+                // TODO: Use another table for specific key sequences
+                uint16_t specific_sequence[5] = {0};
+                uint16_t word = stroke_element->keycode;
+                switch (word)
+                {
+                case CKC_DELWORD:
+                    {
+                        specific_sequence[0] = LCTL(LSFT(KC_LEFT));
+                        specific_sequence[1] = KC_BSPC;
+                        break;
+                    }
+                case CKC_DLEFT:
+                    {
+                        specific_sequence[0] = KC_LEFT;
+                        specific_sequence[1] = KC_LEFT;
+                        break;
+                    }
+                case CKC_ENTABOVE:
+                    {
+                        specific_sequence[0] = KC_UP;
+                        specific_sequence[1] = KC_END;
+                        specific_sequence[2] = KC_ENT;
+                        break;
+                    }
+                default:
+                    {
+                        const uint8_t code = (uint8_t)word;
+                        send_mods_and_code(word >> 8, code);
+                        unregister_code(code);
+                        if (undo_command_add_change_from_code(&g_new_undo_command, code) == CHARACTER)
+                        {
+                            inserted_characters++;
+                        }
+                        break;
+                    }
+                }
+
+                // Specific key sequence if any
+                for (int i = 0; i < 5; ++i)
+                {
+                    const uint16_t word = specific_sequence[i];
+                    if (word == 0)
+                    {
+                        break;
+                    }
+                    const uint8_t code = (uint8_t)word;
+                    send_mods_and_code(word >> 8, code);
+                    unregister_code(code);
+                    if (undo_command_add_change_from_code(&g_new_undo_command, code) == CHARACTER)
+                    {
+                        inserted_characters++;
+                    }
+                }
+                break;
+            }
+        default:
+            {
+                break;
+            }
+        }
+
+        // Camel case
+        if (initial_case_1 && inserted_characters == 1)
+        {
+            del_mods(MOD_LSFT);
+        }
     }
 
     if (can_undo(&g_new_undo_command))

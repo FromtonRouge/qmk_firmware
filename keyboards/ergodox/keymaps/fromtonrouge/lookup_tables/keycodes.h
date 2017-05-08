@@ -7,12 +7,9 @@ enum custom_keycodes
     CKC_SFT,    // Custom shift
     CKC_SFUN,   // Shift function
     CKC_CIRC,
-    CKC_NOSPC,
-    CKC_DEL_NOSPC,
-    CKC_DELWORD_NOSPC,
-    CKC_DLEFT_NOSPC,
-    CKC_ENT_NOSPC,
-    CKC_ENTABOVE_NOSPC
+    CKC_DELWORD,
+    CKC_DLEFT,
+    CKC_ENTABOVE
 };
 
 #define MAX_LETTERS 6
