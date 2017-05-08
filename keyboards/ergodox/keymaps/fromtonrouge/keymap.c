@@ -370,6 +370,8 @@ undo_command_t g_undo_stack[MAX_UNDO] = { {0} };
 int8_t g_undo_stack_index = 0;
 undo_command_t g_new_undo_command; // Must be global for ErgoDox Infinity to avoid a lock between the two halves
 
+uint16_t g_separator_mode = CKC_SEPMODE_SPC;
+
 // Steno keymap
 const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         // Left hand
@@ -620,7 +622,6 @@ void stroke(void)
     if (case_controls_bits)
     {
         initial_case_1 = case_controls_bits == 2;
-        add_mods(MOD_LSFT);
     }
 
     // Build stroke (but we don't send it yet)
@@ -703,7 +704,25 @@ void stroke(void)
                         const uint16_t word = pgm_read_word(&(symbols_table[family_bits][code_pos]));
                         if (word)
                         {
-                            stroke_add_element(kind, word);
+                            switch (word)
+                            {
+                            case CKC_SEPMODE_SPC:
+                            case CKC_SEPMODE_CAMEL:
+                            case CKC_SEPMODE_UNDS:
+                            case CKC_SEPMODE_MINS:
+                            case CKC_SEPMODE_SPC_UPPER:
+                            case CKC_SEPMODE_UNDS_UPPER:
+                            case CKC_SEPMODE_MINS_UPPER:
+                                {
+                                    g_separator_mode = word;
+                                    break;
+                                }
+                            default:
+                                {
+                                    stroke_add_element(kind, word);
+                                    break;
+                                }
+                            }
                         }
                         else
                         {
@@ -738,11 +757,69 @@ void stroke(void)
     }
 
     // Check if we can send the separator (space, underscore...) before the stroke
-    if ((g_stroke_buffer_count && !has_meta_space) || (!g_stroke_buffer_count && has_meta_space && !has_star))
+    if (g_stroke_buffer_count || (!g_stroke_buffer_count && has_meta_space && !has_star))
     {
-        register_code(KC_SPC);
-        unregister_code(KC_SPC);
-        undo_command_add_change(&g_new_undo_command, CHARACTER);
+        uint16_t keycode_separator = 0;
+        switch (g_separator_mode)
+        {
+        case CKC_SEPMODE_SPC:
+            {
+                keycode_separator = KC_SPC;
+                break;
+            }
+        case CKC_SEPMODE_UNDS:
+            {
+                keycode_separator = _UNDS;
+                break;
+            }
+        case CKC_SEPMODE_MINS:
+            {
+                keycode_separator = _MINS;
+                break;
+            }
+        case CKC_SEPMODE_CAMEL:
+            {
+                initial_case_1 = !has_meta_space;
+                break;
+            }
+        case CKC_SEPMODE_SPC_UPPER:
+            {
+                initial_case_1 = false;
+                add_mods(MOD_LSFT);
+                keycode_separator = KC_SPC;
+                break;
+            }
+        case CKC_SEPMODE_UNDS_UPPER:
+            {
+                initial_case_1 = false;
+                add_mods(MOD_LSFT);
+                keycode_separator = _UNDS;
+                break;
+            }
+        case CKC_SEPMODE_MINS_UPPER:
+            {
+                initial_case_1 = false;
+                add_mods(MOD_LSFT);
+                keycode_separator = _MINS;
+                break;
+            }
+        default:
+            {
+                break;
+            }
+        }
+
+        if (keycode_separator && (!has_meta_space || (!g_stroke_buffer_count && has_meta_space && !has_star)))
+        {
+            send_mods_and_code(keycode_separator >> 8, keycode_separator);
+            unregister_code(keycode_separator);
+            undo_command_add_change(&g_new_undo_command, CHARACTER);
+        }
+    }
+
+    if (initial_case_1 || case_controls_bits)
+    {
+        add_mods(MOD_LSFT);
     }
 
     // Send stroke buffer

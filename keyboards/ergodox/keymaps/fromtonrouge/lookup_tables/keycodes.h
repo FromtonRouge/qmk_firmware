@@ -7,6 +7,13 @@ enum custom_keycodes
     CKC_SFT,    // Custom shift
     CKC_SFUN,   // Shift function
     CKC_CIRC,
+    CKC_SEPMODE_SPC,
+    CKC_SEPMODE_SPC_UPPER,
+    CKC_SEPMODE_CAMEL,
+    CKC_SEPMODE_UNDS,
+    CKC_SEPMODE_UNDS_UPPER,
+    CKC_SEPMODE_MINS,
+    CKC_SEPMODE_MINS_UPPER,
     CKC_DELWORD,
     CKC_DLEFT,
     CKC_ENTABOVE

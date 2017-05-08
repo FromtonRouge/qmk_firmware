@@ -34,11 +34,11 @@ By default the keyboard is in full NKRO, you can test the keyboard here https://
 
 Space is added automatically after a stroke
 
-MSPC is the MetaSpace key :
+SEP is the separator key :
 
-    * When used in a stroke it cancels the space added automatically.
-    * When used alone it adds a space.
-    * When used with the STAR key, MSPC becomes a Backspace key.
+    * When used in a stroke it cancels the separator (space by default) added automatically.
+    * When used alone it adds a separator (space by default).
+    * When used with the STAR key, SEP becomes a Backspace key.
 
 ![Programmer Steno](images/programmer-steno.png)
 
