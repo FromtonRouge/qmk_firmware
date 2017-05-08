@@ -32,13 +32,23 @@ The TEENSY key (RESET) is define in this layer
 
 By default the keyboard is in full NKRO, you can test the keyboard here https://www.microsoft.com/appliedsciences/KeyboardGhostingDemo.mspx
 
-Space is added automatically after a stroke
+A separator character (space by default) is inserted automatically before a stroke.
 
 SEP is the separator key :
 
-    * When used in a stroke it cancels the separator (space by default) added automatically.
+    * When used in a stroke it cancels the separator (space by default) inserted automatically.
     * When used alone it adds a separator (space by default).
     * When used with the STAR key, SEP becomes a Backspace key.
+
+There are 7 separator modes (triggered from L2 to L5):
+
+    * Space mode (default) : a space is inserted before a stroke
+    * Space+Uppercase mode : same but all characters are in UPPERCASE
+    * Camelcase mode : in this mode there is no separator, but the first letter of all strokes is in UPPERCASE
+    * Underscore mode : _ is inserted before a stroke
+    * Underscore+Uppercase mode : same but all characters are in UPPERCASE
+    * Minus mode : - is inserted before a stroke
+    * Minus+Uppercase mode : same but all characters are in UPPERCASE
 
 ![Programmer Steno](images/programmer-steno.png)
 
