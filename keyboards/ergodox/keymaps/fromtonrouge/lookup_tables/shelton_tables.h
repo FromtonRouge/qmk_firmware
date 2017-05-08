@@ -1,7 +1,7 @@
 #ifndef SHELTON_TABLES_H
 #define SHELTON_TABLES_H
 
-#include "encode.h"
+#include "keycodes.h"
 
 // NOTE: (*) = not in the original Shelton table
 

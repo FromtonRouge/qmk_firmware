@@ -1,5 +1,19 @@
-#ifndef ENCODE_H
-#define ENCODE_H
+#ifndef KEYCODES_H
+#define KEYCODES_H
+
+enum custom_keycodes
+{
+    CKC_STENO = SAFE_RANGE,
+    CKC_SFT,    // Custom shift
+    CKC_SFUN,   // Shift function
+    CKC_CIRC,
+    CKC_NOSPC,
+    CKC_DEL_NOSPC,
+    CKC_DELWORD_NOSPC,
+    CKC_DLEFT_NOSPC,
+    CKC_ENT_NOSPC,
+    CKC_ENTABOVE_NOSPC
+};
 
 #define MAX_LETTERS 6
 #define NO_ENTRY {0}
@@ -20,16 +34,6 @@
 #define _P2(c1, c2) {c1, c2, 0, 0}
 #define _P3(c1, c2, c3) {c1, c2, c3, 0}
 #define _P4(c1, c2, c3, c4) {c1, c2, c3, c4}
-
-enum
-{
-    _NOSPC = QK_MODS_MAX,
-    _DEL_NOSPC,
-    _DELWORD_NOSPC,
-    _DLEFT_NOSPC,
-    _ENT_NOSPC,
-    _ENTABOVE_NOSPC
-};
 
 #ifdef AZERTY_OS_ENABLE
 

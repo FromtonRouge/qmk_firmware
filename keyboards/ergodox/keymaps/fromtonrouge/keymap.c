@@ -28,14 +28,6 @@
 #endif
 #endif
 
-enum custom_keycodes
-{
-    CKC_STENO = SAFE_RANGE,
-    CKC_SFT,    // Custom shift
-    CKC_SFUN,   // Shift function
-    CKC_CIRC
-};
-
 // Keys family
 enum key_family
 {
@@ -730,38 +722,38 @@ void stroke(void)
                             uint16_t specific_sequence[5] = {0};
                             switch (word)
                             {
-                            case _NOSPC:
+                            case CKC_NOSPC:
                                 {
                                     no_space_code_detected = true;
                                     break;
                                 }
-                            case _DEL_NOSPC:
+                            case CKC_DEL_NOSPC:
                                 {
                                     specific_sequence[0] = KC_DEL;
                                     no_space_code_detected = true;
                                     break;
                                 }
-                            case _DELWORD_NOSPC:
+                            case CKC_DELWORD_NOSPC:
                                 {
                                     specific_sequence[0] = LCTL(LSFT(KC_LEFT));
                                     specific_sequence[1] = KC_BSPC;
                                     no_space_code_detected = true;
                                     break;
                                 }
-                            case _DLEFT_NOSPC:
+                            case CKC_DLEFT_NOSPC:
                                 {
                                     specific_sequence[0] = KC_LEFT;
                                     specific_sequence[1] = KC_LEFT;
                                     no_space_code_detected = true;
                                     break;
                                 }
-                            case _ENT_NOSPC:
+                            case CKC_ENT_NOSPC:
                                 {
                                     specific_sequence[0] = KC_ENT;
                                     no_space_code_detected = true;
                                     break;
                                 }
-                            case _ENTABOVE_NOSPC:
+                            case CKC_ENTABOVE_NOSPC:
                                 {
                                     specific_sequence[0] = KC_UP;
                                     specific_sequence[1] = KC_END;
