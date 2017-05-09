@@ -809,7 +809,29 @@ void stroke(void)
             }
         }
 
-        if (keycode_separator && (!has_meta_space || (!g_stroke_buffer_count && has_meta_space && !has_star)))
+        bool can_send_separator = true;
+        if (g_stroke_buffer_count)
+        {
+            // Check the first keycode in the stroke
+            stroke_element_t* stroke_element = &g_stroke_buffer[0];
+            switch (stroke_element->keycode)
+            {
+            case KC_ESC:
+            case KC_ENT:
+            case KC_END:
+            case KC_HOME:
+                {
+                    can_send_separator = false;
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
+            }
+        }
+
+        if (can_send_separator && keycode_separator && (!has_meta_space || (!g_stroke_buffer_count && has_meta_space && !has_star)))
         {
             send_mods_and_code(keycode_separator >> 8, keycode_separator);
             unregister_code(keycode_separator);
