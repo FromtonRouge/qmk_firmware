@@ -264,29 +264,29 @@ PL7 and PR7 are used to write numbers
     EA              =       E|A
     EAI             =       E|A|I
     EAU             =       E|A|U
-    EAUI            =       E|A|U|I     Find something usefull here
     EI              =       E|I
     EO              =       E|O
-    EOA             =       E|O|A
-    EOAI            =       E|O|A|I     Find something usefull here
-    EOAU            =       E|O|A|U     Find something usefull here
     EOAUI           =       E|O|A|U|I   Find something usefull here
     EOI             =       E|O|I
     EOU             =       E|O|U
     EOUI            =       E|O|U|I     Find something usefull here
     EU              =       E|U
     EUI             =       E|U|I
+    EY              =       E|A|U|I
     I               =       I
     O               =       O
     OA              =       O|A
     OAI             =       O|A|I
     OAU             =       O|A|U
-    OAUI            =       O|A|U|I     Find something usefull here
     OI              =       O|I
     OU              =       O|U
     OUI             =       O|U|I
+    OY              =       O|A|U|I
     U               =       U
     UI              =       U|I
+    YA              =       E|O|A
+    YI              =       E|O|A|I
+    YU              =       E|O|A|U
 
 ### Lookup table for vowels bigrams (when * is used with vowels)
 
@@ -294,16 +294,13 @@ PL7 and PR7 are used to write numbers
     AE              =       E|A
     AIU             =       A|U|I
     AO              =       O|A
-    EAIU            =       E|A|U|I         Find something usefull here
-    EAO             =       E|O|A
+    AY              =       E|O|A
     EE              =       E
     EIA             =       E|A|I
     EIO             =       E|O|I
     EIU             =       E|U|I
     EOAIU           =       E|O|A|U|I       Find something usefull here
-    EOIA            =       E|O|A|I         Find something usefull here
     EOIU            =       E|O|U|I         Find something usefull here
-    EOUA            =       E|O|A|U         Find something usefull here
     EUA             =       E|A|U
     EUO             =       E|O|U
     IA              =       A|I
@@ -311,7 +308,7 @@ PL7 and PR7 are used to write numbers
     II              =       I
     IO              =       O|I
     IU              =       U|I
-    OAIU            =       O|A|U|I         Find something usefull here
+    IY              =       E|O|A|I
     OE              =       E|O
     OIA             =       O|A|I
     IOU             =       O|U|I           IOU instead of OIU (OIU never happens)
@@ -321,6 +318,9 @@ PL7 and PR7 are used to write numbers
     UE              =       E|U
     UO              =       O|U
     UU              =       U
+    UY              =       E|O|A|U
+    YE              =       E|A|U|I
+    YO              =       O|A|U|I
 
 ### Lookup table for the right hand (Shelton table)
 
