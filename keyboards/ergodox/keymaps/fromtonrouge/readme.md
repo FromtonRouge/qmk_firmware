@@ -481,6 +481,8 @@ PL7 and PR7 are used to write numbers
     SHES            =       N|L|H|S
     SK              =       N|L|G|T
     SKS             =       N|L|G|T|S
+    SL              =       N|L|C|H             (*)
+    SLY             =       N|L|C|H|T           (*)
     SM              =       N|L|G|H
     SMS             =       N|L|G|H|S
     SP              =       N|L|C

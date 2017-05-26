@@ -144,8 +144,8 @@ const uint16_t PROGMEM g_left_punctuations_table[256][MAX_PUNCTUATIONS] =
 {
     NO_ENTRY, // [0]
     _P1(_APOS), // [1]
-    _P1(_COMM), // [2]
-    _P1(_SCLN), // [3]
+    _P1(KC_SPC), // [2]
+    _P1(KC_TAB), // [3]
     _P1(_LCBR), // [4]
     _P1(_DQUOT), // [5]
     _P1(_GRTR), // [6]
