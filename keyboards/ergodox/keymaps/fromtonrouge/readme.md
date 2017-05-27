@@ -420,6 +420,7 @@ PL7 and PR7 are used to write numbers
     NGTHS           =       N|G|H|T|S
     NK              =       N|G|T
     NKS             =       N|G|T|S
+    NLY             =       N|C|H|T         (*)
     NMENT           =       R|N|L|G|H|T     (*)
     NMENTS          =       R|N|L|G|H|T|S   (*)
     NS              =       N|S
