@@ -491,7 +491,7 @@ PL7 and PR7 are used to write numbers
     SS              =       N|L|S
     ST              =       N|L|T
     STS             =       N|L|T|S
-    SW              =       R|N|L|H|T           (*)
+    SWER            =       R|N|L|H|T           (*)
     T               =       T
     TCH             =       C|H|T
     TH              =       H|T
