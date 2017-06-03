@@ -266,10 +266,8 @@ PL7 and PR7 are used to write numbers
     EAU             =       E|A|U
     EI              =       E|I
     EO              =       E|O
-    EOAUI           =       E|O|A|U|I   Find something usefull here
     EOI             =       E|O|I
     EOU             =       E|O|U
-    EOUI            =       E|O|U|I     Find something usefull here
     EU              =       E|U
     EUI             =       E|U|I
     EY              =       E|A|U|I
@@ -284,6 +282,8 @@ PL7 and PR7 are used to write numbers
     OY              =       O|A|U|I
     U               =       U
     UI              =       U|I
+    Y               =       E|O|U|I
+    Y               =       E|O|A|U|I
     YA              =       E|O|A
     YI              =       E|O|A|I
     YU              =       E|O|A|U
@@ -340,6 +340,7 @@ PL7 and PR7 are used to write numbers
     CKL             =       L|G|C|T
     CKLES           =       L|G|C|T|S
     CKS             =       G|C|T|S
+    CL              =       R|N|C|T             (*)
     CR              =       R|C|T               (*)
     CS              =       C|S
     CT              =       C|T

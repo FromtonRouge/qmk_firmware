@@ -296,11 +296,11 @@ const uint8_t PROGMEM g_thumbs_table[32][MAX_LETTERS] =
     _2(_U, _I),                             // [24]
     _3(_E, _U, _I),                         // [25]
     _3(_O, _U, _I),                         // [26]
-    _4(_E, _O, _U, _I),                     // [27]     Find something usefull here
+    _1(_Y),                                 // [27]
     _3(_A, _U, _I),                         // [28]
     _2(_E, _Y),                             // [29]
     _2(_O, _Y),                             // [30]
-    _5(_E, _O, _A, _U, _I)                  // [31]     Find something usefull here
+    _1(_Y),                                 // [31]
 };
 
 // Double single vowels and invert bigrams
@@ -425,7 +425,7 @@ const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS] =
     _2(_C, _T),                             // [80]
     _2(_C, _R),                             // [81]     (*)
     _4(_T, _I, _O, _N),                     // [82]
-    NO_ENTRY,                               // [83]
+    _2(_C, _L),                             // [83]     (*)
     _2(_P, _T),                             // [84]
     NO_ENTRY,                               // [85]
     _3(_N, _S, _T),                         // [86]
