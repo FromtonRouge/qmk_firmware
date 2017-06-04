@@ -108,6 +108,7 @@ PL7 and PR7 are used to write numbers
     AK              =       A|T|W|H
     AL              =       A|N|R
     ALL             =       A|W|N|R
+    ALM             =       A|W|H|N|R
     AM              =       A|W|N
     AMM             =       A|C|W|N
     AN              =       A|N
