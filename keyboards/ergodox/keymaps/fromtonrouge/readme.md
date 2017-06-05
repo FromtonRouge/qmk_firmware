@@ -446,6 +446,7 @@ PL7 and PR7 are used to write numbers
     PTHS            =       L|C|H|T|S
     R               =       R
     RB              =       R|G|C
+    RBL             =       R|L|G|C             (*)
     RBS             =       R|G|C|S
     RC              =       R|C
     RCH             =       R|C|H
