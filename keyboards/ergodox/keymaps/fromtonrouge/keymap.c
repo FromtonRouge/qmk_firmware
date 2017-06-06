@@ -35,6 +35,7 @@ enum key_family
     FAMILY_SPECIAL_CONTROLS,
     FAMILY_CASE_CONTROLS,
     FAMILY_LEFT_USER_SYMBOLS,
+    FAMILY_LEFT_PINKY,
     FAMILY_LEFT_HAND,
     FAMILY_THUMBS,
     FAMILY_RIGHT_HAND,
@@ -117,6 +118,12 @@ enum key_family
 #define USRR_4  (4 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRR_5  (5 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 
+// 3 bits for left pinky
+#define OFFSET_LEFT_PINKY 12
+#define L_I  (0 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+#define L_U  (1 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+#define L_O  (2 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+
 // Table to convert family id to bit offset
 const uint8_t g_family_to_bit_offset[NB_FAMILY] =
 {
@@ -124,6 +131,7 @@ const uint8_t g_family_to_bit_offset[NB_FAMILY] =
     OFFSET_SPECIAL_CONTROLS,
     OFFSET_CASE_CONTROLS,
     OFFSET_LEFT_USER_SYMBOLS,
+    OFFSET_LEFT_PINKY,
     OFFSET_LEFT_HAND,
     OFFSET_THUMBS,
     OFFSET_RIGHT_HAND,
@@ -173,12 +181,13 @@ const uint8_t g_family_to_kind_table[NB_FAMILY] =
     KIND_UNKNOWN,
     KIND_UNKNOWN,
     KIND_UNKNOWN,
-    KIND_SYMBOLS,
-    KIND_LETTERS,
-    KIND_LETTERS,
-    KIND_LETTERS,
-    KIND_LETTERS,
-    KIND_SYMBOLS,
+    KIND_SYMBOLS,   // Left user symbols
+    KIND_UNKNOWN,   // Left pinky
+    KIND_LETTERS,   // Left hand
+    KIND_LETTERS,   // Thumbs
+    KIND_LETTERS,   // Right hand
+    KIND_LETTERS,   // Right pinky
+    KIND_SYMBOLS,   // Right user symbols
     KIND_SYMBOLS
 };
 
@@ -191,12 +200,13 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
     &g_bits_keys_pressed_part1,
     &g_bits_keys_pressed_part1,
     &g_bits_keys_pressed_part1,
-    &g_bits_keys_pressed_part2,
-    &g_bits_keys_pressed_part1,
-    &g_bits_keys_pressed_part1,
-    &g_bits_keys_pressed_part1,
-    &g_bits_keys_pressed_part1,
-    &g_bits_keys_pressed_part2,
+    &g_bits_keys_pressed_part2, // Left user symbols
+    &g_bits_keys_pressed_part2, // Left pinky
+    &g_bits_keys_pressed_part1, // Left hand
+    &g_bits_keys_pressed_part1, // Thumbs
+    &g_bits_keys_pressed_part1, // Right hand
+    &g_bits_keys_pressed_part1, // Right pinky
+    &g_bits_keys_pressed_part2, // Right user symbols
     &g_bits_keys_pressed_part1
 };
 
@@ -210,6 +220,7 @@ void* g_all_tables[NB_FAMILY] =
     0,
     0,
     (void*)g_left_user_symbols_table,
+    0,
     (void*)g_left_hand_table,
     (void*)g_thumbs_table,
     (void*)g_right_hand_table,
@@ -377,9 +388,9 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         // Left hand
         0,      0,          0,          0,          0,          0,          0,
         0,      0,          USRL_2,     USRL_3,     USRL_4,     USRL_5,     S_ENT,
-        0,      USRL_0,     USRL_1,     L_C,        L_W,        L_N,        
-        C_UC,   C_IC,       L_A,        L_T,        L_H,        L_R,        SC_STAR,
-        C_UC,   C_IC,       L_S,        0,          0,
+        0,      L_U,        L_I,        L_C,        L_W,        L_N,        
+        C_UC,   L_O,        L_A,        L_T,        L_H,        L_R,        SC_STAR,
+        C_UC,   L_O,        L_S,        0,          0,
                                                                 SC_STAR,    SC_STAR,
                                                                             T_O,
                                                     SC_PLUS,    T_E,        T_A,
@@ -614,10 +625,11 @@ void stroke(void)
 
     // Get *, + and case controls info
     const uint8_t special_controls_bits = g_family_bits[FAMILY_SPECIAL_CONTROLS];
-    const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
     const bool has_star = special_controls_bits & (1 << (SC_STAR & 0xF));
     const bool has_plus = special_controls_bits & (1 << (SC_PLUS & 0xF));
     const bool has_meta_space = special_controls_bits & (1 << (SC_MSPC & 0xF));
+    const uint8_t left_pinky = g_family_bits[FAMILY_LEFT_PINKY];
+    const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
     const uint8_t case_controls_bits = g_family_bits[FAMILY_CASE_CONTROLS];
     if (case_controls_bits)
     {
@@ -645,12 +657,43 @@ void stroke(void)
                 any_table = (void*)g_thumbs_bigrams_table;
             }
         }
+        else if (family_id == FAMILY_LEFT_PINKY)
+        {
+            if (left_pinky == 1 || left_pinky == 2 || left_pinky == 3 || left_pinky == 7)
+            {
+                g_family_bits[FAMILY_LEFT_HAND] |= (1L << (L_S & 0xF));
+            }
+            else if (left_pinky == 4)
+            {
+                g_family_bits[FAMILY_LEFT_HAND] |= (1L << (L_A & 0xF));
+            }
+        }
         else if (family_id == FAMILY_LEFT_HAND)
         {
             if (!thumbs_bits && has_star)
             {
                 any_table = (void*)g_left_punctuations_table;
                 kind = KIND_PUNCTUATIONS;
+            }
+
+            // Handle left pinky
+            switch (left_pinky)
+            {
+            case 1:
+            case 2:
+            case 3:
+            case 7:
+                {
+                    // L_A become L_S, so get the bit state of L_A and put it on L_S
+                    family_bits &= ~(1L << (L_S & 0xF)); // Clear L_S
+                    family_bits |= (family_bits & (1L << (L_A & 0xF))) << 1; // Transfert L_A to L_S
+                    family_bits |= (1L << (L_A & 0xF)); // L_I become L_A
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
             }
         }
         else if (family_id == FAMILY_RIGHT_HAND)
@@ -671,9 +714,29 @@ void stroke(void)
                     letters_table_t* letters_table = (letters_table_t*)any_table;
                     for (int code_pos = 0; code_pos < MAX_LETTERS; ++code_pos)
                     {
-                        const uint8_t byte = pgm_read_byte(&(letters_table[family_bits][code_pos]));
+                        uint8_t byte = pgm_read_byte(&(letters_table[family_bits][code_pos]));
                         if (byte)
                         {
+                            // Left pinky vowels
+                            if (family_id == FAMILY_LEFT_HAND)
+                            {
+                                if (byte == _A)
+                                {
+                                    if (left_pinky == 1)
+                                    {
+                                        byte = _I;
+                                    }
+                                    else if (left_pinky == 4)
+                                    {
+                                        byte = _O;
+                                    }
+                                    else if (left_pinky == 7 || left_pinky == 3 || left_pinky == 2)
+                                    {
+                                        byte = _U;
+                                    }
+                                }
+                            }
+
                             stroke_add_element(kind, byte);
 
                             // Jackdaw rule: If a 'Q' is detected on the left hand followed by a thumb vowel => add a 'U'
