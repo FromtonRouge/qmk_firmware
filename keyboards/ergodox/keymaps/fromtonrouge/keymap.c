@@ -100,17 +100,15 @@ enum key_family
 #define C_UC  (0 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
 #define C_IC  (1 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
 
-// 6 bits for left user symbols
+// 3 bits for left user symbols
 #define OFFSET_LEFT_USER_SYMBOLS 0
 #define USRL_0  (0 | (FAMILY_LEFT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRL_1  (1 | (FAMILY_LEFT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRL_2  (2 | (FAMILY_LEFT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRL_3  (3 | (FAMILY_LEFT_USER_SYMBOLS << 4) | STENO_BIT)
-#define USRL_4  (4 | (FAMILY_LEFT_USER_SYMBOLS << 4) | STENO_BIT)
-#define USRL_5  (5 | (FAMILY_LEFT_USER_SYMBOLS << 4) | STENO_BIT)
 
 // 6 bits for right user symbols
-#define OFFSET_RIGHT_USER_SYMBOLS 6
+#define OFFSET_RIGHT_USER_SYMBOLS 4
 #define USRR_0  (0 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRR_1  (1 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRR_2  (2 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
@@ -119,7 +117,7 @@ enum key_family
 #define USRR_5  (5 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 
 // 3 bits for left pinky
-#define OFFSET_LEFT_PINKY 12
+#define OFFSET_LEFT_PINKY 10
 #define L_I  (0 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
 #define L_U  (1 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
 #define L_O  (2 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
@@ -382,12 +380,13 @@ int8_t g_undo_stack_index = 0;
 undo_command_t g_new_undo_command; // Must be global for ErgoDox Infinity to avoid a lock between the two halves
 
 uint16_t g_separator_mode = CKC_SEPMODE_SPC;
+uint16_t g_case_mode = CKC_CASE_NORMAL;
 
 // Steno keymap
 const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         // Left hand
         0,      0,          0,          0,          0,          0,          0,
-        0,      0,          USRL_2,     USRL_3,     USRL_4,     USRL_5,     S_ENT,
+        0,      0,          USRL_3,     USRL_2,     USRL_1,     USRL_0,     S_ENT,
         0,      L_U,        L_I,        L_C,        L_W,        L_N,        
         C_UC,   L_O,        L_A,        L_T,        L_H,        L_R,        SC_STAR,
         C_UC,   L_O,        L_S,        0,          0,
@@ -758,7 +757,6 @@ void stroke(void)
                     }
                     break;
                 }
-
             case KIND_SYMBOLS:
                 {
                     symbols_table_t* symbols_table = (symbols_table_t*)any_table;
@@ -769,6 +767,15 @@ void stroke(void)
                         {
                             switch (word)
                             {
+                            case CKC_CASE_NORMAL:
+                            case CKC_CASE_INNER_ONCE:
+                            case CKC_CASE_INNER_LOCKED:
+                            case CKC_CASE_UPPER_ONCE:
+                            case CKC_CASE_UPPER_LOCKED:
+                                {
+                                    g_case_mode = word;
+                                    break;
+                                }
                             case CKC_SEPMODE_SPC:
                             case CKC_SEPMODE_CAMEL:
                             case CKC_SEPMODE_UNDS:
@@ -905,7 +912,7 @@ void stroke(void)
         }
     }
 
-    if (initial_case_1 || case_controls_bits)
+    if (initial_case_1 || case_controls_bits || (g_case_mode > CKC_CASE_NORMAL))
     {
         add_mods(MOD_LSFT);
     }
@@ -1008,10 +1015,38 @@ void stroke(void)
         }
 
         // Camel case
-        if (initial_case_1 && inserted_characters == 1)
+        if (inserted_characters == 1)
         {
-            del_mods(MOD_LSFT);
+            switch (g_case_mode)
+            {
+            case CKC_CASE_INNER_ONCE:
+                {
+                    g_case_mode = CKC_CASE_NORMAL;
+                    initial_case_1 = true;
+                    break;
+                }
+            case CKC_CASE_INNER_LOCKED:
+                {
+                    initial_case_1 = true;
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
+            }
+
+            if (initial_case_1)
+            {
+                del_mods(MOD_LSFT);
+            }
         }
+    }
+
+    if (inserted_characters && (g_case_mode == CKC_CASE_UPPER_ONCE))
+    {
+        g_case_mode = CKC_CASE_NORMAL;
+        del_mods(MOD_LSFT);
     }
 
     if (can_undo(&g_new_undo_command))
