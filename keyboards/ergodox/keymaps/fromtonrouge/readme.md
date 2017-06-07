@@ -109,10 +109,16 @@ PL7 and PR7 are used to write numbers
     AL              =       A|N|R
     ALL             =       A|W|N|R
     ALM             =       A|W|H|N|R
+    ALS             =       A|S|C|N|R       (*)
+    ALW             =       A|T|W|N|R       (*)
     AM              =       A|W|N
     AMM             =       A|C|W|N
     AN              =       A|N
+    AND             =       A|W|H|R         (*)
     ANN             =       A|S|N
+    ANT             =       A|S|T|H|N       (*)
+    ANTER           =       A|S|T|H|N|R     (*)
+    ANV             =       A|S|T|N         (*)
     AP              =       A|C|W
     APH             =       A|C|W|H
     APHR            =       A|C|W|H|R
@@ -124,6 +130,7 @@ PL7 and PR7 are used to write numbers
     AQ              =       A|T|N|R
     AR              =       A|R
     ARR             =       A|S|R
+    ART             =       A|S|T|R       (*)
     AS              =       A|S
     ASC             =       A|S|C
     ASCR            =       A|S|C|R
@@ -181,11 +188,6 @@ PL7 and PR7 are used to write numbers
     GW              =       S|C|T|W
     GY              =       S|C|T|H|N
     H               =       H
-    INT             =       A|S|T|H|N       (*)
-    INTER           =       A|S|T|H|N|R     (*)
-    INV             =       A|S|T|N         (*)
-    IR              =       A|S|T|R         (*)
-    IRR             =       A|S|T|H|R       (*)
     J               =       T|W|N
     JER             =       T|W|N|R
     K               =       T|W|H

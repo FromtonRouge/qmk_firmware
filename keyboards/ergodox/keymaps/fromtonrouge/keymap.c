@@ -658,13 +658,16 @@ void stroke(void)
         }
         else if (family_id == FAMILY_LEFT_PINKY)
         {
-            if (left_pinky == 1 || left_pinky == 2 || left_pinky == 3 || left_pinky == 7)
+            if (left_pinky != 0)
             {
-                g_family_bits[FAMILY_LEFT_HAND] |= (1L << (L_S & 0xF));
-            }
-            else if (left_pinky == 4)
-            {
-                g_family_bits[FAMILY_LEFT_HAND] |= (1L << (L_A & 0xF));
+                if (left_pinky != 4)
+                {
+                    g_family_bits[FAMILY_LEFT_HAND] |= (1L << (L_S & 0xF));
+                }
+                else
+                {
+                    g_family_bits[FAMILY_LEFT_HAND] |= (1L << (L_A & 0xF));
+                }
             }
         }
         else if (family_id == FAMILY_LEFT_HAND)
@@ -676,23 +679,12 @@ void stroke(void)
             }
 
             // Handle left pinky
-            switch (left_pinky)
+            if (left_pinky !=0 && left_pinky != 4)
             {
-            case 1:
-            case 2:
-            case 3:
-            case 7:
-                {
-                    // L_A become L_S, so get the bit state of L_A and put it on L_S
-                    family_bits &= ~(1L << (L_S & 0xF)); // Clear L_S
-                    family_bits |= (family_bits & (1L << (L_A & 0xF))) << 1; // Transfert L_A to L_S
-                    family_bits |= (1L << (L_A & 0xF)); // L_I become L_A
-                    break;
-                }
-            default:
-                {
-                    break;
-                }
+                // L_A become L_S, so get the bit state of L_A and put it on L_S
+                family_bits &= ~(1L << (L_S & 0xF)); // Clear L_S
+                family_bits |= (family_bits & (1L << (L_A & 0xF))) << 1; // Transfert L_A to L_S
+                family_bits |= (1L << (L_A & 0xF)); // L_I become L_A
             }
         }
         else if (family_id == FAMILY_RIGHT_HAND)
@@ -729,7 +721,7 @@ void stroke(void)
                                     {
                                         byte = _O;
                                     }
-                                    else if (left_pinky == 7 || left_pinky == 3 || left_pinky == 2)
+                                    else if (left_pinky != 0)
                                     {
                                         byte = _U;
                                     }
