@@ -33,7 +33,6 @@ enum key_family
 {
     FAMILY_UNKNOWN,
     FAMILY_SPECIAL_CONTROLS,
-    FAMILY_CASE_CONTROLS,
     FAMILY_LEFT_USER_SYMBOLS,
     FAMILY_LEFT_PINKY,
     FAMILY_LEFT_HAND,
@@ -95,11 +94,6 @@ enum key_family
 #define S_TAB  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
 #define S_ENT  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
 
-// 2 bits for case control keys (upper case, initial case)
-#define OFFSET_CASE_CONTROLS 29
-#define C_UC  (0 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
-#define C_IC  (1 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
-
 // 3 bits for left user symbols
 #define OFFSET_LEFT_USER_SYMBOLS 0
 #define USRL_0  (0 | (FAMILY_LEFT_USER_SYMBOLS << 4) | STENO_BIT)
@@ -127,7 +121,6 @@ const uint8_t g_family_to_bit_offset[NB_FAMILY] =
 {
     0,
     OFFSET_SPECIAL_CONTROLS,
-    OFFSET_CASE_CONTROLS,
     OFFSET_LEFT_USER_SYMBOLS,
     OFFSET_LEFT_PINKY,
     OFFSET_LEFT_HAND,
@@ -178,7 +171,6 @@ const uint8_t g_family_to_kind_table[NB_FAMILY] =
 {
     KIND_UNKNOWN,
     KIND_UNKNOWN,
-    KIND_UNKNOWN,
     KIND_SYMBOLS,   // Left user symbols
     KIND_UNKNOWN,   // Left pinky
     KIND_LETTERS,   // Left hand
@@ -197,7 +189,6 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
 {
     &g_bits_keys_pressed_part1,
     &g_bits_keys_pressed_part1,
-    &g_bits_keys_pressed_part1,
     &g_bits_keys_pressed_part2, // Left user symbols
     &g_bits_keys_pressed_part2, // Left pinky
     &g_bits_keys_pressed_part1, // Left hand
@@ -214,7 +205,6 @@ typedef const uint16_t symbols_table_t[MAX_SYMBOLS];
 typedef const uint16_t punctuations_table_t[MAX_PUNCTUATIONS];
 void* g_all_tables[NB_FAMILY] = 
 {
-    0,
     0,
     0,
     (void*)g_left_user_symbols_table,
@@ -388,8 +378,8 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         0,      0,          0,          0,          0,          0,          0,
         0,      0,          USRL_3,     USRL_2,     USRL_1,     USRL_0,     S_ENT,
         0,      L_U,        L_I,        L_C,        L_W,        L_N,        
-        C_UC,   L_O,        L_A,        L_T,        L_H,        L_R,        SC_STAR,
-        C_UC,   L_O,        L_S,        0,          0,
+        0,      L_O,        L_A,        L_T,        L_H,        L_R,        SC_STAR,
+        0,      L_O,        L_S,        0,          0,
                                                                 SC_STAR,    SC_STAR,
                                                                             T_O,
                                                     SC_PLUS,    T_E,        T_A,
@@ -614,7 +604,7 @@ void stroke(void)
     const uint8_t original_mods = get_mods();
     del_mods(MOD_LSFT|MOD_RSFT);
 
-    bool initial_case_1 = false;
+    bool initial_case = false;
     g_new_undo_command.change_index = 0;
     for (int i = 0; i < MAX_CHANGES; ++i)
     {
@@ -629,11 +619,6 @@ void stroke(void)
     const bool has_meta_space = special_controls_bits & (1 << (SC_MSPC & 0xF));
     const uint8_t left_pinky = g_family_bits[FAMILY_LEFT_PINKY];
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
-    const uint8_t case_controls_bits = g_family_bits[FAMILY_CASE_CONTROLS];
-    if (case_controls_bits)
-    {
-        initial_case_1 = case_controls_bits == 2;
-    }
 
     // Build stroke (but we don't send it yet)
     bool undo_allowed = true;
@@ -841,26 +826,26 @@ void stroke(void)
             }
         case CKC_SEPMODE_CAMEL:
             {
-                initial_case_1 = !has_meta_space;
+                initial_case = !has_meta_space;
                 break;
             }
         case CKC_SEPMODE_SPC_UPPER:
             {
-                initial_case_1 = false;
+                initial_case = false;
                 add_mods(MOD_LSFT);
                 keycode_separator = KC_SPC;
                 break;
             }
         case CKC_SEPMODE_UNDS_UPPER:
             {
-                initial_case_1 = false;
+                initial_case = false;
                 add_mods(MOD_LSFT);
                 keycode_separator = _UNDS;
                 break;
             }
         case CKC_SEPMODE_MINS_UPPER:
             {
-                initial_case_1 = false;
+                initial_case = false;
                 add_mods(MOD_LSFT);
                 keycode_separator = _MINS;
                 break;
@@ -904,7 +889,7 @@ void stroke(void)
         }
     }
 
-    if (initial_case_1 || case_controls_bits || (g_case_mode > CKC_CASE_NORMAL))
+    if (initial_case || (g_case_mode > CKC_CASE_NORMAL))
     {
         add_mods(MOD_LSFT);
     }
@@ -1014,12 +999,12 @@ void stroke(void)
             case CKC_CASE_INNER_ONCE:
                 {
                     g_case_mode = CKC_CASE_NORMAL;
-                    initial_case_1 = true;
+                    initial_case = true;
                     break;
                 }
             case CKC_CASE_INNER_LOCKED:
                 {
-                    initial_case_1 = true;
+                    initial_case = true;
                     break;
                 }
             default:
@@ -1028,7 +1013,7 @@ void stroke(void)
                 }
             }
 
-            if (initial_case_1)
+            if (initial_case)
             {
                 del_mods(MOD_LSFT);
             }
@@ -1111,8 +1096,8 @@ void stroke(void)
                             }
                         case ENTER:
                             {
-                                // We use SHIFT to select text. We have to do this for text editors
-                                // that autoindent text. Vim users needs to add : 'behave mswin' in their .vimrc file
+                                // We use SHIFT to select text. We have to do this for text editors that autoindent text.
+                                // Vim users needs to add : 'behave mswin' in their .vimrc file
                                 register_code(KC_LSFT);
                                 register_code(KC_UP);
                                 unregister_code(KC_UP);
@@ -1174,11 +1159,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 uint32_t* keys_pressed_p = g_family_to_keys_pressed[family];
                 if (record->event.pressed)
                 {
-                    if (family == FAMILY_CASE_CONTROLS)
-                    {
-                        register_code(KC_LSFT);
-                    }
-
                     (*keys_pressed_p) |= (bit_key << family_offset);
                     g_family_bits[family] |= bit_key;
                 }
@@ -1190,11 +1170,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     if (can_stroke())
                     {
                         stroke();
-                    }
-
-                    if (family == FAMILY_CASE_CONTROLS)
-                    {
-                        unregister_code(KC_LSFT);
                     }
                 }
             }
