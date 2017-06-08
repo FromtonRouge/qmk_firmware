@@ -114,7 +114,7 @@ PL7 and PR7 are used to write numbers
     AM              =       A|W|N
     AMM             =       A|C|W|N
     AN              =       A|N
-    AND             =       A|W|H|R         (*)
+    AND             =       A|W|H|N         (*)
     ANN             =       A|S|N
     ANT             =       A|S|T|H|N       (*)
     ANTER           =       A|S|T|H|N|R     (*)
@@ -550,26 +550,6 @@ PL7 and PR7 are used to write numbers
 
     [WORK IN PROGRESS]
 
-    !                   =       0
-    ESC                 =       1       For Vim
-    ESC:                =       0|1     For Vim
-    *                   =       2
-    _                   =       3       Usefull for prefixing an attribute member in C++ (eg: _p)       Usefull for prefixing an attribute member in C++ (ed: _p)
-
 ### Lookup table for right user symbols and punctuations
 
     [WORK IN PROGRESS]
-
-    D                   =       0       For words ending with ED
-    'S                  =       1       Main control key for english contractions ('s, n't, 'll etc...)
-    D                   =       0|1     For words ending with TED THED
-    N'T                 =       1|2
-    ER                  =       3       For words ending with ER
-    'LL                 =       1|3   
-    ING                 =       2|3     For words ending with ING
-    ER                  =       4       For words ending with ER
-    'VE                 =       1|4
-    ING                 =       3|4     For words ending with ING
-    ER                  =       5       For words ending with ER
-    'D                  =       1|5
-    ING                 =       4|5     For words ending with ING

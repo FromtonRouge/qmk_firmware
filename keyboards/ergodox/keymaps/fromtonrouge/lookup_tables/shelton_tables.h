@@ -85,8 +85,8 @@ const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS] =
     NO_ENTRY, // [74]
     NO_ENTRY, // [75]
     _3(_A, _W, _H), // [76]
-    NO_ENTRY, // [77]
-    _3(_A, _N, _D), // [78]     (*)
+    _3(_A, _N, _D), // [77]     (*)
+    NO_ENTRY, // [78]
     _3(_A, _L, _M), // [79]
     _2(_A, _C), // [80]
     _2(_A, _Z), // [81]
