@@ -112,9 +112,9 @@ enum key_family
 
 // 3 bits for left pinky
 #define OFFSET_LEFT_PINKY 10
-#define L_I  (0 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+#define L_O  (0 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
 #define L_U  (1 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
-#define L_O  (2 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+#define L_I  (2 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
 
 // Table to convert family id to bit offset
 const uint8_t g_family_to_bit_offset[NB_FAMILY] =
@@ -377,9 +377,9 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         // Left hand
         0,      0,          0,          0,          0,          0,          0,
         0,      0,          USRL_3,     USRL_2,     USRL_1,     USRL_0,     S_ENT,
-        0,      L_U,        L_I,        L_C,        L_W,        L_N,        
-        0,      L_O,        L_A,        L_T,        L_H,        L_R,        SC_STAR,
-        0,      L_O,        L_S,        0,          0,
+        0,      L_U,        L_O,        L_C,        L_W,        L_N,        
+        0,      L_I,        L_A,        L_T,        L_H,        L_R,        SC_STAR,
+        0,      L_I,        L_S,        0,          0,
                                                                 SC_STAR,    SC_STAR,
                                                                             T_O,
                                                     SC_PLUS,    T_E,        T_A,
@@ -669,7 +669,7 @@ void stroke(void)
                 // L_A become L_S, so get the bit state of L_A and put it on L_S
                 family_bits &= ~(1L << (L_S & 0xF)); // Clear L_S
                 family_bits |= (family_bits & (1L << (L_A & 0xF))) << 1; // Transfert L_A to L_S
-                family_bits |= (1L << (L_A & 0xF)); // L_I become L_A
+                family_bits |= (1L << (L_A & 0xF)); // L_O become L_A
             }
         }
         else if (family_id == FAMILY_RIGHT_HAND)
@@ -700,11 +700,11 @@ void stroke(void)
                                 {
                                     if (left_pinky == 1)
                                     {
-                                        byte = _I;
+                                        byte = _O;
                                     }
                                     else if (left_pinky == 4)
                                     {
-                                        byte = _O;
+                                        byte = _I;
                                     }
                                     else if (left_pinky != 0)
                                     {
