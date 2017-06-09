@@ -22,7 +22,7 @@ const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS] =
     _2(_L, _Y), // [11]
     _2(_W, _H), // [12]
     _2(_M, _Y), // [13]
-    NO_ENTRY, // [14]
+    _4(_W, _H, _E, _R), // [14]     (*)
     NO_ENTRY, // [15]
     _1(_C), // [16]
     _1(_Z), // [17]
@@ -82,7 +82,7 @@ const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS] =
     _3(_A, _L, _L), // [71]
     _2(_A, _H), // [72]
     _2(_A, _Y), // [73]
-    NO_ENTRY, // [74]
+    _3(_A, _R, _M), // [74]     (*)
     NO_ENTRY, // [75]
     _3(_A, _W, _H), // [76]
     _3(_A, _N, _D), // [77]     (*)
@@ -113,9 +113,9 @@ const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS] =
     _4(_A, _T, _T, _R), // [102]
     _3(_A, _L, _W), // [103]        (*)
     _3(_A, _T, _H), // [104]
-    NO_ENTRY, // [105]
+    _3(_A, _N, _T), // [105]        (*)
     _4(_A, _T, _H, _L), // [106]
-    NO_ENTRY, // [107]
+    _4(_A, _N, _T, _R), // [107]    (*)
     _2(_A, _K), // [108]
     _4(_A, _C, _K, _N), // [109]
     NO_ENTRY, // [110]
@@ -241,8 +241,8 @@ const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS] =
     NO_ENTRY, // [230]
     NO_ENTRY, // [231]
     _4(_A, _S, _T, _H), // [232]
-    _3(_A, _N, _T), // [233]    (*)
-    NO_ENTRY,       // [234]
+    NO_ENTRY, // [233]
+    NO_ENTRY, // [234]
     _5(_A, _N, _T, _E, _R), // [235]    (*)
     _3(_A, _S, _K), // [236]
     NO_ENTRY, // [237]
