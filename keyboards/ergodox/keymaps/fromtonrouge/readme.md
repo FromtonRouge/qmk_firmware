@@ -345,7 +345,7 @@ PL7 and PR7 are used to write numbers
     CK              =       G|C|T
     CKL             =       L|G|C|T
     CKLES           =       L|G|C|T|S
-    CKLY            =       N|L|G|C|T           (*)
+    CKLY            =       R|L|G|C|T           (*)
     CKS             =       G|C|T|S
     CL              =       R|N|C|T             (*)
     CR              =       R|C|T               (*)
@@ -436,6 +436,8 @@ PL7 and PR7 are used to write numbers
     NT              =       N|T
     NTH             =       N|H|T
     NTHS            =       N|H|T|S
+    NTRY            =       R|N|G|T         (*)
+    NTRIES          =       R|N|G|T|S       (*)
     NTS             =       N|T|S
     NV              =       N|L|H|T             (*)
     P               =       L|C
