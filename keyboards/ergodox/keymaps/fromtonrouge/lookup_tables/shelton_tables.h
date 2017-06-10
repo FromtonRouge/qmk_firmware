@@ -436,7 +436,7 @@ const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS] =
     _4(_B, _E, _R, _T),                     // [91]     (*)
     _3(_C, _K, _L),                         // [92]
     NO_ENTRY,                               // [93]
-    NO_ENTRY,                               // [94]
+    _4(_C, _K, _L, _Y),                     // [94]     (*)
     NO_ENTRY,                               // [95]
     _2(_T, _H),                             // [96]
     _3(_R, _T, _H),                         // [97]
