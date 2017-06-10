@@ -108,10 +108,9 @@ enum key_family
 #define USRR_2  (2 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRR_3  (3 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 #define USRR_4  (4 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
-#define USRR_5  (5 | (FAMILY_RIGHT_USER_SYMBOLS << 4) | STENO_BIT)
 
 // 3 bits for left pinky
-#define OFFSET_LEFT_PINKY 10
+#define OFFSET_LEFT_PINKY 9
 #define L_O  (0 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
 #define L_U  (1 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
 #define L_I  (2 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
@@ -385,8 +384,8 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
                                                     SC_PLUS,    T_E,        T_A,
         // Right hand
         0,          0,          0,          0,          0,          0,          0,
-        SC_MSPC,    USRR_5,     USRR_4,     USRR_3,     USRR_2,     0,          0,
-                    R_R,        R_L,        R_C,        USRR_1,     USRR_0,     0, 
+        SC_MSPC,    USRR_0,     USRR_1,     USRR_2,     0,          0,          0,
+                    R_R,        R_L,        R_C,        USRR_3,     USRR_4,     0, 
         SC_MSPC,    R_N,        R_G,        R_H,        R_T,        RP_E,       RP_S,
                                 0,          0,          R_S,        RP_Y,       RP_S,
         SC_STAR,    SC_STAR,

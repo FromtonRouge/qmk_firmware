@@ -24,72 +24,40 @@ const uint16_t PROGMEM g_left_user_symbols_table[16][MAX_SYMBOLS] =
     NO_ENTRY                                // [15]
 };
 
-const uint16_t PROGMEM g_right_user_symbols_table[64][MAX_SYMBOLS] =
+const uint16_t PROGMEM g_right_user_symbols_table[32][MAX_SYMBOLS] =
 {
     NO_ENTRY,                               // [0]
-    _S1(_D),                                // [1]      0
-    _S2(_APOS, _S),                         // [2]      1
-    _S1(_D),                                // [3]      0|1
-    NO_ENTRY,                               // [4]      2
-    NO_ENTRY,                               // [5]      0|2
-    _S3(_N, _APOS, _T),                     // [6]      1|2
-    NO_ENTRY,                               // [7]      0|1|2
-    _S2(_E, _R),                            // [8]      3
-    NO_ENTRY,                               // [9]      0|3
-    _S3(_APOS, _L, _L),                     // [10]     1|3
-    NO_ENTRY,                               // [11]     0|1|3
-    _S3(_I, _N, _G),                        // [12]     2|3
-    NO_ENTRY,                               // [13]     0|2|3
-    NO_ENTRY,                               // [14]     1|2|3
+    _S2(_E, _R),                            // [1]
+    _S2(_E, _R),                            // [2]
+    _S3(_I, _N, _G),                        // [3]
+    _S2(_E, _R),                            // [4]
+    _S3(_I, _N, _G),                        // [5]
+    _S3(_I, _N, _G),                        // [6]
+    _S2(_APOS, _M),                         // [7]
+    _S2(_APOS, _S),                         // [8]
+    _S2(_APOS, _D),                         // [9]
+    _S3(_APOS, _V, _E),                     // [10]
+    _S3(_APOS, _R, _E),                     // [11]
+    _S3(_APOS, _L, _L),                     // [12]
+    NO_ENTRY,                               // [13]
+    _S3(_N, _APOS, _T),                     // [14]
     NO_ENTRY,                               // [15]
-    _S2(_E, _R),                            // [16]     4
-    NO_ENTRY,                               // [17]     0|4
-    _S3(_APOS, _V, _E),                     // [18]     1|4
-    NO_ENTRY,                               // [19]     0|1|4
-    NO_ENTRY,                               // [20]     2|4
-    NO_ENTRY,                               // [21]     0|2|4
-    NO_ENTRY,                               // [22]
+    _S1(_D),                                // [16]
+    NO_ENTRY,                               // [17]
+    NO_ENTRY,                               // [18]
+    NO_ENTRY,                               // [19]
+    NO_ENTRY,                               // [20]
+    NO_ENTRY,                               // [21]
+    _S3(_N, _APOS, _T),                     // [22]
     NO_ENTRY,                               // [23]
-    _S3(_I, _N, _G),                        // [24]     3|4
-    NO_ENTRY,                               // [25]     0|3|4
-    NO_ENTRY,                               // [26]     1|3|4
+    _S1(_D),                                // [24]
+    NO_ENTRY,                               // [25]
+    NO_ENTRY,                               // [26]
     NO_ENTRY,                               // [27]
-    NO_ENTRY,                               // [28]     2|3|4
+    NO_ENTRY,                               // [28]
     NO_ENTRY,                               // [29]
     NO_ENTRY,                               // [30]
-    NO_ENTRY,                               // [31]
-    _S2(_E, _R),                            // [32]     5
-    NO_ENTRY,                               // [33]     0|5
-    _S2(_APOS, _D),                         // [34]     1|5
-    NO_ENTRY,                               // [35]     0|1|5
-    NO_ENTRY,                               // [36]
-    NO_ENTRY,                               // [37]
-    NO_ENTRY,                               // [38]
-    NO_ENTRY,                               // [39]
-    NO_ENTRY,                               // [40]     3|5
-    NO_ENTRY,                               // [41]
-    NO_ENTRY,                               // [42]
-    NO_ENTRY,                               // [43]
-    NO_ENTRY,                               // [44]     2|3|5
-    NO_ENTRY,                               // [45]
-    NO_ENTRY,                               // [46]
-    NO_ENTRY,                               // [47]
-    _S3(_I, _N, _G),                        // [48]     4|5
-    NO_ENTRY,                               // [49]
-    _S2(_APOS, _M),                         // [50]     1|4|5
-    NO_ENTRY,                               // [51]
-    NO_ENTRY,                               // [52]
-    NO_ENTRY,                               // [53]
-    NO_ENTRY,                               // [54]
-    NO_ENTRY,                               // [55]
-    NO_ENTRY,                               // [56]     3|4|5
-    NO_ENTRY,                               // [57]
-    NO_ENTRY,                               // [58]
-    NO_ENTRY,                               // [59]
-    NO_ENTRY,                               // [60]
-    NO_ENTRY,                               // [61]
-    NO_ENTRY,                               // [62]
-    NO_ENTRY                                // [63]
+    NO_ENTRY                                // [31]
 };
 
 const uint16_t PROGMEM g_left_punctuations_table[256][MAX_PUNCTUATIONS] =
