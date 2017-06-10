@@ -456,7 +456,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // STENO LAYER
 [LAYER_STENO] = KEYMAP(
         // left hand
-        KC_F1,        KC_F2,      KC_F3,      KC_F4,      KC_F5,      KC_F6,        KC_BSPC,
+        KC_F1,        KC_F2,      KC_F3,      KC_F4,      KC_F5,      KC_F6,        KC_LGUI,
         KC_LALT,      KC_TAB,     CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
         KC_LCTL,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,   
         CKC_STENO,    CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
@@ -466,7 +466,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                         CKC_STENO,  CKC_STENO,    CKC_STENO,
         // right hand
                     KC_TRNS,        KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_F11,     KC_F12,
-                    CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_DEL,     KC_RALT,
+                    CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_BSPC,    KC_DEL,     KC_RALT,
                                     CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_RCTL,   
                     CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,   
                                                 KC_TRNS,    KC_TRNS,    CKC_STENO,  CKC_STENO,  CKC_STENO,
