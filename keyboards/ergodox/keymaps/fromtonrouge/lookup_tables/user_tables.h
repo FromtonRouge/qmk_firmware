@@ -3,27 +3,6 @@
 
 #include "keycodes.h"
 
-// User symbols lookup tables for the steno layer
-const uint16_t PROGMEM g_left_user_symbols_table[16][MAX_SYMBOLS] =
-{
-    NO_ENTRY,                               // [0]
-    _S1(CKC_CASE_INNER_ONCE),               // [1]
-    _S1(CKC_CASE_INNER_ONCE),               // [2]
-    _S1(CKC_CASE_UPPER_ONCE),               // [3]
-    _S1(CKC_CASE_INNER_ONCE),               // [4]
-    _S1(CKC_CASE_UPPER_ONCE),               // [5]
-    _S1(CKC_CASE_UPPER_ONCE),               // [6]
-    NO_ENTRY,                               // [7]
-    _S1(CKC_CASE_NORMAL),                   // [8]
-    _S1(CKC_CASE_INNER_LOCKED),             // [9]
-    NO_ENTRY,                               // [10]
-    _S1(CKC_CASE_UPPER_LOCKED),             // [11]
-    NO_ENTRY,                               // [12]
-    NO_ENTRY,                               // [13]
-    NO_ENTRY,                               // [14]
-    NO_ENTRY                                // [15]
-};
-
 const uint16_t PROGMEM g_right_user_symbols_table[32][MAX_SYMBOLS] =
 {
     NO_ENTRY,                               // [0]

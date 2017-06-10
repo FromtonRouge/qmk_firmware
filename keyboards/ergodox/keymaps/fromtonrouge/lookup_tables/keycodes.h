@@ -44,6 +44,9 @@ enum custom_keycodes
 #define _P3(c1, c2, c3) {c1, c2, c3, 0}
 #define _P4(c1, c2, c3, c4) {c1, c2, c3, c4}
 
+#define MAX_ONE_KEYCODE 1
+#define _SET(c1) {c1}
+
 #ifdef AZERTY_OS_ENABLE
 
 #include "keymap_extras/keymap_french.h"
