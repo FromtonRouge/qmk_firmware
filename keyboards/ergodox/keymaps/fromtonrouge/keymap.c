@@ -602,7 +602,6 @@ void stroke(void)
     const uint8_t original_mods = get_mods();
     del_mods(MOD_LSFT|MOD_RSFT);
 
-    bool initial_case = false;
     g_new_undo_command.change_index = 0;
     for (int i = 0; i < MAX_CHANGES; ++i)
     {
@@ -684,9 +683,32 @@ void stroke(void)
                     {
                         if (family_id == FAMILY_LEFT_CONTROLS)
                         {
-                            if ((word >= CKC_CASE_NORMAL) && (word <= CKC_CASE_UPPER_LOCKED))
+                            switch (word)
                             {
-                                g_case_mode = word;
+                            case CKC_RESET_SEP_AND_CASE:
+                                {
+                                    g_separator_mode = CKC_SEPMODE_SPC;
+                                    g_case_mode = CKC_CASE_NORMAL;
+                                    break;
+                                }
+                            case CKC_CAMEL:
+                                {
+                                    g_separator_mode = CKC_SEPMODE_NOSPC;
+                                    g_case_mode = CKC_CASE_INNER_LOCKED;
+                                    break;
+                                }
+                            default:
+                                {
+                                    if ((word >= CKC_CASE_NORMAL) && (word <= CKC_CASE_UPPER_LOCKED))
+                                    {
+                                        g_case_mode = word;
+                                    }
+                                    else if ((word >= CKC_SEPMODE_SPC) && (word <= CKC_SEPMODE_NOSPC))
+                                    {
+                                        g_separator_mode = word;
+                                    }
+                                    break;
+                                }
                             }
                         }
                         else if (family_id == FAMILY_LEFT_PINKY)
@@ -753,34 +775,7 @@ void stroke(void)
                         const uint16_t word = pgm_read_word(&(symbols_table[family_bits][code_pos]));
                         if (word)
                         {
-                            switch (word)
-                            {
-                            case CKC_CASE_NORMAL:
-                            case CKC_CASE_INNER_ONCE:
-                            case CKC_CASE_INNER_LOCKED:
-                            case CKC_CASE_UPPER_ONCE:
-                            case CKC_CASE_UPPER_LOCKED:
-                                {
-                                    g_case_mode = word;
-                                    break;
-                                }
-                            case CKC_SEPMODE_SPC:
-                            case CKC_SEPMODE_CAMEL:
-                            case CKC_SEPMODE_UNDS:
-                            case CKC_SEPMODE_MINS:
-                            case CKC_SEPMODE_SPC_UPPER:
-                            case CKC_SEPMODE_UNDS_UPPER:
-                            case CKC_SEPMODE_MINS_UPPER:
-                                {
-                                    g_separator_mode = word;
-                                    break;
-                                }
-                            default:
-                                {
-                                    stroke_add_element(kind, word);
-                                    break;
-                                }
-                            }
+                            stroke_add_element(kind, word);
                         }
                         else
                         {
@@ -814,6 +809,7 @@ void stroke(void)
         }
     }
 
+    bool force_normal_case = false;
     // Check if we can send the separator (space, underscore...) before the stroke
     if (g_stroke_buffer_count || (!g_stroke_buffer_count && has_separator && !has_star))
     {
@@ -825,40 +821,10 @@ void stroke(void)
                 keycode_separator = KC_SPC;
                 break;
             }
-        case CKC_SEPMODE_UNDS:
+        case CKC_SEPMODE_NOSPC:
             {
-                keycode_separator = _UNDS;
-                break;
-            }
-        case CKC_SEPMODE_MINS:
-            {
-                keycode_separator = _MINS;
-                break;
-            }
-        case CKC_SEPMODE_CAMEL:
-            {
-                initial_case = !has_separator;
-                break;
-            }
-        case CKC_SEPMODE_SPC_UPPER:
-            {
-                initial_case = false;
-                add_mods(MOD_LSFT);
-                keycode_separator = KC_SPC;
-                break;
-            }
-        case CKC_SEPMODE_UNDS_UPPER:
-            {
-                initial_case = false;
-                add_mods(MOD_LSFT);
-                keycode_separator = _UNDS;
-                break;
-            }
-        case CKC_SEPMODE_MINS_UPPER:
-            {
-                initial_case = false;
-                add_mods(MOD_LSFT);
-                keycode_separator = _MINS;
+                // Force normal case for this stroke if the SC_SEP is pressed
+                force_normal_case = has_separator;
                 break;
             }
         default:
@@ -900,7 +866,7 @@ void stroke(void)
         }
     }
 
-    if (initial_case || (g_case_mode > CKC_CASE_NORMAL))
+    if (!force_normal_case && (g_case_mode > CKC_CASE_NORMAL))
     {
         add_mods(MOD_LSFT);
     }
@@ -1010,23 +976,17 @@ void stroke(void)
             case CKC_CASE_INNER_ONCE:
                 {
                     g_case_mode = CKC_CASE_NORMAL;
-                    initial_case = true;
-                    break;
+                    // no break
                 }
             case CKC_CASE_INNER_LOCKED:
                 {
-                    initial_case = true;
+                    del_mods(MOD_LSFT);
                     break;
                 }
             default:
                 {
                     break;
                 }
-            }
-
-            if (initial_case)
-            {
-                del_mods(MOD_LSFT);
             }
         }
     }
