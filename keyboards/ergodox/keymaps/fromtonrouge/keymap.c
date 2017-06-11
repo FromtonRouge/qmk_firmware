@@ -31,8 +31,8 @@
 // Keys family
 enum key_family
 {
-    FAMILY_UNKNOWN,
     FAMILY_SPECIAL_CONTROLS,
+    FAMILY_CASE_CONTROLS,
     FAMILY_LEFT_PINKY,
     FAMILY_LEFT_HAND,
     FAMILY_THUMBS,
@@ -106,16 +106,21 @@ enum key_family
 #define LP_O  (0 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
 #define LP_U  (1 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
 #define LP_I  (2 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
-#define C_0   (3 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
-#define C_1   (4 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
-#define C_2   (5 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
-#define C_3   (6 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+
+// 6 bits for left pinky
+#define OFFSET_CASE_CONTROLS 8
+#define C_0   (0 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
+#define C_1   (1 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
+#define C_2   (2 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
+#define C_3   (3 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
+#define C_4   (4 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
+#define C_5   (5 | (FAMILY_CASE_CONTROLS << 4) | STENO_BIT)
 
 // Table to convert family id to bit offset
 const uint8_t g_family_to_bit_offset[NB_FAMILY] =
 {
-    0,
     OFFSET_SPECIAL_CONTROLS,
+    OFFSET_CASE_CONTROLS,
     OFFSET_LEFT_PINKY,
     OFFSET_LEFT_HAND,
     OFFSET_THUMBS,
@@ -129,6 +134,7 @@ const uint8_t g_family_to_bit_offset[NB_FAMILY] =
 typedef enum
 {
     KIND_UNKNOWN,
+    KIND_ONE_KEYCODE,
     KIND_LETTERS,
     KIND_SYMBOLS,
     KIND_PUNCTUATIONS
@@ -164,8 +170,8 @@ void stroke_add_element(kind_table_t kind, uint16_t keycode)
 const uint8_t g_family_to_kind_table[NB_FAMILY] =
 {
     KIND_UNKNOWN,
-    KIND_UNKNOWN,
-    KIND_UNKNOWN,   // Left pinky
+    KIND_ONE_KEYCODE,   // Case controls
+    KIND_ONE_KEYCODE,   // Left pinky
     KIND_LETTERS,   // Left hand
     KIND_LETTERS,   // Thumbs
     KIND_LETTERS,   // Right hand
@@ -180,8 +186,8 @@ uint32_t g_bits_keys_pressed_part2 = 0;
 
 uint32_t* g_family_to_keys_pressed[NB_FAMILY] = 
 {
-    &g_bits_keys_pressed_part1,
-    &g_bits_keys_pressed_part1,
+    &g_bits_keys_pressed_part1, // Special controls
+    &g_bits_keys_pressed_part2, // Case controls
     &g_bits_keys_pressed_part2, // Left pinky
     &g_bits_keys_pressed_part1, // Left hand
     &g_bits_keys_pressed_part1, // Thumbs
@@ -192,14 +198,15 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
 };
 
 uint8_t g_family_bits[NB_FAMILY] = {0};
+typedef const uint16_t one_keycode_table_t[MAX_ONE_KEYCODE];
 typedef const uint8_t letters_table_t[MAX_LETTERS];
 typedef const uint16_t symbols_table_t[MAX_SYMBOLS];
 typedef const uint16_t punctuations_table_t[MAX_PUNCTUATIONS];
 void* g_all_tables[NB_FAMILY] = 
 {
     0,
-    0,
-    0,
+    (void*)g_case_controls_table,
+    (void*)g_left_pinky_table,
     (void*)g_left_hand_table,
     (void*)g_thumbs_table,
     (void*)g_right_hand_table,
@@ -367,10 +374,10 @@ uint16_t g_case_mode = CKC_CASE_NORMAL;
 const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         // Left hand
         0,      0,          0,          0,          0,          0,          0,
-        0,      0,          0,          C_3,        C_2,        C_1,        S_ENT,
+        0,      0,          0,          C_2,        C_1,        C_0,        S_ENT,
         0,      LP_U,       LP_O,       L_C,        L_W,        L_N,        
-        0,      LP_I,       L_A,        L_T,        L_H,        L_R,        SC_STAR,
-        0,      C_0,        L_S,        0,          0,
+        C_5,    LP_I,       L_A,        L_T,        L_H,        L_R,        SC_STAR,
+        C_4,    C_3,        L_S,        0,          0,
                                                                 SC_STAR,    SC_STAR,
                                                                             T_O,
                                                     SC_PLUS,    T_E,        T_A,
@@ -608,29 +615,17 @@ void stroke(void)
     const bool has_star = special_controls_bits & (1 << (SC_STAR & 0xF));
     const bool has_plus = special_controls_bits & (1 << (SC_PLUS & 0xF));
     const bool has_meta_space = special_controls_bits & (1 << (SC_MSPC & 0xF));
-    const uint8_t left_pinky_bits = g_family_bits[FAMILY_LEFT_PINKY];
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
+    const uint8_t left_pinky_bits = g_family_bits[FAMILY_LEFT_PINKY];
 
-    // Left pinky check
-    uint16_t left_pinky_keycode = 0;
-    if (left_pinky_bits)
+    // Reset C_3 if LP_I is pressed
+    if (left_pinky_bits & STENO_KEY_BIT(LP_I))
     {
-        left_pinky_keycode = pgm_read_word(&(g_left_pinky_table[left_pinky_bits][0]));
-        if ((left_pinky_keycode >= CKC_CASE_NORMAL) && (left_pinky_keycode <= CKC_CASE_UPPER_LOCKED))
-        {
-            g_case_mode = left_pinky_keycode;
-        }
-        else if (left_pinky_keycode == _I)
-        {
-            g_family_bits[FAMILY_LEFT_HAND] |= (1L << (L_A & 0xF));
-        }
-        else if (left_pinky_keycode == _O || left_pinky_keycode == _U)
-        {
-            g_family_bits[FAMILY_LEFT_HAND] |= (1L << (L_S & 0xF));
-        }
+        g_family_bits[FAMILY_CASE_CONTROLS] &= ~STENO_KEY_BIT(C_3);
     }
 
     // Build stroke (but we don't send it yet)
+    uint16_t left_pinky_keycode = 0;
     bool undo_allowed = true;
     for (int family_id = 0; family_id < NB_FAMILY; ++family_id)
     {
@@ -659,13 +654,13 @@ void stroke(void)
                 kind = KIND_PUNCTUATIONS;
             }
 
-            // Handle left pinky
+            // Check left pinky value
             if (left_pinky_keycode == _O || left_pinky_keycode == _U)
             {
                 // L_A become L_S, so get the bit state of L_A and put it on L_S
-                family_bits &= ~(1L << (L_S & 0xF)); // Clear L_S
-                family_bits |= (family_bits & (1L << (L_A & 0xF))) << 1; // Transfert L_A to L_S
-                family_bits |= (1L << (L_A & 0xF)); // LP_O become L_A
+                family_bits &= ~STENO_KEY_BIT(L_S); // Clear L_S
+                family_bits |= (family_bits & STENO_KEY_BIT(L_A)) << 1; // Transfert L_A to L_S
+                family_bits |= STENO_KEY_BIT(L_A); // LP_O or LP_U become L_A
             }
         }
         else if (family_id == FAMILY_RIGHT_HAND)
@@ -681,6 +676,34 @@ void stroke(void)
         {
             switch (kind)
             {
+            case KIND_ONE_KEYCODE:
+                {
+                    one_keycode_table_t* one_keycode_table = (one_keycode_table_t*)any_table;
+                    const uint16_t word = pgm_read_word(&(one_keycode_table[family_bits][0]));
+                    if (word)
+                    {
+                        if (family_id == FAMILY_CASE_CONTROLS)
+                        {
+                            if ((word >= CKC_CASE_NORMAL) && (word <= CKC_CASE_UPPER_LOCKED))
+                            {
+                                g_case_mode = word;
+                            }
+                        }
+                        else if (family_id == FAMILY_LEFT_PINKY)
+                        {
+                            left_pinky_keycode = word;
+                            if (word == _I)
+                            {
+                                g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_A);
+                            }
+                            else if (word == _O || word == _U)
+                            {
+                                g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_S);
+                            }
+                        }
+                    }
+                    break;
+                }
             case KIND_LETTERS:
                 {
                     letters_table_t* letters_table = (letters_table_t*)any_table;

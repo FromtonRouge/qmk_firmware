@@ -45,7 +45,9 @@ enum custom_keycodes
 #define _P4(c1, c2, c3, c4) {c1, c2, c3, c4}
 
 #define MAX_ONE_KEYCODE 1
-#define _SET(c1) {c1}
+#define _K1(c1) {c1}
+
+#define STENO_KEY_BIT(x) (1L << (x & 0xF))
 
 #ifdef AZERTY_OS_ENABLE
 
