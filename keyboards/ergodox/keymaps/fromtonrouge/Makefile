@@ -16,3 +16,9 @@ endif
 ifeq ($(strip $(PROGRAMMER_COLEMAK_ENABLE)), yes)
     OPT_DEFS += -DPROGRAMMER_COLEMAK_ENABLE
 endif
+
+SRC += undo.c \
+	   stroke.c \
+	   lookup_tables/tables.c \
+	   lookup_tables/shelton_tables.c \
+	   lookup_tables/user_tables.c

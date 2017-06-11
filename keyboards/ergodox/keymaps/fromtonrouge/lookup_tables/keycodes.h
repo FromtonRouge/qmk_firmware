@@ -1,6 +1,9 @@
 #ifndef KEYCODES_H
 #define KEYCODES_H
 
+#include "quantum/quantum_keycodes.h"
+#include "tmk_core/common/keycode.h"
+
 enum custom_keycodes
 {
     CKC_STENO = SAFE_RANGE,
@@ -20,29 +23,6 @@ enum custom_keycodes
     CKC_DLEFT,
     CKC_ENTABOVE
 };
-
-#define MAX_LETTERS 6
-#define NO_ENTRY {0}
-#define _1(c1) {c1, 0, 0, 0, 0, 0}
-#define _2(c1, c2) {c1, c2, 0, 0, 0, 0}
-#define _3(c1, c2, c3) {c1, c2, c3, 0, 0, 0}
-#define _4(c1, c2, c3, c4) {c1, c2, c3, c4, 0, 0}
-#define _5(c1, c2, c3, c4, c5) {c1, c2, c3, c4, c5, 0}
-#define _6(c1, c2, c3, c4, c5, c6) {c1, c2, c3, c4, c5, c6}
-
-#define MAX_SYMBOLS 3
-#define _S1(c1) {c1, 0, 0}
-#define _S2(c1, c2) {c1, c2, 0}
-#define _S3(c1, c2, c3) {c1, c2, c3}
-
-#define MAX_PUNCTUATIONS 4
-#define _P1(c1) {c1, 0, 0, 0}
-#define _P2(c1, c2) {c1, c2, 0, 0}
-#define _P3(c1, c2, c3) {c1, c2, c3, 0}
-#define _P4(c1, c2, c3, c4) {c1, c2, c3, c4}
-
-#define MAX_ONE_KEYCODE 1
-#define _K1(c1) {c1}
 
 #define STENO_KEY_BIT(x) (1L << (x & 0xF))
 
@@ -167,7 +147,7 @@ enum custom_keycodes
 #define _PIPE   KC_PIPE
 #define _GRV    KC_GRV 
 #define _BSLS   KC_BSLS
-#define _CIRC   ALGR(KC_9)
+#define _CIRC   RALT(KC_9)
 #define _AT     KC_AT 
 #define _RBRC   KC_RBRC
 #define _RCBR   KC_RCBR
@@ -197,5 +177,78 @@ enum custom_keycodes
 #define _V      KC_V
 #define _X      KC_X
 #define _Y      KC_Y
+
+// Bit to identify a steno key
+#define STENO_BIT (1L << 31) 
+
+// 3 bits for star and the plus key
+#define OFFSET_SPECIAL_CONTROLS 0
+#define SC_STAR (0 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+#define SC_PLUS (1 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+#define SC_SEP  (2 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+
+// 8 bits for the left hand
+#define OFFSET_LEFT_HAND 3
+#define L_N (0 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_R (1 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_W (2 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_H (3 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_C (4 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_T (5 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_A (6 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+#define L_S (7 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
+
+// 5 bits for thumbs
+#define OFFSET_THUMBS 11
+#define T_E (0 | (FAMILY_THUMBS << 4) | STENO_BIT)
+#define T_O (1 | (FAMILY_THUMBS << 4) | STENO_BIT)
+#define T_A (2 | (FAMILY_THUMBS << 4) | STENO_BIT)
+#define T_U (3 | (FAMILY_THUMBS << 4) | STENO_BIT)
+#define T_I (4 | (FAMILY_THUMBS << 4) | STENO_BIT)
+
+// 8 bits for the right hand
+#define OFFSET_RIGHT_HAND 16
+#define R_R (0 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
+#define R_N (1 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
+#define R_L (2 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
+#define R_G (3 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
+#define R_C (4 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
+#define R_H (5 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
+#define R_T (6 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
+#define R_S (7 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
+
+// 3 bits for E and Y and S
+#define OFFSET_RIGHT_PINKY 24
+#define RP_E  (0 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
+#define RP_Y  (1 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
+#define RP_S  (2 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
+
+// 2 bits for space control keys
+#define OFFSET_SPACE_CONTROLS 27
+#define S_TAB  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
+#define S_ENT  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
+
+// 5 bits for right controls
+#define OFFSET_RIGHT_CONTROLS 0
+#define R0  (0 | (FAMILY_RIGHT_CONTROLS << 4) | STENO_BIT)
+#define R1  (1 | (FAMILY_RIGHT_CONTROLS << 4) | STENO_BIT)
+#define R2  (2 | (FAMILY_RIGHT_CONTROLS << 4) | STENO_BIT)
+#define R3  (3 | (FAMILY_RIGHT_CONTROLS << 4) | STENO_BIT)
+#define R4  (4 | (FAMILY_RIGHT_CONTROLS << 4) | STENO_BIT)
+
+// 3 bits for left pinky
+#define OFFSET_LEFT_PINKY 5
+#define LP_O  (0 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+#define LP_U  (1 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+#define LP_I  (2 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
+
+// 6 bits for left controls
+#define OFFSET_LEFT_CONTROLS 8
+#define L0  (0 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)
+#define L1  (1 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)
+#define L2  (2 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)
+#define L3  (3 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)
+#define L4  (4 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)
+#define L5  (5 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)
 
 #endif
