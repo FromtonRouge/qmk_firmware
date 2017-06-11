@@ -3,7 +3,7 @@
 
 #include "keycodes.h"
 
-const uint16_t PROGMEM g_case_controls_table[64][MAX_ONE_KEYCODE] =
+const uint16_t PROGMEM g_left_controls_table[64][MAX_ONE_KEYCODE] =
 {
     NO_ENTRY,                               // [0]
     _K1(CKC_CASE_INNER_ONCE),               // [1]
@@ -72,7 +72,7 @@ const uint16_t PROGMEM g_case_controls_table[64][MAX_ONE_KEYCODE] =
 };
 
 
-const uint16_t PROGMEM g_right_user_symbols_table[32][MAX_SYMBOLS] =
+const uint16_t PROGMEM g_right_controls_table[32][MAX_SYMBOLS] =
 {
     NO_ENTRY,                               // [0]
     _S2(_E, _R),                            // [1]

@@ -40,16 +40,6 @@ SEP is the separator key :
     * When used alone it adds a separator (space by default).
     * When used with the STAR key, SEP becomes a Backspace key.
 
-There are 7 separator modes (triggered from L2 to L5):
-
-    * Space mode (default) : a space is inserted before a stroke
-    * Space+Uppercase mode : same but all characters are in UPPERCASE
-    * Camelcase mode : in this mode there is no separator, but the first letter of all strokes is in UPPERCASE
-    * Underscore mode : _ is inserted before a stroke
-    * Underscore+Uppercase mode : same but all characters are in UPPERCASE
-    * Minus mode : - is inserted before a stroke
-    * Minus+Uppercase mode : same but all characters are in UPPERCASE
-
 ![Programmer Steno](images/programmer-steno.png)
 
 Home position :    
@@ -544,18 +534,3 @@ PL7 and PR7 are used to write numbers
     Y               =       Y
     YS              =       Y|S
 
-### Lookup table for user left punctuations (when * is used with the left hand)
-
-    [WORK IN PROGRESS]
-
-### Lookup table for user right punctuations (when * is used with the right hand)
-
-    [WORK IN PROGRESS]
-
-### Lookup table for left user symbols and punctuations
-
-    [WORK IN PROGRESS]
-
-### Lookup table for right user symbols and punctuations
-
-    [WORK IN PROGRESS]
