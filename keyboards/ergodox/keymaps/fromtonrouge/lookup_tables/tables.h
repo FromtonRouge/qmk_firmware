@@ -1,8 +1,8 @@
 #ifndef TABLES_H
 #define TABLES_H
 
-#include <stdbool.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 // Keys family
 enum key_family

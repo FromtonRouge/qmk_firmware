@@ -1,8 +1,8 @@
 #ifndef UNDO_H
 #define UNDO_H
 
-#include <stdbool.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define MAX_UNDO 100
 

@@ -1,15 +1,13 @@
-#include "ergodox.h"
-#include "debug.h"
-#include "action_layer.h"
-#include "action_util.h"
 #include "colemak.h"
 #include "undo.h"
 #include "stroke.h"
-#include "keymap_extras/keymap_french.h"
 #include "lookup_tables/shelton_tables.h"
 #include "lookup_tables/user_tables.h"
-#include "lookup_tables/table.h"
 #include "lookup_tables/tables.h"
+#include "ergodox.h"
+#include "quantum/keymap_extras/keymap_french.h"
+#include "tmk_core/common/action_layer.h"
+#include "tmk_core/common/action_util.h"
 
 // Layer indexes
 #define LAYER_BASE 0
@@ -113,7 +111,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_STENO] = KEYMAP(
         // left hand
         KC_F1,        KC_F2,      KC_F3,      KC_F4,      KC_F5,      KC_F6,        KC_LGUI,
-        KC_LALT,      KC_TAB,     CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
+        KC_LALT,      KC_TAB,     KC_ESC,     CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
         KC_LCTL,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,   
         CKC_STENO,    CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
         CKC_STENO,    CKC_STENO,  CKC_STENO,      KC_TRNS,    KC_TRNS,

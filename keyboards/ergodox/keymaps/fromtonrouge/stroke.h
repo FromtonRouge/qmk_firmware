@@ -1,10 +1,10 @@
 #ifndef STROKE_H
 #define STROKE_H
 
-#include <stdbool.h>
-#include <stdint.h>
 #include "lookup_tables/tables.h"
 #include "lookup_tables/table.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 typedef struct
 {

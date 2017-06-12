@@ -1,9 +1,9 @@
 #ifndef COLEMAK_H
 #define COLEMAK_H
 
-#include <stdint.h>
-#include "tmk_core/common/keycode.h"
 #include "quantum/keymap_extras/keymap_french.h"
+#include "tmk_core/common/keycode.h"
+#include <stdint.h>
 
 // For the Programmer Colemak layout
 #ifdef AZERTY_OS_ENABLE
