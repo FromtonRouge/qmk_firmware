@@ -92,7 +92,13 @@ void stroke(void)
     // Reset L3 if LP_I is pressed
     if (left_pinky_bits & STENO_KEY_BIT(LP_I))
     {
-        g_family_bits[FAMILY_LEFT_CONTROLS] &= ~STENO_KEY_BIT(L3);
+		uint8_t* left_controls_bits = &g_family_bits[FAMILY_LEFT_CONTROLS];
+		const uint8_t bit_L3 = STENO_KEY_BIT(L3);
+		if (*left_controls_bits & bit_L3)
+		{
+			*left_controls_bits &= ~bit_L3;
+			g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_S);
+		}
     }
 
     // Build stroke (but we don't send it yet)
@@ -126,13 +132,13 @@ void stroke(void)
             }
 
             // Check left pinky value
-            if (left_pinky_keycode == _O || left_pinky_keycode == _U)
-            {
-                // L_A become L_S, so get the bit state of L_A and put it on L_S
-                family_bits &= ~STENO_KEY_BIT(L_S); // Clear L_S
-                family_bits |= (family_bits & STENO_KEY_BIT(L_A)) << 1; // Transfert L_A to L_S
-                family_bits |= STENO_KEY_BIT(L_A); // LP_O or LP_U become L_A
-            }
+            if (left_pinky_keycode == _O || left_pinky_keycode == _U || left_pinky_keycode == CKC_US)
+			{
+				// L_A become L_S, so get the bit state of L_A and put it on L_S
+				family_bits &= ~STENO_KEY_BIT(L_S); // Clear L_S
+				family_bits |= (family_bits & STENO_KEY_BIT(L_A)) << 1; // Transfert L_A to L_S
+				family_bits |= STENO_KEY_BIT(L_A); // Force L_A (it will be converted to _U, _O or _I after)
+			}
         }
         else if (family_id == FAMILY_RIGHT_HAND)
         {
@@ -192,8 +198,13 @@ void stroke(void)
                             }
                             else if (word == _O || word == _U)
                             {
+								// Add useless L_S so g_family_bits[FAMILY_LEFT_HAND] is not empty
                                 g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_S);
                             }
+							else if (word == CKC_US)
+							{
+								g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_A);
+							}
                         }
                     }
                     break;
@@ -211,9 +222,16 @@ void stroke(void)
                             {
                                 if (byte == _A)
                                 {
-                                    if (left_pinky_keycode != 0 && left_pinky_keycode < CKC_STENO)
+                                    if (left_pinky_keycode != 0)
                                     {
-                                        byte = (uint8_t)left_pinky_keycode;
+										if (left_pinky_keycode < CKC_STENO)
+										{
+											byte = (uint8_t)left_pinky_keycode;
+										}
+										else if (left_pinky_keycode == CKC_US)
+										{
+											byte = _U;
+										}
                                     }
                                 }
                             }
