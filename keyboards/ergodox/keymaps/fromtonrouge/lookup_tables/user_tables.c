@@ -105,7 +105,7 @@ const uint16_t PROGMEM g_right_controls_table[32][MAX_SYMBOLS] =
     NO_ENTRY                                // [31]
 };
 
-const uint16_t PROGMEM g_left_punctuations_table[256][MAX_PUNCTUATIONS] =
+const uint16_t PROGMEM g_left_punctuation_table[256][MAX_PUNCTUATION] =
 {
     NO_ENTRY, // [0]
     _P1(_APOS), // [1]
@@ -365,7 +365,7 @@ const uint16_t PROGMEM g_left_punctuations_table[256][MAX_PUNCTUATIONS] =
     NO_ENTRY // [255]
 };
 
-const uint16_t PROGMEM g_right_punctuations_table[256][MAX_PUNCTUATIONS] =
+const uint16_t PROGMEM g_right_punctuation_table[256][MAX_PUNCTUATION] =
 {
     NO_ENTRY, // [0]
     _P1(_APOS), // [1]

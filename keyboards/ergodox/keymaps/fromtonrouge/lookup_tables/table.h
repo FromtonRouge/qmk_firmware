@@ -10,7 +10,7 @@ typedef enum
     KIND_ONE_KEYCODE,
     KIND_LETTERS,
     KIND_SYMBOLS,
-    KIND_PUNCTUATIONS
+    KIND_PUNCTUATION
 } kind_table_t;
 
 #define MAX_LETTERS 6
@@ -27,7 +27,7 @@ typedef enum
 #define _S2(c1, c2) {c1, c2, 0}
 #define _S3(c1, c2, c3) {c1, c2, c3}
 
-#define MAX_PUNCTUATIONS 4
+#define MAX_PUNCTUATION 4
 #define _P1(c1) {c1, 0, 0, 0}
 #define _P2(c1, c2) {c1, c2, 0, 0}
 #define _P3(c1, c2, c3) {c1, c2, c3, 0}
@@ -39,7 +39,7 @@ typedef enum
 typedef const uint16_t one_keycode_table_t[MAX_ONE_KEYCODE];
 typedef const uint8_t letters_table_t[MAX_LETTERS];
 typedef const uint16_t symbols_table_t[MAX_SYMBOLS];
-typedef const uint16_t punctuations_table_t[MAX_PUNCTUATIONS];
+typedef const uint16_t punctuation_table_t[MAX_PUNCTUATION];
 
 #endif
 

@@ -14,6 +14,7 @@ uint32_t g_bits_keys_pressed_part1 = 0;
 uint32_t g_bits_keys_pressed_part2 = 0;
 uint16_t g_separator_mode = CKC_SEPMODE_SPC;
 uint16_t g_case_mode = CKC_CASE_NORMAL;
+uint16_t g_case_mode_on_next_stroke = 0;
 uint8_t g_family_bits[NB_FAMILY] = {0};
 uint32_t* g_family_to_keys_pressed[NB_FAMILY] = 
 {
@@ -88,6 +89,21 @@ void stroke(void)
     const bool has_separator = special_controls_bits & (1 << (SC_SEP & 0xF));
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
     const uint8_t left_pinky_bits = g_family_bits[FAMILY_LEFT_PINKY];
+	const bool punctuation_mode = (!thumbs_bits && has_star) && (g_family_bits[FAMILY_LEFT_HAND] || g_family_bits[FAMILY_RIGHT_HAND]);
+	if (punctuation_mode)
+	{
+		// Get bits from right controls and put them in the left controls
+		g_family_bits[FAMILY_LEFT_CONTROLS] |= g_family_bits[FAMILY_RIGHT_CONTROLS];
+		g_family_bits[FAMILY_LEFT_CONTROLS] &= 0x7; // Keep the first 3 bits only
+		g_family_bits[FAMILY_RIGHT_CONTROLS] = 0;
+	}
+
+	// Apply new case mode
+	if (g_case_mode_on_next_stroke)
+	{
+		g_case_mode = g_case_mode_on_next_stroke;
+		g_case_mode_on_next_stroke = 0;
+	}
 
     // Reset L3 if LP_I is pressed
     if (left_pinky_bits & STENO_KEY_BIT(LP_I))
@@ -125,10 +141,10 @@ void stroke(void)
         }
         else if (family_id == FAMILY_LEFT_HAND)
         {
-            if (!thumbs_bits && has_star)
+            if (punctuation_mode)
             {
-                any_table = (void*)g_left_punctuations_table;
-                kind = KIND_PUNCTUATIONS;
+                any_table = (void*)g_left_punctuation_table;
+                kind = KIND_PUNCTUATION;
             }
 
             // Check left pinky value
@@ -142,10 +158,10 @@ void stroke(void)
         }
         else if (family_id == FAMILY_RIGHT_HAND)
         {
-            if (!thumbs_bits && has_star)
+            if (punctuation_mode)
             {
-                any_table = (void*)g_right_punctuations_table;
-                kind = KIND_PUNCTUATIONS;
+                any_table = (void*)g_right_punctuation_table;
+                kind = KIND_PUNCTUATION;
             }
         }
 
@@ -161,6 +177,7 @@ void stroke(void)
                     {
                         if (family_id == FAMILY_LEFT_CONTROLS)
                         {
+							uint16_t previous_case_mode = g_case_mode;
                             switch (word)
                             {
                             case CKC_RESET_SEP_AND_CASE:
@@ -188,6 +205,12 @@ void stroke(void)
                                     break;
                                 }
                             }
+
+							if (punctuation_mode)
+							{
+								g_case_mode_on_next_stroke = g_case_mode;
+								g_case_mode = previous_case_mode;
+							}
                         }
                         else if (family_id == FAMILY_LEFT_PINKY)
                         {
@@ -274,12 +297,12 @@ void stroke(void)
                     }
                     break;
                 }
-            case KIND_PUNCTUATIONS:
+            case KIND_PUNCTUATION:
                 {
-                    punctuations_table_t* punctuations_table = (punctuations_table_t*)any_table;
-                    for (int code_pos = 0; code_pos < MAX_PUNCTUATIONS; ++code_pos)
+                    punctuation_table_t* punctuation_table = (punctuation_table_t*)any_table;
+                    for (int code_pos = 0; code_pos < MAX_PUNCTUATION; ++code_pos)
                     {
-                        const uint16_t word = pgm_read_word(&(punctuations_table[family_bits][code_pos]));
+                        const uint16_t word = pgm_read_word(&(punctuation_table[family_bits][code_pos]));
                         if (word)
                         {
                             stroke_add_element(kind, word);
@@ -395,7 +418,7 @@ void stroke(void)
                 }
                 break;
             }
-        case KIND_PUNCTUATIONS:
+        case KIND_PUNCTUATION:
             {
                 // TODO: Use another table for specific key sequences
                 uint16_t specific_sequence[5] = {0};
