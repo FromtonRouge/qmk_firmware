@@ -8,8 +8,8 @@ const uint16_t PROGMEM g_left_pinky_table[8][MAX_ONE_KEYCODE] =
     _K1(_U),                                // [3]
     _K1(_I),                                // [4]
     _K1(_U),                                // [5]
-    _K1(CKC_US),                            // [6]
-    _K1(CKC_US)                             // [7]
+    _K1(_U),                                // [6]
+    _K1(_U)                                 // [7]
 };
 
 // NOTE: (*) = not in the original Shelton table

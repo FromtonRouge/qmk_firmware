@@ -113,7 +113,6 @@ void stroke(void)
 		if (*left_controls_bits & bit_L3)
 		{
 			*left_controls_bits &= ~bit_L3;
-			g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_S);
 		}
     }
 
@@ -148,7 +147,7 @@ void stroke(void)
             }
 
             // Check left pinky value
-            if (left_pinky_keycode == _O || left_pinky_keycode == _U || left_pinky_keycode == CKC_US)
+            if (left_pinky_keycode == _O || left_pinky_keycode == _U)
 			{
 				// L_A become L_S, so get the bit state of L_A and put it on L_S
 				family_bits &= ~STENO_KEY_BIT(L_S); // Clear L_S
@@ -224,10 +223,6 @@ void stroke(void)
 								// Add useless L_S so g_family_bits[FAMILY_LEFT_HAND] is not empty
                                 g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_S);
                             }
-							else if (word == CKC_US)
-							{
-								g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_A);
-							}
                         }
                     }
                     break;
@@ -250,10 +245,6 @@ void stroke(void)
 										if (left_pinky_keycode < CKC_STENO)
 										{
 											byte = (uint8_t)left_pinky_keycode;
-										}
-										else if (left_pinky_keycode == CKC_US)
-										{
-											byte = _U;
 										}
                                     }
                                 }

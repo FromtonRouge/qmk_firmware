@@ -16,7 +16,6 @@ enum custom_keycodes
     CKC_SEPMODE_NOSPC,
     CKC_RESET_SEP_AND_CASE, // Set CKC_CASE_NORMAL + CKC_SEPMODE_SPC
     CKC_CAMEL,  // Set CKC_SEPMODE_NOSPC + CKC_CASE_INNER_LOCKED
-	CKC_US,
     CKC_SFT,    // Custom shift
     CKC_SFUN,   // Shift function
     CKC_CIRC,
