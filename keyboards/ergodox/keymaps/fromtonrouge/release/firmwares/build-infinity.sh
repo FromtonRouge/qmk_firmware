@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd ../../../../..
+cd ../../../../../..
 rm -f .build/infinity-*.bin
 
 # Infinity ErgoDox binaries
