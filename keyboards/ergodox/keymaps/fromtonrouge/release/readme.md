@@ -1,18 +1,3 @@
-## Release
-
-Firmware binaries are available for the following ErgoDox models :
-- Standard ErgoDox (.hex files)
-- ErgoDox EZ (.hex files)
-- Infinity ErgoDox (left and right hands .bin files)
-
-Filename format : [model]-[base_layer]-[steno_layer]-[os_layout].hex
-
-For more explanations on the layouts please go here : https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/ergodox/keymaps/fromtonrouge
-
-For qwerty-jackdaw-qwerty binaries the base layer is the default ErdoDox EZ one (QWERTY) :
-
-![qwerty-layer](https://cloud.githubusercontent.com/assets/1663920/15077688/eaedcbf6-13af-11e6-903b-71d0e284b912.png)
-
 ## Summary
 
 It's a firmware-implemented Programmer Colemak layout and a firmware-implemented Programmer Steno layout (no Plover needed)
@@ -23,23 +8,18 @@ This keymap is compatible with :
     * ErgoDox EZ
     * Infinity ErgoDox
 
-## Downloads
+Firmware binaries are available for the following ErgoDox models :
+- Standard ErgoDox (.hex files)
+- ErgoDox EZ (.hex files)
+- Infinity ErgoDox (left and right hands .bin files)
 
-You can directly download binaries from the release page : https://github.com/FromtonRouge/qmk_firmware/releases
+Filename format : [model]-[base_layer]-[steno_layer]-[os_layout].hex
 
-## Programmer Colemak layout
+The dev branch can be found here : https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/ergodox/keymaps/fromtonrouge
 
-(Inspired by the Programmer Dvorak layout : http://www.kaufmann.no/roland/dvorak)
+For qwerty-jackdaw-qwerty binaries the base layer is the default ErdoDox EZ one (QWERTY) :
 
-It's basically a Colemak layout with the Programmer Dvorak numbers and symbols row.
-
-![Programmer Colemak](images/programmer-colemak.png)
-
-## Fn Layer
-
-The TEENSY key (RESET) is define in this layer
-
-![Fn Layer](images/fn-layer.png)
+![qwerty-layer](https://cloud.githubusercontent.com/assets/1663920/15077688/eaedcbf6-13af-11e6-903b-71d0e284b912.png)
 
 ## Programmer Steno layout (experimental)
 
@@ -57,15 +37,15 @@ SEP is the separator key :
 
 The separator character(s) can be changed by the user by pressing left and right PLUS keys and by stroking a symbol in the punctuation table
 
-![Programmer Steno](images/programmer-steno.png)
+![programmer-steno](https://user-images.githubusercontent.com/1663920/27512321-a6d06fc2-593c-11e7-9297-c96dfc2005ec.png)
 
 Home position :    
     
-![Programmer Steno Home Position](images/programmer-steno-home.png)
+![programmer-steno-home](https://user-images.githubusercontent.com/1663920/27512327-cd0a0e82-593c-11e7-834a-bd5a61fb6628.png)
 
 Numbers and Punctuation (when * is used with the left or/and right hand) [WORK IN PROGRESS]:
 
-![Programmer Steno Home Position](images/programmer-steno-punctuations.png)
+![programmer-steno-punctuations](https://user-images.githubusercontent.com/1663920/27512332-da9f6b14-593c-11e7-8153-80826fc450b1.png)
 
 PL7 and PR7 are used to write numbers
 
@@ -550,4 +530,3 @@ PL7 and PR7 are used to write numbers
     S               =       S
     Y               =       Y
     YS              =       Y|S
-
