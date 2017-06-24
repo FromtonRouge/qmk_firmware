@@ -25,6 +25,7 @@ typedef struct
 typedef struct 
 {
     uint8_t change_index            :3;
+    uint16_t case_mode_on_next_stroke;
     change_t changes[MAX_CHANGES];
 } undo_command_t;
 

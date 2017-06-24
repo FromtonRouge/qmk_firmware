@@ -76,6 +76,7 @@ void stroke(void)
     del_mods(MOD_LSFT|MOD_RSFT);
 
     g_new_undo_command.change_index = 0;
+    g_new_undo_command.case_mode_on_next_stroke = 0;
     for (int i = 0; i < MAX_CHANGES; ++i)
     {
         g_new_undo_command.changes[i].kind = NO_CHANGE;
@@ -101,6 +102,7 @@ void stroke(void)
 	// Apply new case mode
 	if (g_case_mode_on_next_stroke)
 	{
+        g_new_undo_command.case_mode_on_next_stroke = g_case_mode_on_next_stroke;
 		g_case_mode = g_case_mode_on_next_stroke;
 		g_case_mode_on_next_stroke = 0;
 	}
@@ -596,6 +598,11 @@ void stroke(void)
                             }
                         }
                     }
+                }
+
+                if (previous_undo_command->case_mode_on_next_stroke)
+                {
+                    g_case_mode_on_next_stroke = previous_undo_command->case_mode_on_next_stroke;
                 }
 
                 g_undo_stack_index = previous_index;
