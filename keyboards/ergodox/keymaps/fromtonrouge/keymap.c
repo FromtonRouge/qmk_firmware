@@ -35,7 +35,7 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         L4,     L3,         L_S,        0,          0,
                                                                 SC_STAR,    SC_STAR,
                                                                             T_O,
-                                                    SC_PLUS,    T_E,        T_A,
+                                                    SC_LPLUS,   T_E,        T_A,
         // Right hand
         0,          0,          0,          0,          0,          0,          0,
         SC_SEP,     R0,         R1,         R2,         0,          0,          0,
@@ -44,7 +44,7 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
                                 0,          0,          R_S,        RP_Y,       RP_S,
         SC_STAR,    SC_STAR,
         T_A,
-        T_U,        T_I,       SC_PLUS 
+        T_U,        T_I,       SC_RPLUS 
 );
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {

@@ -181,14 +181,15 @@ enum custom_keycodes
 // Bit to identify a steno key
 #define STENO_BIT (1L << 31) 
 
-// 3 bits for star and the plus key
+// 4 bits for star and the plus key
 #define OFFSET_SPECIAL_CONTROLS 0
 #define SC_STAR (0 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
-#define SC_PLUS (1 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
-#define SC_SEP  (2 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+#define SC_LPLUS (1 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+#define SC_RPLUS (2 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
+#define SC_SEP  (3 | (FAMILY_SPECIAL_CONTROLS << 4) | STENO_BIT)
 
 // 8 bits for the left hand
-#define OFFSET_LEFT_HAND 3
+#define OFFSET_LEFT_HAND 4
 #define L_N (0 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 #define L_R (1 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 #define L_W (2 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
@@ -199,7 +200,7 @@ enum custom_keycodes
 #define L_S (7 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 
 // 5 bits for thumbs
-#define OFFSET_THUMBS 11
+#define OFFSET_THUMBS 12
 #define T_E (0 | (FAMILY_THUMBS << 4) | STENO_BIT)
 #define T_O (1 | (FAMILY_THUMBS << 4) | STENO_BIT)
 #define T_A (2 | (FAMILY_THUMBS << 4) | STENO_BIT)
@@ -207,7 +208,7 @@ enum custom_keycodes
 #define T_I (4 | (FAMILY_THUMBS << 4) | STENO_BIT)
 
 // 8 bits for the right hand
-#define OFFSET_RIGHT_HAND 16
+#define OFFSET_RIGHT_HAND 17
 #define R_R (0 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_N (1 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_L (2 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
@@ -218,13 +219,13 @@ enum custom_keycodes
 #define R_S (7 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 
 // 3 bits for E and Y and S
-#define OFFSET_RIGHT_PINKY 24
+#define OFFSET_RIGHT_PINKY 25
 #define RP_E  (0 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 #define RP_Y  (1 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 #define RP_S  (2 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 
 // 2 bits for space control keys
-#define OFFSET_SPACE_CONTROLS 27
+#define OFFSET_SPACE_CONTROLS 28
 #define S_TAB  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
 #define S_ENT  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
 

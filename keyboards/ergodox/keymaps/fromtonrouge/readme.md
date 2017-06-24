@@ -36,9 +36,11 @@ A separator character (space by default) is inserted automatically before a stro
 
 SEP is the separator key :
 
-    * When used in a stroke it cancels the separator (space by default) inserted automatically.
-    * When used alone it adds a separator (space by default).
+    * When used in a stroke it cancels the separator inserted automatically.
+    * When used alone it adds a separator.
     * When used with the STAR key, SEP becomes a Backspace key.
+
+The separator character(s) can be changed by the user by pressing left and right PLUS keys and by stroking a symbol in the punctuation table
 
 ![Programmer Steno](images/programmer-steno.png)
 
@@ -46,7 +48,7 @@ Home position :
     
 ![Programmer Steno Home Position](images/programmer-steno-home.png)
 
-Numbers and Punctuations (when * is used with the left or/and right hand) [WORK IN PROGRESS]:
+Numbers and Punctuation (when * is used with the left or/and right hand) [WORK IN PROGRESS]:
 
 ![Programmer Steno Home Position](images/programmer-steno-punctuations.png)
 

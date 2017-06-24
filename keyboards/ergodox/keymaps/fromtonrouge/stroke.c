@@ -29,6 +29,13 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
     &g_bits_keys_pressed_part1
 };
 
+// User separator data
+typedef struct
+{
+    uint8_t bits;
+    punctuation_table_t* table;
+} separator_t;
+separator_t g_user_separators[2] = {{0}}; // [0] = left hand bits, [1] = right hand bits
 
 bool can_stroke(void) { return (g_bits_keys_pressed_part1 == 0) && (g_bits_keys_pressed_part2 == 0); }
 
@@ -86,18 +93,35 @@ void stroke(void)
     // Get *, + and case controls info
     const uint8_t special_controls_bits = g_family_bits[FAMILY_SPECIAL_CONTROLS];
     const bool has_star = special_controls_bits & (1 << (SC_STAR & 0xF));
-    const bool has_plus = special_controls_bits & (1 << (SC_PLUS & 0xF));
+    const bool has_left_plus = special_controls_bits & (1 << (SC_LPLUS & 0xF));
+    const bool has_right_plus = special_controls_bits & (1 << (SC_RPLUS & 0xF));
+    const bool double_first_letter = (has_left_plus && !has_right_plus) || (has_right_plus && !has_left_plus);
     const bool has_separator = special_controls_bits & (1 << (SC_SEP & 0xF));
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
     const uint8_t left_pinky_bits = g_family_bits[FAMILY_LEFT_PINKY];
-	const bool punctuation_mode = (!thumbs_bits && has_star) && (g_family_bits[FAMILY_LEFT_HAND] || g_family_bits[FAMILY_RIGHT_HAND]);
+    const bool choose_separator_mode = has_left_plus && has_right_plus;
+	bool punctuation_mode = ((!thumbs_bits && has_star) && (g_family_bits[FAMILY_LEFT_HAND] || g_family_bits[FAMILY_RIGHT_HAND])) || choose_separator_mode;
+    uint8_t* left_controls_bits = &g_family_bits[FAMILY_LEFT_CONTROLS];
 	if (punctuation_mode)
 	{
 		// Get bits from right controls and put them in the left controls
-		g_family_bits[FAMILY_LEFT_CONTROLS] |= g_family_bits[FAMILY_RIGHT_CONTROLS];
-		g_family_bits[FAMILY_LEFT_CONTROLS] &= 0x7; // Keep the first 3 bits only
+		*left_controls_bits |= g_family_bits[FAMILY_RIGHT_CONTROLS];
+		*left_controls_bits &= 0x7; // Keep the first 3 bits only
 		g_family_bits[FAMILY_RIGHT_CONTROLS] = 0;
 	}
+
+    // Choose separator mode init
+    if (choose_separator_mode)
+    {
+        if (*left_controls_bits)
+        {
+            *left_controls_bits |= STENO_KEY_BIT(L3);
+        }
+        g_user_separators[0].bits = 0;
+        g_user_separators[0].table = g_left_punctuation_table;
+        g_user_separators[1].bits = 0;
+        g_user_separators[1].table = g_right_punctuation_table;
+    }
 
 	// Apply new case mode
 	if (g_case_mode_on_next_stroke)
@@ -110,7 +134,6 @@ void stroke(void)
     // Reset L3 if LP_I is pressed
     if (left_pinky_bits & STENO_KEY_BIT(LP_I))
     {
-		uint8_t* left_controls_bits = &g_family_bits[FAMILY_LEFT_CONTROLS];
 		const uint8_t bit_L3 = STENO_KEY_BIT(L3);
 		if (*left_controls_bits & bit_L3)
 		{
@@ -146,6 +169,12 @@ void stroke(void)
             {
                 any_table = (void*)g_left_punctuation_table;
                 kind = KIND_PUNCTUATION;
+                
+                if (choose_separator_mode)
+                {
+                    g_user_separators[0].bits = family_bits;
+                    any_table = 0;
+                }
             }
 
             // Check left pinky value
@@ -163,6 +192,12 @@ void stroke(void)
             {
                 any_table = (void*)g_right_punctuation_table;
                 kind = KIND_PUNCTUATION;
+
+                if (choose_separator_mode)
+                {
+                    g_user_separators[1].bits = family_bits;
+                    any_table = 0;
+                }
             }
         }
 
@@ -185,6 +220,8 @@ void stroke(void)
                                 {
                                     g_separator_mode = CKC_SEPMODE_SPC;
                                     g_case_mode = CKC_CASE_NORMAL;
+                                    g_user_separators[0].bits = 0;
+                                    g_user_separators[1].bits = 0;
                                     break;
                                 }
                             case CKC_CAMEL:
@@ -207,7 +244,7 @@ void stroke(void)
                                 }
                             }
 
-							if (punctuation_mode)
+							if (punctuation_mode && !choose_separator_mode)
 							{
 								g_case_mode_on_next_stroke = g_case_mode;
 								g_case_mode = previous_case_mode;
@@ -261,7 +298,7 @@ void stroke(void)
                             }
 
                             // Jackdaw rule: Double the first letter for the right hand only if + is in the stroke
-                            if (has_plus && (family_id == FAMILY_RIGHT_HAND) && !code_pos)
+                            if (double_first_letter && (family_id == FAMILY_RIGHT_HAND) && !code_pos)
                             {
                                 stroke_add_element(kind, byte);
                             }
@@ -366,9 +403,39 @@ void stroke(void)
 
         if (can_send_separator && keycode_separator && (!has_separator || (!g_stroke_buffer_count && has_separator && !has_star)))
         {
-            send_mods_and_code(keycode_separator >> 8, keycode_separator);
-            unregister_code(keycode_separator);
-            undo_command_add_change(&g_new_undo_command, CHARACTER);
+            if (!g_user_separators[0].bits && ! g_user_separators[1].bits)
+            {
+                // No user defined separator
+                send_mods_and_code(keycode_separator >> 8, keycode_separator);
+                unregister_code(keycode_separator);
+                undo_command_add_change(&g_new_undo_command, CHARACTER);
+            }
+            else if (!choose_separator_mode)
+            {
+                // User defined separator
+                for (int i = 0; i < 2; ++i)
+                {
+                    if (g_user_separators[i].bits)
+                    {
+                        for (int code_pos = 0; code_pos < MAX_PUNCTUATION; ++code_pos)
+                        {
+                            const uint16_t word = pgm_read_word(&(g_user_separators[i].table[g_user_separators[i].bits][code_pos]));
+                            if (word)
+                            {
+                                const uint8_t code = (uint8_t)word;
+                                send_mods_and_code(word >> 8, code);
+                                unregister_code(code);
+                                undo_command_add_change_from_code(&g_new_undo_command, code);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     }
 
