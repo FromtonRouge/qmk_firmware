@@ -14,7 +14,6 @@ uint32_t g_bits_keys_pressed_part1 = 0;
 uint32_t g_bits_keys_pressed_part2 = 0;
 uint16_t g_separator_mode = CKC_SEPMODE_SPC;
 uint16_t g_case_mode = CKC_CASE_NORMAL;
-uint16_t g_case_mode_on_next_stroke = 0;
 uint8_t g_family_bits[NB_FAMILY] = {0};
 uint32_t* g_family_to_keys_pressed[NB_FAMILY] = 
 {
@@ -83,12 +82,21 @@ void stroke(void)
     del_mods(MOD_LSFT|MOD_RSFT);
 
     g_new_undo_command.change_index = 0;
-    g_new_undo_command.case_mode_on_next_stroke = 0;
+    g_new_undo_command.previous_case_mode = g_case_mode;
+    g_new_undo_command.next_case_mode = 0;
     for (int i = 0; i < MAX_CHANGES; ++i)
     {
         g_new_undo_command.changes[i].kind = NO_CHANGE;
         g_new_undo_command.changes[i].count = 0;
     }
+
+    // Compute the previous index and get the previous undo command
+    int8_t previous_index = g_undo_stack_index - 1;
+    if (previous_index < 0)
+    {
+        previous_index = MAX_UNDO - 1;
+    }
+    undo_command_t* previous_undo_command = &g_undo_stack[previous_index];
 
     // Get *, + and case controls info
     const uint8_t special_controls_bits = g_family_bits[FAMILY_SPECIAL_CONTROLS];
@@ -123,12 +131,10 @@ void stroke(void)
         g_user_separators[1].table = g_right_punctuation_table;
     }
 
-	// Apply new case mode
-	if (g_case_mode_on_next_stroke)
+	// Apply new case mode from the previous command if any
+	if (previous_undo_command->next_case_mode)
 	{
-        g_new_undo_command.case_mode_on_next_stroke = g_case_mode_on_next_stroke;
-		g_case_mode = g_case_mode_on_next_stroke;
-		g_case_mode_on_next_stroke = 0;
+		g_case_mode = previous_undo_command->next_case_mode;
 	}
 
     // Reset L3 if LP_I is pressed
@@ -246,7 +252,7 @@ void stroke(void)
 
 							if (punctuation_mode && !choose_separator_mode)
 							{
-								g_case_mode_on_next_stroke = g_case_mode;
+                                g_new_undo_command.next_case_mode = g_case_mode;
 								g_case_mode = previous_case_mode;
 							}
                         }
@@ -586,15 +592,7 @@ void stroke(void)
     }
     else if (has_star)
     {
-        // Compute the previous index
-        int8_t previous_index = g_undo_stack_index - 1;
-        if (previous_index < 0)
-        {
-            previous_index = MAX_UNDO - 1;
-        }
-
-        // Check if we have data to undo at previous_index
-        undo_command_t* previous_undo_command = &g_undo_stack[previous_index];
+        // Check if we have data to undo in the previous undo command
         if (can_undo(previous_undo_command))
         {
             if (has_separator)
@@ -613,8 +611,8 @@ void stroke(void)
                     }
                 }
 
-                // If there is no more data to remove at previous_index we can go to the previous stroke undo data 
-                const uint8_t inserted_characters = undo_command_get_changes_count(&g_undo_stack[previous_index], CHARACTER);
+                // If there is no more data to remove in the previous undo command we can go backward in the undo stack
+                const uint8_t inserted_characters = undo_command_get_changes_count(previous_undo_command, CHARACTER);
                 if (inserted_characters == 0)
                 {
                     g_undo_stack_index = previous_index;
@@ -671,9 +669,10 @@ void stroke(void)
                     }
                 }
 
-                if (previous_undo_command->case_mode_on_next_stroke)
+                // Restore the case mode used before that command
+                if (previous_undo_command->next_case_mode)
                 {
-                    g_case_mode_on_next_stroke = previous_undo_command->case_mode_on_next_stroke;
+                    g_case_mode = previous_undo_command->previous_case_mode;
                 }
 
                 g_undo_stack_index = previous_index;

@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MAX_UNDO 100
+#define MAX_UNDO 75 // Can't use 100 anymore, not enough program memory
 
 typedef enum
 {
@@ -22,10 +22,13 @@ typedef struct
 } change_t;
 
 #define MAX_CHANGES 6
+
+// TODO: reduce the size of undo_command_t
 typedef struct 
 {
     uint8_t change_index            :3;
-    uint16_t case_mode_on_next_stroke;
+    uint16_t previous_case_mode;
+    uint16_t next_case_mode;
     change_t changes[MAX_CHANGES];
 } undo_command_t;
 
