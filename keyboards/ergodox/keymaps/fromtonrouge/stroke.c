@@ -82,7 +82,7 @@ void stroke(void)
     del_mods(MOD_LSFT|MOD_RSFT);
 
     g_new_undo_command.change_index = 0;
-    g_new_undo_command.previous_case_mode = g_case_mode;
+    g_new_undo_command.previous_case_mode = g_case_mode - CKC_CASE_NORMAL + 1;
     g_new_undo_command.next_case_mode = 0;
     for (int i = 0; i < MAX_CHANGES; ++i)
     {
@@ -108,15 +108,15 @@ void stroke(void)
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
     const uint8_t left_pinky_bits = g_family_bits[FAMILY_LEFT_PINKY];
     const bool choose_separator_mode = has_left_plus && has_right_plus;
-	bool punctuation_mode = ((!thumbs_bits && has_star) && (g_family_bits[FAMILY_LEFT_HAND] || g_family_bits[FAMILY_RIGHT_HAND])) || choose_separator_mode;
+    bool punctuation_mode = ((!thumbs_bits && has_star) && (g_family_bits[FAMILY_LEFT_HAND] || g_family_bits[FAMILY_RIGHT_HAND])) || choose_separator_mode;
     uint8_t* left_controls_bits = &g_family_bits[FAMILY_LEFT_CONTROLS];
-	if (punctuation_mode)
-	{
-		// Get bits from right controls and put them in the left controls
-		*left_controls_bits |= g_family_bits[FAMILY_RIGHT_CONTROLS];
-		*left_controls_bits &= 0x7; // Keep the first 3 bits only
-		g_family_bits[FAMILY_RIGHT_CONTROLS] = 0;
-	}
+    if (punctuation_mode)
+    {
+        // Get bits from right controls and put them in the left controls
+        *left_controls_bits |= g_family_bits[FAMILY_RIGHT_CONTROLS];
+        *left_controls_bits &= 0x7; // Keep the first 3 bits only
+        g_family_bits[FAMILY_RIGHT_CONTROLS] = 0;
+    }
 
     // Choose separator mode init
     if (choose_separator_mode)
@@ -131,20 +131,20 @@ void stroke(void)
         g_user_separators[1].table = g_right_punctuation_table;
     }
 
-	// Apply new case mode from the previous command if any
-	if (previous_undo_command->next_case_mode)
-	{
-		g_case_mode = previous_undo_command->next_case_mode;
-	}
+    // Apply new case mode from the previous command if any
+    if (previous_undo_command->next_case_mode)
+    {
+        g_case_mode = CKC_CASE_NORMAL + previous_undo_command->next_case_mode - 1;
+    }
 
     // Reset L3 if LP_I is pressed
     if (left_pinky_bits & STENO_KEY_BIT(LP_I))
     {
-		const uint8_t bit_L3 = STENO_KEY_BIT(L3);
-		if (*left_controls_bits & bit_L3)
-		{
-			*left_controls_bits &= ~bit_L3;
-		}
+        const uint8_t bit_L3 = STENO_KEY_BIT(L3);
+        if (*left_controls_bits & bit_L3)
+        {
+            *left_controls_bits &= ~bit_L3;
+        }
     }
 
     // Build stroke (but we don't send it yet)
@@ -185,12 +185,12 @@ void stroke(void)
 
             // Check left pinky value
             if (left_pinky_keycode == _O || left_pinky_keycode == _U)
-			{
-				// L_A become L_S, so get the bit state of L_A and put it on L_S
-				family_bits &= ~STENO_KEY_BIT(L_S); // Clear L_S
-				family_bits |= (family_bits & STENO_KEY_BIT(L_A)) << 1; // Transfert L_A to L_S
-				family_bits |= STENO_KEY_BIT(L_A); // Force L_A (it will be converted to _U, _O or _I after)
-			}
+            {
+                // L_A become L_S, so get the bit state of L_A and put it on L_S
+                family_bits &= ~STENO_KEY_BIT(L_S); // Clear L_S
+                family_bits |= (family_bits & STENO_KEY_BIT(L_A)) << 1; // Transfert L_A to L_S
+                family_bits |= STENO_KEY_BIT(L_A); // Force L_A (it will be converted to _U, _O or _I after)
+            }
         }
         else if (family_id == FAMILY_RIGHT_HAND)
         {
@@ -219,7 +219,7 @@ void stroke(void)
                     {
                         if (family_id == FAMILY_LEFT_CONTROLS)
                         {
-							uint16_t previous_case_mode = g_case_mode;
+                            uint16_t previous_case_mode = g_case_mode;
                             switch (word)
                             {
                             case CKC_RESET_SEP_AND_CASE:
@@ -250,11 +250,11 @@ void stroke(void)
                                 }
                             }
 
-							if (punctuation_mode && !choose_separator_mode)
-							{
-                                g_new_undo_command.next_case_mode = g_case_mode;
-								g_case_mode = previous_case_mode;
-							}
+                            if (punctuation_mode && !choose_separator_mode)
+                            {
+                                g_new_undo_command.next_case_mode = g_case_mode - CKC_CASE_NORMAL + 1;
+                                g_case_mode = previous_case_mode;
+                            }
                         }
                         else if (family_id == FAMILY_LEFT_PINKY)
                         {
@@ -265,7 +265,7 @@ void stroke(void)
                             }
                             else if (word == _O || word == _U)
                             {
-								// Add useless L_S so g_family_bits[FAMILY_LEFT_HAND] is not empty
+                                // Add useless L_S so g_family_bits[FAMILY_LEFT_HAND] is not empty
                                 g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_S);
                             }
                         }
@@ -287,10 +287,10 @@ void stroke(void)
                                 {
                                     if (left_pinky_keycode != 0)
                                     {
-										if (left_pinky_keycode < CKC_STENO)
-										{
-											byte = (uint8_t)left_pinky_keycode;
-										}
+                                        if (left_pinky_keycode < CKC_STENO)
+                                        {
+                                            byte = (uint8_t)left_pinky_keycode;
+                                        }
                                     }
                                 }
                             }
@@ -672,7 +672,7 @@ void stroke(void)
                 // Restore the case mode used before that command
                 if (previous_undo_command->next_case_mode)
                 {
-                    g_case_mode = previous_undo_command->previous_case_mode;
+                    g_case_mode = CKC_CASE_NORMAL + previous_undo_command->previous_case_mode - 1;
                 }
 
                 g_undo_stack_index = previous_index;
