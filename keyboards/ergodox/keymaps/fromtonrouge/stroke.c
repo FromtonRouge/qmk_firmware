@@ -50,7 +50,7 @@ bool is_letter(uint8_t code)
 void send_mods_and_code(uint8_t mods, uint8_t code)
 {
     const uint8_t original_mods = get_mods();
-    set_mods(mods);
+    set_mods((mods & 0x10) ? (mods & 0x0F) << 4 : mods); // see tmk_core/common/action_code.h
     register_code(code);
     set_mods(original_mods);
 }
