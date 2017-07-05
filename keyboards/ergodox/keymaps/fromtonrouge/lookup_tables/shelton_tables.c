@@ -274,7 +274,7 @@ const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS] =
     NO_ENTRY // [255]
 };
 
-// From Jackdaw (the 5 vowels version)
+// Vowels
 const uint8_t PROGMEM g_thumbs_table[32][MAX_LETTERS] =
 {
     NO_ENTRY,                               // [0]
@@ -284,7 +284,7 @@ const uint8_t PROGMEM g_thumbs_table[32][MAX_LETTERS] =
     _1(_A),                                 // [4]
     _2(_E, _A),                             // [5]
     _2(_O, _A),                             // [6]
-    _2(_Y, _A),                             // [7]
+    _1(_Y),                                 // [7]
     _1(_U),                                 // [8]
     _2(_E, _U),                             // [9]
     _2(_O, _U),                             // [10]
@@ -304,14 +304,14 @@ const uint8_t PROGMEM g_thumbs_table[32][MAX_LETTERS] =
     _2(_U, _I),                             // [24]
     _3(_E, _U, _I),                         // [25]
     _3(_O, _U, _I),                         // [26]
-    _1(_Y),                                 // [27]
-    _3(_A, _U, _I),                         // [28]
+    _4(_E, _O, _U, _I),                     // [27]     Find something usefull here
+    _2(_A, _Y),                             // [28]
     _2(_E, _Y),                             // [29]
     _2(_O, _Y),                             // [30]
-    _1(_Y),                                 // [31]
+    _5(_E, _O, _A, _U, _I),                 // [31]     Find something usefull here
 };
 
-// Double single vowels and invert bigrams
+// Double vowels and inverted bigrams
 const uint8_t PROGMEM g_thumbs_bigrams_table[32][MAX_LETTERS] =
 {
     NO_ENTRY,                               // [0]
@@ -321,7 +321,7 @@ const uint8_t PROGMEM g_thumbs_bigrams_table[32][MAX_LETTERS] =
     _2(_A, _A),                             // [4]
     _2(_A, _E),                             // [5]
     _2(_A, _O),                             // [6]
-    _2(_A, _Y),                             // [7]
+    _1(_Y),                                 // [7]      Find something usefull here
     _2(_U, _U),                             // [8]
     _2(_U, _E),                             // [9]
     _2(_U, _O),                             // [10]
@@ -342,7 +342,7 @@ const uint8_t PROGMEM g_thumbs_bigrams_table[32][MAX_LETTERS] =
     _3(_E, _I, _U),                         // [25]
     _3(_I, _O, _U),                         // [26]
     _4(_E, _O, _I, _U),                     // [27]     Find something usefull here
-    _3(_A, _I, _U),                         // [28]
+    _2(_Y, _A),                             // [28]
     _2(_Y, _E),                             // [29]
     _2(_Y, _O),                             // [30]
     _5(_E, _O, _A, _I, _U)                  // [31]     Find something usefull here
