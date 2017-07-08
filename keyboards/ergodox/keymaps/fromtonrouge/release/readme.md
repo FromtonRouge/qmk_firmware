@@ -252,15 +252,17 @@ PL7 and PR7 are used to write numbers
     A               =       A
     AI              =       A|I
     AU              =       A|U
-    AUI             =       A|U|I
+    AY              =       A|U|I
     E               =       E
     EA              =       E|A
     EAI             =       E|A|I
     EAU             =       E|A|U
     EI              =       E|I
     EO              =       E|O
+    EOAUI           =       E|O|A|U|I       Find something usefull here
     EOI             =       E|O|I
     EOU             =       E|O|U
+    EOUI            =       E|O|U|I         Find something usefull here
     EU              =       E|U
     EUI             =       E|U|I
     EY              =       E|A|U|I
@@ -275,9 +277,7 @@ PL7 and PR7 are used to write numbers
     OY              =       O|A|U|I
     U               =       U
     UI              =       U|I
-    Y               =       E|O|U|I
-    Y               =       E|O|A|U|I
-    YA              =       E|O|A
+    Y               =       E|O|A
     YI              =       E|O|A|I
     YU              =       E|O|A|U
 
@@ -285,9 +285,8 @@ PL7 and PR7 are used to write numbers
 
     AA              =       A
     AE              =       E|A
-    AIU             =       A|U|I
     AO              =       O|A
-    AY              =       E|O|A
+    Y               =       E|O|A
     EE              =       E
     EIA             =       E|A|I
     EIO             =       E|O|I
@@ -312,6 +311,7 @@ PL7 and PR7 are used to write numbers
     UO              =       O|U
     UU              =       U
     UY              =       E|O|A|U
+    YA              =       A|U|I
     YE              =       E|A|U|I
     YO              =       O|A|U|I
 
@@ -530,3 +530,4 @@ PL7 and PR7 are used to write numbers
     S               =       S
     Y               =       Y
     YS              =       Y|S
+
