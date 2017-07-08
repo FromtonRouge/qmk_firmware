@@ -99,6 +99,7 @@ PL7 and PR7 are used to write numbers
     AJ              =       A|T|W|N
     AK              =       A|T|W|H
     AL              =       A|N|R
+    ALY             =       A|N|R           (*)
     ALL             =       A|W|N|R
     ALM             =       A|W|H|N|R
     ALS             =       A|S|C|N|R       (*)
