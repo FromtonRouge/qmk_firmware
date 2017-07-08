@@ -168,6 +168,10 @@ void stroke(void)
             {
                 any_table = (void*)g_thumbs_bigrams_table;
             }
+            else if (has_right_plus && g_family_bits[FAMILY_LEFT_HAND] == 0 && g_family_bits[FAMILY_RIGHT_HAND] == 0)
+            {
+                g_case_mode = CKC_CASE_INNER_ONCE; // For 'I'
+            }
         }
         else if (family_id == FAMILY_LEFT_HAND)
         {
