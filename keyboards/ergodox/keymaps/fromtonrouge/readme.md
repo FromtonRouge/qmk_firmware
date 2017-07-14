@@ -54,7 +54,7 @@ Numbers and Punctuation (when * is used with the left or/and right hand) [WORK I
 
 PL7 and PR7 are used to write numbers
 
-### Dictionaries
+### Programmer Steno Dictionaries
 
 There are 3 main dictionaries:
 
@@ -64,7 +64,7 @@ There are 3 main dictionaries:
 
 Left and right hands dictionaries were created by **Dothan L. Shelton**, you can find their first definitions [here](https://www.google.com/patents/US3970185)
 
-Dictionaries used in Programmer Steno:
+List of all dictionaries:
 
 * [Left Controls Dictionary](dictionaries/dict_left_controls.md)
 * [Left Hand Dictionary](dictionaries/dict_left_hand.md)
@@ -77,5 +77,5 @@ Dictionaries used in Programmer Steno:
 * [Thumbs Dictionary](dictionaries/dict_thumbs.md)
 * [Thumbs Bigrams Dictionary](dictionaries/dict_thumbs_bigrams.md)
 
-You can found all dictionaries in the same file [here](dictonaries/dict_all.md)
+You can found all dictionaries in the same file [here](dictionaries/dict_all.md)
 
