@@ -65,7 +65,7 @@
 	AL = A|N|R
 	ALL = A|W|N|R
 	ALM = A|W|H|N|R
-	ALS = A|S|C|N|R
+	ALS = A|S|W|N|R
 	ALW = A|T|W|N|R
 	ALY = A|H|N|R
 	AM = A|W|N
