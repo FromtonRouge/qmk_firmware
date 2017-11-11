@@ -237,14 +237,8 @@ enum custom_keycodes
 #define R3  (3 | (FAMILY_RIGHT_CONTROLS << 4) | STENO_BIT)
 #define R4  (4 | (FAMILY_RIGHT_CONTROLS << 4) | STENO_BIT)
 
-// 3 bits for left pinky
-#define OFFSET_LEFT_PINKY 5
-#define LP_O  (0 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
-#define LP_U  (1 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
-#define LP_I  (2 | (FAMILY_LEFT_PINKY << 4) | STENO_BIT)
-
 // 6 bits for left controls
-#define OFFSET_LEFT_CONTROLS 8
+#define OFFSET_LEFT_CONTROLS 5
 #define L0  (0 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)
 #define L1  (1 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)
 #define L2  (2 | (FAMILY_LEFT_CONTROLS << 4) | STENO_BIT)

@@ -19,7 +19,6 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
 {
     &g_bits_keys_pressed_part1, // Special controls
     &g_bits_keys_pressed_part2, // Left controls
-    &g_bits_keys_pressed_part2, // Left pinky
     &g_bits_keys_pressed_part1, // Left hand
     &g_bits_keys_pressed_part1, // Thumbs
     &g_bits_keys_pressed_part1, // Right hand
@@ -106,7 +105,6 @@ void stroke(void)
     const bool double_first_letter = (has_left_plus && !has_right_plus) || (has_right_plus && !has_left_plus);
     const bool has_separator = special_controls_bits & (1 << (SC_SEP & 0xF));
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
-    const uint8_t left_pinky_bits = g_family_bits[FAMILY_LEFT_PINKY];
     const bool choose_separator_mode = has_left_plus && has_right_plus;
     bool punctuation_mode = ((!thumbs_bits && has_star) && (g_family_bits[FAMILY_LEFT_HAND] || g_family_bits[FAMILY_RIGHT_HAND])) || choose_separator_mode;
     uint8_t* left_controls_bits = &g_family_bits[FAMILY_LEFT_CONTROLS];
@@ -137,18 +135,7 @@ void stroke(void)
         g_case_mode = CKC_CASE_NORMAL + previous_undo_command->next_case_mode - 1;
     }
 
-    // Reset L3 if LP_I is pressed
-    if (left_pinky_bits & STENO_KEY_BIT(LP_I))
-    {
-        const uint8_t bit_L3 = STENO_KEY_BIT(L3);
-        if (*left_controls_bits & bit_L3)
-        {
-            *left_controls_bits &= ~bit_L3;
-        }
-    }
-
     // Build stroke (but we don't send it yet)
-    uint16_t left_pinky_keycode = 0;
     bool undo_allowed = true;
     for (int family_id = 0; family_id < NB_FAMILY; ++family_id)
     {
@@ -185,15 +172,6 @@ void stroke(void)
                     g_user_separators[0].bits = family_bits;
                     any_table = 0;
                 }
-            }
-
-            // Check left pinky value
-            if (left_pinky_keycode == _O || left_pinky_keycode == _U)
-            {
-                // L_A become L_S, so get the bit state of L_A and put it on L_S
-                family_bits &= ~STENO_KEY_BIT(L_S); // Clear L_S
-                family_bits |= (family_bits & STENO_KEY_BIT(L_A)) << 1; // Transfert L_A to L_S
-                family_bits |= STENO_KEY_BIT(L_A); // Force L_A (it will be converted to _U, _O or _I after)
             }
         }
         else if (family_id == FAMILY_RIGHT_HAND)
@@ -260,19 +238,6 @@ void stroke(void)
                                 g_case_mode = previous_case_mode;
                             }
                         }
-                        else if (family_id == FAMILY_LEFT_PINKY)
-                        {
-                            left_pinky_keycode = word;
-                            if (word == _I)
-                            {
-                                g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_A);
-                            }
-                            else if (word == _O || word == _U)
-                            {
-                                // Add useless L_S so g_family_bits[FAMILY_LEFT_HAND] is not empty
-                                g_family_bits[FAMILY_LEFT_HAND] |= STENO_KEY_BIT(L_S);
-                            }
-                        }
                     }
                     break;
                 }
@@ -284,21 +249,6 @@ void stroke(void)
                         uint8_t byte = pgm_read_byte(&(letters_table[family_bits][code_pos]));
                         if (byte)
                         {
-                            // Left pinky vowels
-                            if (family_id == FAMILY_LEFT_HAND)
-                            {
-                                if (byte == _A)
-                                {
-                                    if (left_pinky_keycode != 0)
-                                    {
-                                        if (left_pinky_keycode < CKC_STENO)
-                                        {
-                                            byte = (uint8_t)left_pinky_keycode;
-                                        }
-                                    }
-                                }
-                            }
-
                             stroke_add_element(kind, byte);
 
                             // Jackdaw rule: If a 'Q' is detected on the left hand followed by a thumb vowel => add a 'U'

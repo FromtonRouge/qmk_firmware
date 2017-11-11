@@ -30,9 +30,9 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         // Left hand
         0,      0,          0,          0,          0,          0,          0,
         0,      0,          0,          L2,         L1,         L0,         S_ENT,
-        0,      LP_U,       LP_O,       L_C,        L_W,        L_N,        
-        L5,     LP_I,       L_A,        L_T,        L_H,        L_R,        SC_STAR,
-        L4,     L3,         L_S,        0,          0,
+        0,      0,          L3,         L_C,        L_W,        L_N,        
+        0,      L4,         L_A,        L_T,        L_H,        L_R,        SC_STAR,
+        0,      L5,         L_S,        0,          0,
                                                                 SC_STAR,    SC_STAR,
                                                                             T_O,
                                                     SC_LPLUS,   T_E,        T_A,

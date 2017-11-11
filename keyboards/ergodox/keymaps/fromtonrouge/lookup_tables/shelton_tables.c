@@ -1,17 +1,5 @@
 #include "shelton_tables.h"
 
-const uint16_t PROGMEM g_left_pinky_table[8][MAX_ONE_KEYCODE] =
-{
-    NO_ENTRY,                               // [0]
-    _K1(_O),                                // [1]
-    _K1(_U),                                // [2]
-    _K1(_U),                                // [3]
-    _K1(_I),                                // [4]
-    _K1(_U),                                // [5]
-    _K1(_U),                                // [6]
-    _K1(_U)                                 // [7]
-};
-
 // NOTE: (*) = not in the original Shelton table
 // Lookup tables for the steno layer
 const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS] =

@@ -68,7 +68,6 @@ List of all dictionaries:
 
 * [Left Controls Dictionary](dictionaries/dict_left_controls.md)
 * [Left Hand Dictionary](dictionaries/dict_left_hand.md)
-* [Left Pinky Dictionary](dictionaries/dict_left_pinky.md)
 * [Left Punctuation Dictionary](dictionaries/dict_left_punctuation.md)
 * [Right Controls Dictionary](dictionaries/dict_right_controls.md)
 * [Right Hand Dictionary](dictionaries/dict_right_hand.md)
