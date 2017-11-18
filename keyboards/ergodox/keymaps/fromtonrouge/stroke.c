@@ -105,7 +105,7 @@ void stroke(void)
     const bool double_first_letter = (has_left_plus && !has_right_plus) || (has_right_plus && !has_left_plus);
     const bool has_separator = special_controls_bits & (1 << (SC_SEP & 0xF));
     const uint8_t thumbs_bits = g_family_bits[FAMILY_THUMBS];
-    const bool choose_separator_mode = has_left_plus && has_right_plus;
+    const bool choose_separator_mode = has_left_plus && has_right_plus && has_star;
     bool punctuation_mode = ((!thumbs_bits && has_star) && (g_family_bits[FAMILY_LEFT_HAND] || g_family_bits[FAMILY_RIGHT_HAND])) || choose_separator_mode;
     uint8_t* left_controls_bits = &g_family_bits[FAMILY_LEFT_CONTROLS];
     if (punctuation_mode)
