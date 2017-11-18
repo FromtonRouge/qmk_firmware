@@ -218,14 +218,13 @@ enum custom_keycodes
 #define R_T (6 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_S (7 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 
-// 3 bits for E and Y and S
+// 2 bits for E and Y
 #define OFFSET_RIGHT_PINKY 25
 #define RP_E  (0 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 #define RP_Y  (1 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
-#define RP_S  (2 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 
 // 2 bits for space control keys
-#define OFFSET_SPACE_CONTROLS 28
+#define OFFSET_SPACE_CONTROLS 27
 #define S_TAB  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
 #define S_ENT  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
 

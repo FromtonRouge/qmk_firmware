@@ -40,8 +40,8 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         0,          0,          0,          0,          0,          0,          0,
         SC_SEP,     R0,         R1,         R2,         0,          0,          0,
                     R_R,        R_L,        R_C,        R3,         R4,         0, 
-        SC_SEP,     R_N,        R_G,        R_H,        R_T,        RP_E,       RP_S,
-                                0,          0,          R_S,        RP_Y,       RP_S,
+        SC_SEP,     R_N,        R_G,        R_H,        R_T,        RP_E,       0,
+                                0,          0,          R_S,        RP_Y,       0,
         SC_STAR,    SC_STAR,
         T_A,
         T_U,        T_I,       SC_RPLUS 
@@ -111,19 +111,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_STENO] = KEYMAP(
         // left hand
         KC_F1,        KC_F2,      KC_F3,      KC_F4,      KC_F5,      KC_F6,        KC_LGUI,
-        KC_LALT,      KC_TAB,     KC_ESC,     CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
-        KC_LCTL,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,   
-        CKC_STENO,    CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
-        CKC_STENO,    CKC_STENO,  CKC_STENO,      KC_TRNS,    KC_TRNS,
+        KC_TAB,       KC_NO,      KC_NO,      CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
+        KC_LALT,      KC_ESC,     CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,   
+        KC_LSFT,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
+        KC_LCTL,      CKC_STENO,  CKC_STENO,  KC_TRNS,    KC_TRNS,
                                                                                     CKC_STENO,    CKC_STENO,
                                                                                                   CKC_STENO,
                                                                         CKC_STENO,  CKC_STENO,    CKC_STENO,
         // right hand
                     KC_TRNS,        KC_F7,      KC_F8,      KC_F9,      KC_F10,     KC_F11,     KC_F12,
-                    CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_BSPC,    KC_DEL,     KC_RALT,
-                                    CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_RCTL,   
-                    CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,   
-                                                KC_TRNS,    KC_TRNS,    CKC_STENO,  CKC_STENO,  CKC_STENO,
+                    CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_NO,      KC_DEL,     KC_BSPC,
+                                    CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_RALT,   
+                    CKC_STENO,      CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  CKC_STENO,  KC_RSFT,     
+                                                KC_TRNS,    KC_TRNS,    CKC_STENO,  CKC_STENO,  KC_RCTL,  
         CKC_STENO,    CKC_STENO,
         CKC_STENO,
         CKC_STENO,    CKC_STENO,    CKC_STENO 

@@ -11,6 +11,6 @@ extern const uint8_t PROGMEM g_left_hand_table[256][MAX_LETTERS];
 extern const uint8_t PROGMEM g_thumbs_table[32][MAX_LETTERS];
 extern const uint8_t PROGMEM g_thumbs_bigrams_table[32][MAX_LETTERS];
 extern const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS];
-extern const uint8_t PROGMEM g_right_pinky_table[8][MAX_LETTERS];
+extern const uint8_t PROGMEM g_right_pinky_table[4][MAX_LETTERS];
 
 #endif
