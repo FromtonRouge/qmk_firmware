@@ -40,7 +40,7 @@ SEP is the separator key :
     * When used alone it adds a separator.
     * When used with the STAR key, SEP becomes a Backspace key.
 
-The separator character(s) can be changed by the user by pressing left and right PLUS keys and by stroking a symbol in the punctuation table
+The separator character(s) can be changed by pressing at the same time LEFT PLUS, RIGHT PLUS and STAR keys and by stroking a symbol in the punctuation table
 
 ![Programmer Steno](images/programmer-steno.png)
 
