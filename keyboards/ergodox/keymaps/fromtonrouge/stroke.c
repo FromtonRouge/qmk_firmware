@@ -24,7 +24,7 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
     &g_bits_keys_pressed_part1, // Right hand
     &g_bits_keys_pressed_part1, // Right pinky
     &g_bits_keys_pressed_part2, // Right controls
-    &g_bits_keys_pressed_part1
+    &g_bits_keys_pressed_part1	// Space ctl
 };
 
 // User separator data

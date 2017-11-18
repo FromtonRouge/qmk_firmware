@@ -44,13 +44,9 @@ The separator character(s) can be changed by pressing at the same time LEFT PLUS
 
 ![Programmer Steno](images/programmer-steno.png)
 
-Home position :    
-    
-![Programmer Steno Home Position](images/programmer-steno-home.png)
-
 Numbers and Punctuation (when * is used with the left or/and right hand) [WORK IN PROGRESS]:
 
-![Programmer Steno Home Position](images/programmer-steno-punctuations.png)
+![Programmer Steno Punctuation](images/programmer-steno-punctuations.png)
 
 PL7 and PR7 are used to write numbers
 

@@ -199,16 +199,17 @@ enum custom_keycodes
 #define L_A (6 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 #define L_S (7 | (FAMILY_LEFT_HAND << 4) | STENO_BIT)
 
-// 5 bits for thumbs
+// 6 bits for thumbs
 #define OFFSET_THUMBS 12
 #define T_E (0 | (FAMILY_THUMBS << 4) | STENO_BIT)
 #define T_O (1 | (FAMILY_THUMBS << 4) | STENO_BIT)
 #define T_A (2 | (FAMILY_THUMBS << 4) | STENO_BIT)
-#define T_U (3 | (FAMILY_THUMBS << 4) | STENO_BIT)
-#define T_I (4 | (FAMILY_THUMBS << 4) | STENO_BIT)
+#define T_Y (3 | (FAMILY_THUMBS << 4) | STENO_BIT)
+#define T_U (4 | (FAMILY_THUMBS << 4) | STENO_BIT)
+#define T_I (5 | (FAMILY_THUMBS << 4) | STENO_BIT)
 
 // 8 bits for the right hand
-#define OFFSET_RIGHT_HAND 17
+#define OFFSET_RIGHT_HAND 18
 #define R_R (0 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_N (1 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 #define R_L (2 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
@@ -219,14 +220,13 @@ enum custom_keycodes
 #define R_S (7 | (FAMILY_RIGHT_HAND << 4) | STENO_BIT)
 
 // 2 bits for E and Y
-#define OFFSET_RIGHT_PINKY 25
+#define OFFSET_RIGHT_PINKY 26
 #define RP_E  (0 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 #define RP_Y  (1 | (FAMILY_RIGHT_PINKY << 4) | STENO_BIT)
 
-// 2 bits for space control keys
-#define OFFSET_SPACE_CONTROLS 27
-#define S_TAB  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
-#define S_ENT  (1 | (FAMILY_SPACES << 4) | STENO_BIT)
+// 1 bit for space controls
+#define OFFSET_SPACE_CONTROLS 28
+#define S_ENT  (0 | (FAMILY_SPACES << 4) | STENO_BIT)
 
 // 5 bits for right controls
 #define OFFSET_RIGHT_CONTROLS 0

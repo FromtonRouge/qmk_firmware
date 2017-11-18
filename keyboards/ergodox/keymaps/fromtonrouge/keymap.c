@@ -43,7 +43,7 @@ const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
         SC_SEP,     R_N,        R_G,        R_H,        R_T,        RP_E,       0,
                                 0,          0,          R_S,        RP_Y,       0,
         SC_STAR,    SC_STAR,
-        T_A,
+        T_Y,
         T_U,        T_I,       SC_RPLUS 
 );
 
