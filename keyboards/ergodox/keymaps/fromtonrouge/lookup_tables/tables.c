@@ -46,7 +46,7 @@ table_t g_tables[NB_FAMILY] =
     },
     {
         (void*)g_right_pinky_table,
-        MAX_LETTERS,
+        2,
         KIND_LETTERS,
     },
     {
@@ -56,7 +56,7 @@ table_t g_tables[NB_FAMILY] =
     },
     {
         (void*)g_spaces_ctl_table,
-        MAX_SYMBOLS,
+        1,
         KIND_SYMBOLS,
     },
 };

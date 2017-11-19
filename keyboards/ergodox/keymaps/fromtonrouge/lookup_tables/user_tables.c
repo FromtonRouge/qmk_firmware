@@ -625,8 +625,8 @@ const uint16_t PROGMEM g_right_punctuation_table[256][MAX_PUNCTUATION] =
     NO_ENTRY // [255]
 };
 
-const uint16_t PROGMEM g_spaces_ctl_table[2][MAX_SYMBOLS] =
+const uint16_t PROGMEM g_spaces_ctl_table[2][1] =
 {
     NO_ENTRY,                               // [0]
-    _S1(KC_ENT),                            // [1]
+    {KC_ENT},                               // [1]
 };

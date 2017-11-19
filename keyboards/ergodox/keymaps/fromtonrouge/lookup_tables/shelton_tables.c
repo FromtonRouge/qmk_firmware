@@ -660,10 +660,10 @@ const uint8_t PROGMEM g_right_hand_table[256][MAX_LETTERS] =
     _6(_P, _M, _E, _N, _T, _S)              // [255]    (*)
 };
 
-const uint8_t PROGMEM g_right_pinky_table[4][MAX_LETTERS] =
+const uint8_t PROGMEM g_right_pinky_table[4][2] =
 {
     NO_ENTRY,                               // [0]
-    _1(_E),                                 // [1]
-    _1(_Y),                                 // [2]
-    _2(_E, _Y),                             // [3]
+    {_E, 0},                                // [1]
+    {_Y, 0},                                // [2]
+    {_E, _Y},                               // [3]
 };
