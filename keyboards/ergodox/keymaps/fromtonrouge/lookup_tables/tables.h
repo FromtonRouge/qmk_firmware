@@ -1,6 +1,7 @@
 #ifndef TABLES_H
 #define TABLES_H
 
+#include "table.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -19,7 +20,6 @@ enum key_family
 };
 
 extern const uint8_t g_family_to_bit_offset[NB_FAMILY];
-extern const uint8_t g_family_to_kind_table[NB_FAMILY];
-extern void* g_all_tables[NB_FAMILY];
+extern table_t g_tables[NB_FAMILY];
 
 #endif

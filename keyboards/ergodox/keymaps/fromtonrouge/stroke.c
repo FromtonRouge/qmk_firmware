@@ -24,7 +24,7 @@ uint32_t* g_family_to_keys_pressed[NB_FAMILY] =
     &g_bits_keys_pressed_part1, // Right hand
     &g_bits_keys_pressed_part1, // Right pinky
     &g_bits_keys_pressed_part2, // Right controls
-    &g_bits_keys_pressed_part1	// Space ctl
+    &g_bits_keys_pressed_part1  // Space ctl
 };
 
 // User separator data
@@ -145,10 +145,13 @@ void stroke(void)
             continue;
         }
 
-        // Get the lookup table
+        // Get the lookup table data
+        const table_t* table = &g_tables[family_id];
+        void* any_table = table->any_table;
+        uint8_t kind = table->kind;
+        uint8_t element_size = table->element_size;
+
         undo_allowed = family_id == FAMILY_SPECIAL_CONTROLS;
-        void* any_table = g_all_tables[family_id];
-        uint8_t kind = g_family_to_kind_table[family_id];
         if (family_id == FAMILY_THUMBS)
         {
             if (has_star)
@@ -166,6 +169,7 @@ void stroke(void)
             {
                 any_table = (void*)g_left_punctuation_table;
                 kind = KIND_PUNCTUATION;
+                element_size = MAX_PUNCTUATION;
                 
                 if (choose_separator_mode)
                 {
@@ -180,6 +184,7 @@ void stroke(void)
             {
                 any_table = (void*)g_right_punctuation_table;
                 kind = KIND_PUNCTUATION;
+                element_size = MAX_PUNCTUATION;
 
                 if (choose_separator_mode)
                 {
@@ -193,60 +198,12 @@ void stroke(void)
         {
             switch (kind)
             {
-            case KIND_ONE_KEYCODE:
-                {
-                    one_keycode_table_t* one_keycode_table = (one_keycode_table_t*)any_table;
-                    const uint16_t word = pgm_read_word(&(one_keycode_table[family_bits][0]));
-                    if (word)
-                    {
-                        if (family_id == FAMILY_LEFT_CONTROLS)
-                        {
-                            uint16_t previous_case_mode = g_case_mode;
-                            switch (word)
-                            {
-                            case CKC_RESET_SEP_AND_CASE:
-                                {
-                                    g_separator_mode = CKC_SEPMODE_SPC;
-                                    g_case_mode = CKC_CASE_NORMAL;
-                                    g_user_separators[0].bits = 0;
-                                    g_user_separators[1].bits = 0;
-                                    break;
-                                }
-                            case CKC_CAMEL:
-                                {
-                                    g_separator_mode = CKC_SEPMODE_NOSPC;
-                                    g_case_mode = CKC_CASE_INNER_LOCKED;
-                                    break;
-                                }
-                            default:
-                                {
-                                    if ((word >= CKC_CASE_NORMAL) && (word <= CKC_CASE_UPPER_LOCKED))
-                                    {
-                                        g_case_mode = word;
-                                    }
-                                    else if ((word >= CKC_SEPMODE_SPC) && (word <= CKC_SEPMODE_NOSPC))
-                                    {
-                                        g_separator_mode = word;
-                                    }
-                                    break;
-                                }
-                            }
-
-                            if (punctuation_mode && !choose_separator_mode)
-                            {
-                                g_new_undo_command.next_case_mode = g_case_mode - CKC_CASE_NORMAL + 1;
-                                g_case_mode = previous_case_mode;
-                            }
-                        }
-                    }
-                    break;
-                }
             case KIND_LETTERS:
                 {
-                    letters_table_t* letters_table = (letters_table_t*)any_table;
-                    for (int code_pos = 0; code_pos < MAX_LETTERS; ++code_pos)
+                    uint8_t (*byte_table)[element_size] = (uint8_t (*)[element_size])any_table;
+                    for (int code_pos = 0; code_pos < element_size; ++code_pos)
                     {
-                        uint8_t byte = pgm_read_byte(&(letters_table[family_bits][code_pos]));
+                        uint8_t byte = pgm_read_byte(&(byte_table[family_bits][code_pos]));
                         if (byte)
                         {
                             stroke_add_element(kind, byte);
@@ -271,31 +228,61 @@ void stroke(void)
                     break;
                 }
             case KIND_SYMBOLS:
-                {
-                    symbols_table_t* symbols_table = (symbols_table_t*)any_table;
-                    for (int code_pos = 0; code_pos < MAX_SYMBOLS; ++code_pos)
-                    {
-                        const uint16_t word = pgm_read_word(&(symbols_table[family_bits][code_pos]));
-                        if (word)
-                        {
-                            stroke_add_element(kind, word);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    break;
-                }
             case KIND_PUNCTUATION:
+            case KIND_ONE_KEYCODE:
                 {
-                    punctuation_table_t* punctuation_table = (punctuation_table_t*)any_table;
-                    for (int code_pos = 0; code_pos < MAX_PUNCTUATION; ++code_pos)
+                    uint16_t (*word_table)[element_size] = (uint16_t (*)[element_size])any_table;
+                    for (int code_pos = 0; code_pos < element_size; ++code_pos)
                     {
-                        const uint16_t word = pgm_read_word(&(punctuation_table[family_bits][code_pos]));
+                        const uint16_t word = pgm_read_word(&(word_table[family_bits][code_pos]));
                         if (word)
                         {
-                            stroke_add_element(kind, word);
+                            if (kind == KIND_ONE_KEYCODE)
+                            {
+                                if (family_id == FAMILY_LEFT_CONTROLS)
+                                {
+                                    uint16_t previous_case_mode = g_case_mode;
+                                    switch (word)
+                                    {
+                                    case CKC_RESET_SEP_AND_CASE:
+                                        {
+                                            g_separator_mode = CKC_SEPMODE_SPC;
+                                            g_case_mode = CKC_CASE_NORMAL;
+                                            g_user_separators[0].bits = 0;
+                                            g_user_separators[1].bits = 0;
+                                            break;
+                                        }
+                                    case CKC_CAMEL:
+                                        {
+                                            g_separator_mode = CKC_SEPMODE_NOSPC;
+                                            g_case_mode = CKC_CASE_INNER_LOCKED;
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            if ((word >= CKC_CASE_NORMAL) && (word <= CKC_CASE_UPPER_LOCKED))
+                                            {
+                                                g_case_mode = word;
+                                            }
+                                            else if ((word >= CKC_SEPMODE_SPC) && (word <= CKC_SEPMODE_NOSPC))
+                                            {
+                                                g_separator_mode = word;
+                                            }
+                                            break;
+                                        }
+                                    }
+
+                                    if (punctuation_mode && !choose_separator_mode)
+                                    {
+                                        g_new_undo_command.next_case_mode = g_case_mode - CKC_CASE_NORMAL + 1;
+                                        g_case_mode = previous_case_mode;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                stroke_add_element(kind, word);
+                            }
                         }
                         else
                         {

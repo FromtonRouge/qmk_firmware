@@ -13,8 +13,21 @@ typedef enum
     KIND_PUNCTUATION
 } kind_table_t;
 
-#define MAX_LETTERS 6
+typedef struct
+{
+    void* any_table;
+    uint8_t element_size;
+    kind_table_t kind;
+} table_t;
+
 #define NO_ENTRY {0}
+
+#define MAX_VOWELS 3
+#define _V1(c1) {c1, 0, 0}
+#define _V2(c1, c2) {c1, c2, 0}
+#define _V3(c1, c2, c3) {c1, c2, c3}
+
+#define MAX_LETTERS 6
 #define _1(c1) {c1, 0, 0, 0, 0, 0}
 #define _2(c1, c2) {c1, c2, 0, 0, 0, 0}
 #define _3(c1, c2, c3) {c1, c2, c3, 0, 0, 0}
@@ -36,9 +49,6 @@ typedef enum
 #define MAX_ONE_KEYCODE 1
 #define _K1(c1) {c1}
 
-typedef const uint16_t one_keycode_table_t[MAX_ONE_KEYCODE];
-typedef const uint8_t letters_table_t[MAX_LETTERS];
-typedef const uint16_t symbols_table_t[MAX_SYMBOLS];
 typedef const uint16_t punctuation_table_t[MAX_PUNCTUATION];
 
 #endif
