@@ -1,6 +1,3 @@
-# Having a file like this allows you to override Makefile definitions
-# for your own particular keymap
-
 # Removing useless things to reduce the firmware size
 API_SYSEX_ENABLE = no # Useless for us
 RGBLIGHT_ENABLE  = no # Useless for us
@@ -25,7 +22,7 @@ ifeq ($(strip $(PROGRAMMER_COLEMAK_ENABLE)), yes)
 endif
 
 SRC += undo.c \
-	   stroke.c \
-	   lookup_tables/tables.c \
-	   lookup_tables/shelton_tables.c \
-	   lookup_tables/user_tables.c
+       stroke.c \
+       lookup_tables/tables.c \
+       lookup_tables/shelton_tables.c \
+       lookup_tables/user_tables.c
