@@ -12,12 +12,6 @@ typedef struct
     uint16_t keycode;
 } stroke_element_t;
 
-#ifdef SUBPROJECT_infinity
-#ifndef pgm_read_dword
-#define pgm_read_dword(addr) (*(const unsigned long *)(addr))
-#endif
-#endif
-
 bool is_letter(uint8_t code);
 void send_mods_and_code(uint8_t mods, uint8_t code);
 bool can_stroke(void);

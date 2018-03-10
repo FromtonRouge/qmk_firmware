@@ -4,7 +4,7 @@
 #include "lookup_tables/shelton_tables.h"
 #include "lookup_tables/user_tables.h"
 #include "lookup_tables/tables.h"
-#include "ergodox.h"
+#include "ergodox_infinity.h"
 #include "quantum/keymap_extras/keymap_french.h"
 #include "tmk_core/common/action_layer.h"
 #include "tmk_core/common/action_util.h"
