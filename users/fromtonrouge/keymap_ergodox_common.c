@@ -9,19 +9,19 @@
 #include "tmk_core/common/action_util.h"
 
 // Layer indexes
-#define LAYER_BASE 0
-#define LAYER_STENO 1
+#define L_BASE 0
+#define L_STENO 1
 
 #ifdef PROGRAMMER_COLEMAK_ENABLE
-    #define LAYER_SHIFT_COLEMAK 2
+    #define L_SHIFT_COLEMAK 2
     #ifdef AZERTY_OS_ENABLE
-        #define LAYER_ACCENTS 3
-        #define LAYER_FN 4
+        #define L_ACCENTS 3
+        #define L_FN 4
     #else
-        #define LAYER_FN 3
+        #define L_FN 3
     #endif
 #else
-    #define LAYER_FN 2
+    #define L_FN 2
 #endif
 
 // Steno keymap
@@ -52,39 +52,38 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Otherwise, it needs KC_*
 
 #ifdef PROGRAMMER_COLEMAK_ENABLE
-// PROGRAMMER COLEMAK
-[LAYER_BASE ] = KEYMAP(
+[L_BASE ] = KEYMAP(
         // left hand
         _AMP,           _LBRC,      _LCBR,      _RCBR,      _LPRN,      _EQL,           KC_LGUI,
         _DLR,           _Q,         _W,         _F,         _P,         _G,             KC_INS,
         KC_TAB,         _A,         _R,         _S,         _T,         _D,  
         CKC_SFT,        _Z,         _X,         _C,         _V,         _B,             KC_ESC,
-        KC_LCTL,        _AMP,       KC_LALT,    KC_UP,      KC_DOWN,    
-                                                                                    MO(LAYER_FN),       TG(LAYER_FN),
+        KC_LCTL,        _AMP,       KC_LALT,    MO(L_FN),   KC_ENT,    
+                                                                                    MO(L_FN),       TG(L_FN),
                                                                                                         KC_PSCR,
 #ifdef AZERTY_OS_ENABLE
-                                                                            KC_ENT, KC_BSPC,            MO(LAYER_ACCENTS),
+                                                                            KC_BSPC,    MO(L_ACCENTS), KC_NO,
 #else
-                                                                            KC_ENT, KC_BSPC,            KC_NO,
+                                                                            KC_BSPC,    KC_NO, KC_NO,
 #endif
         // right hand
-                    TG(LAYER_STENO),    _ASTR,      _RPRN,      _PLUS,      _RBRC,      _EXLM,    _HASH,
+                    TG(L_STENO),    _ASTR,      _RPRN,      _PLUS,      _RBRC,      _EXLM,    _HASH,
                     KC_BSPC,            _J,         _L,         _U,         _Y,         _SCLN,    _SLSH,
                                         _H,         _N,         _E,         _I,         _O,       _MINS,
-                    KC_ESC,             _K,         _M,         _COMM,      _DOT,       _APOS,    CKC_SFT,  
-                                                    KC_LEFT,    KC_RIGHT,   _BSLS,      _AT,      KC_RCTL,
-        TG(LAYER_FN),   MO(LAYER_FN),
+                    KC_NO,              _K,         _M,         _COMM,      _DOT,       _APOS,    CKC_SFT,  
+                                                    KC_SPC,     MO(L_FN),   _BSLS,      _AT,      KC_RCTL,
+        TG(L_FN),   MO(L_FN),
         KC_NO,
 #ifdef AZERTY_OS_ENABLE
-        MO(LAYER_ACCENTS),  KC_DEL,     KC_SPC
+        KC_NO,  MO(L_ACCENTS),   KC_DEL
 #else
-        KC_NO,              KC_DEL,     KC_SPC
+        KC_NO,  KC_NO,   KC_DEL
 #endif
 ),
 #else
 // This is the default ErgoDox EZ Qwerty layout
-#define SYMB LAYER_FN
-[LAYER_BASE] = KEYMAP(  // layer 0 : default
+#define SYMB L_FN
+[L_BASE] = KEYMAP(  // layer 0 : default
         // left hand
         KC_EQL,         KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_NO,
         KC_DELT,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   TG(SYMB),
@@ -95,7 +94,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                               KC_HOME,
                                                KC_SPC,KC_BSPC,KC_END,
         // right hand
-             TG(LAYER_STENO),   KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINS,
+             TG(L_STENO),   KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINS,
              TG(SYMB),          KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_BSLS,
                                 KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          GUI_T(KC_QUOT),
              MEH_T(KC_NO),      KC_N,   KC_M,   KC_COMM,KC_DOT, CTL_T(KC_SLSH),   KC_RSFT,
@@ -107,7 +106,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 // STENO LAYER
-[LAYER_STENO] = KEYMAP(
+[L_STENO] = KEYMAP(
         // left hand
         KC_F1,        KC_F2,      KC_F3,      KC_F4,      KC_F5,      KC_F6,        KC_LGUI,
         KC_TAB,       KC_NO,      KC_NO,      CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
@@ -131,7 +130,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #ifdef PROGRAMMER_COLEMAK_ENABLE
 #ifdef AZERTY_OS_ENABLE
 // PROGRAMMER COLEMAK SHIFTED LAYER (for AZERTY OS)
-[LAYER_SHIFT_COLEMAK] = KEYMAP(
+[L_SHIFT_COLEMAK] = KEYMAP(
         FR_UGRV,        KC_7,       KC_5,       KC_3,       KC_1,       KC_9,           KC_TRNS,
         CKC_SFUN,       KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
@@ -152,7 +151,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 // Accents Layer (for AZERTY OS)
-[LAYER_ACCENTS] = KEYMAP(
+[L_ACCENTS] = KEYMAP(
        // left hand
         KC_NO,          KC_NO,      KC_NO,      KC_NO,      KC_NO,          KC_NO,          KC_NO,
         KC_NO,          KC_NO,      KC_NO,      KC_NO,      KC_NO,          KC_NO,          KC_NO,  
@@ -175,7 +174,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #else
 // PROGRAMMER COLEMAK SHIFTED LAYER (for QWERTY OS)
-[LAYER_SHIFT_COLEMAK] = KEYMAP(
+[L_SHIFT_COLEMAK] = KEYMAP(
         KC_TRNS,        CKC_SFUN,   CKC_SFUN,   CKC_SFUN,   CKC_SFUN,   CKC_SFUN,       KC_5,
         KC_GRV,         KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
@@ -198,22 +197,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 // F1-F12 Layer
-[LAYER_FN] = KEYMAP(
+[L_FN] = KEYMAP(
        // left hand
         KC_F1,          KC_F2,      KC_F3,      KC_F4,      KC_F5,          KC_F6,          RESET,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
-        KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
+        KC_TRNS,        KC_HOME,    KC_PGUP,    KC_PGDN,    KC_END,         KC_TRNS,
         KC_LSFT,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
-        KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_PGUP,    KC_PGDN,
+        KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
                                                                                         KC_TRNS,    KC_TRNS,
                                                                                                     KC_TRNS,
                                                                             KC_TRNS,    KC_TRNS,    KC_TRNS,
         // right hand
                     KC_NO,          KC_F7,      KC_F8,      KC_F9,      KC_F10,         KC_F11,     KC_F12,
-                    KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_TRNS,
-                                    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_TRNS,
+                    KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_ESC,     KC_TRNS,        KC_TRNS,    KC_TRNS,
+                                    KC_TRNS,    KC_LEFT,    KC_DOWN,    KC_UP,          KC_RIGHT,   KC_TRNS,
                     KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_RSFT,
-                                                KC_HOME,    KC_END,     KC_TRNS,        KC_TRNS,    KC_TRNS,
+                                                KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_TRNS,
         KC_TRNS,    KC_TRNS,
         KC_TRNS,
         KC_TRNS,    KC_TRNS,    KC_TRNS
@@ -224,7 +223,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM fn_actions[] = 
 { 
 #ifdef SYMB
-    [1] = ACTION_LAYER_TAP_TOGGLE(SYMB)                // FN1 - Momentary Layer 1 (Symbols)
+    [1] = ACTION_L_TAP_TOGGLE(SYMB)                // FN1 - Momentary Layer 1 (Symbols)
 #endif
 };
 
@@ -260,24 +259,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
             return false;
         }
 #ifdef PROGRAMMER_COLEMAK_ENABLE
-    case CKC_SFT: // Apply SHIFT and go to LAYER_SHIFT_COLEMAK
+    case CKC_SFT: // Apply SHIFT and go to L_SHIFT_COLEMAK
         {
             const uint8_t shift_key = record->event.key.row == 0 ? KC_LSFT : KC_RSFT;
             if (record->event.pressed)
             {
                 register_code(shift_key);
-                layer_on(LAYER_SHIFT_COLEMAK);
+                layer_on(L_SHIFT_COLEMAK);
             }
             else
             {
                 unregister_code(shift_key);
-                layer_off(LAYER_SHIFT_COLEMAK);
+                layer_off(L_SHIFT_COLEMAK);
             }
             return false;
         }
     case CKC_SFUN: // Handle special shift codes for the Programmer Colemak layout
         {
-            const uint16_t keycode = keymap_key_to_keycode(LAYER_BASE , record->event.key);
+            const uint16_t keycode = keymap_key_to_keycode(L_BASE , record->event.key);
             const uint16_t special_shift_code = g_special_shift_table[keycode % SPECIAL_SHIFT_TABLE_SIZE];
             const uint8_t code = (uint8_t)special_shift_code;
             if (record->event.pressed)
@@ -295,7 +294,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
         {
             if (record->event.pressed)
             {
-                const uint16_t keycode = keymap_key_to_keycode(LAYER_BASE , record->event.key);
+                const uint16_t keycode = keymap_key_to_keycode(L_BASE , record->event.key);
                 register_code(KC_LBRC);
                 unregister_code(KC_LBRC);
                 register_code(keycode);
@@ -324,10 +323,10 @@ void matrix_scan_user(void)
 
     switch (layer)
     {
-    case LAYER_STENO:
+    case L_STENO:
         ergodox_right_led_1_on();
         break;
-    case LAYER_FN:
+    case L_FN:
         ergodox_right_led_2_on();
         break;
     default:
