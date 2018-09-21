@@ -25,7 +25,7 @@
 #endif
 
 // Steno keymap
-const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = KEYMAP(
+const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = LAYOUT_ergodox(
         // Left hand
         0,      0,          0,          0,          0,          0,          0,
         0,      0,          0,          L2,         L1,         L0,         S_ENT,
@@ -52,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Otherwise, it needs KC_*
 
 #ifdef PROGRAMMER_COLEMAK_ENABLE
-[L_BASE ] = KEYMAP(
+[L_BASE ] = LAYOUT_ergodox(
         // left hand
         _AMP,           _LBRC,      _LCBR,      _RCBR,      _LPRN,      _EQL,           KC_LGUI,
         _DLR,           _Q,         _W,         _F,         _P,         _G,             KC_INS,
@@ -83,7 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #else
 // This is the default ErgoDox EZ Qwerty layout
 #define SYMB L_FN
-[L_BASE] = KEYMAP(  // layer 0 : default
+[L_BASE] = LAYOUT_ergodox(  // layer 0 : default
         // left hand
         KC_EQL,         KC_1,         KC_2,   KC_3,   KC_4,   KC_5,   KC_NO,
         KC_DELT,        KC_Q,         KC_W,   KC_E,   KC_R,   KC_T,   TG(SYMB),
@@ -106,7 +106,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 // STENO LAYER
-[L_STENO] = KEYMAP(
+[L_STENO] = LAYOUT_ergodox(
         // left hand
         KC_F1,        KC_F2,      KC_F3,      KC_F4,      KC_F5,      KC_F6,        KC_LGUI,
         KC_TAB,       KC_NO,      KC_NO,      CKC_STENO,  CKC_STENO,  CKC_STENO,    CKC_STENO,
@@ -130,7 +130,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #ifdef PROGRAMMER_COLEMAK_ENABLE
 #ifdef AZERTY_OS_ENABLE
 // PROGRAMMER COLEMAK SHIFTED LAYER (for AZERTY OS)
-[L_SHIFT_COLEMAK] = KEYMAP(
+[L_SHIFT_COLEMAK] = LAYOUT_ergodox(
         FR_UGRV,        KC_7,       KC_5,       KC_3,       KC_1,       KC_9,           KC_TRNS,
         CKC_SFUN,       KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
@@ -151,7 +151,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 // Accents Layer (for AZERTY OS)
-[L_ACCENTS] = KEYMAP(
+[L_ACCENTS] = LAYOUT_ergodox(
        // left hand
         KC_NO,          KC_NO,      KC_NO,      KC_NO,      KC_NO,          KC_NO,          KC_NO,
         KC_NO,          KC_NO,      KC_NO,      KC_NO,      KC_NO,          KC_NO,          KC_NO,  
@@ -174,7 +174,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #else
 // PROGRAMMER COLEMAK SHIFTED LAYER (for QWERTY OS)
-[L_SHIFT_COLEMAK] = KEYMAP(
+[L_SHIFT_COLEMAK] = LAYOUT_ergodox(
         KC_TRNS,        CKC_SFUN,   CKC_SFUN,   CKC_SFUN,   CKC_SFUN,   CKC_SFUN,       KC_5,
         KC_GRV,         KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
@@ -197,7 +197,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 // F1-F12 Layer
-[L_FN] = KEYMAP(
+[L_FN] = LAYOUT_ergodox(
        // left hand
         KC_F1,          KC_F2,      KC_F3,      KC_F4,      KC_F5,          KC_F6,          RESET,
         KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
