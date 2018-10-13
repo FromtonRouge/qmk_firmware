@@ -28,25 +28,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DESCRIPTION     An orthographic steno keyboard
 
 /* key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 14
+#define MATRIX_COLS 3
+#define MATRIX_ROWS 2
+//#define MATRIX_COLS_PER_SIDE (MATRIX_COLS / 2)
 
-/*
- * Keyboard Matrix Assignments
- *
- * Change this to how you wired your keyboard
- * COLS: AVR pins used for columns, left to right
- * ROWS: AVR pins used for rows, top to bottom
- * DIODE_DIRECTION: COL2ROW = COL = Anode (+), ROW = Cathode (-, marked on diode)
- *                  ROW2COL = ROW = Anode (+), COL = Cathode (-, marked on diode)
- *
-*/
-#define MATRIX_ROW_PINS { D3, D4, D5, D6, D7 }
-#define MATRIX_COL_PINS { E0, E1, C0, C1, C2, C3, C7, A1, A2, A3, A4, A5, A6, A7 }
+//#define MATRIX_COL_PINS {C0, C1, C2}
+//#define MATRIX_ROW_PINS {C6, C7}
 #define UNUSED_PINS
 
 /* COL2ROW, ROW2COL, or CUSTOM_MATRIX */
-#define DIODE_DIRECTION COL2ROW
+#define DIODE_DIRECTION CUSTOM_MATRIX
 
 // #define BACKLIGHT_PIN B7
 // #define BACKLIGHT_BREATHING
