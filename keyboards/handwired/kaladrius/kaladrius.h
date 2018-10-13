@@ -16,6 +16,20 @@
 #pragma once
 
 #include "quantum.h"
+#include "i2cmaster/i2cmaster.h"
+
+#define I2C_ADDR        0x20 // 0x20 Because the ADDR pin is connected to the ground (@see mcp23018 datasheet)
+#define I2C_ADDR_WRITE  ( (I2C_ADDR<<1) | I2C_WRITE )
+#define I2C_ADDR_READ   ( (I2C_ADDR<<1) | I2C_READ  )
+#define IODIRA          0x00            // i/o direction register
+#define IODIRB          0x01
+#define GPPUA           0x0C            // GPIO pull-up resistor register
+#define GPPUB           0x0D
+#define GPIOA           0x12            // general purpose i/o port register (write modifies OLAT)
+#define GPIOB           0x13
+
+extern uint8_t mcp23018_status;
+uint8_t init_mcp23018(void);
 
 /* This a shortcut to help you visually see your layout.
  *

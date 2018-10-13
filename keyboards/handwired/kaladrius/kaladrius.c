@@ -15,33 +15,53 @@
  */
 #include "kaladrius.h"
 
+uint8_t mcp23018_status = 0x20;
+bool i2c_initialized = false;
+uint8_t init_mcp23018(void)
+{
+    mcp23018_status = 0x20;
+
+    if (!i2c_initialized)
+    {
+        print("test0");
+        i2c_init();
+        _delay_ms(1000);
+        i2c_initialized = true;
+    }
+
+    mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(IODIRA);            if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b11111111);        if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b00000000);        if (mcp23018_status) goto out;
+    i2c_stop();
+
+    mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(GPPUA);             if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b11111111);        if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b00000000);        if (mcp23018_status) goto out;
+
+out:
+    i2c_stop();
+
+    return mcp23018_status;
+}
+
 void matrix_init_kb(void)
 {
-	// put your keyboard start-up code here
-	// runs once when the firmware starts up
-
 	matrix_init_user();
 }
 
 void matrix_scan_kb(void)
 {
-	// put your looping keyboard code here
-	// runs every cycle (a lot)
-
 	matrix_scan_user();
 }
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record)
 {
-	// put your per-action keyboard code here
-	// runs for every action, just before processing by the firmware
-
 	return process_record_user(keycode, record);
 }
 
 void led_set_kb(uint8_t usb_led)
 {
-	// put your keyboard LED indicator (ex: Caps Lock LED) toggling code here
-
 	led_set_user(usb_led);
 }
