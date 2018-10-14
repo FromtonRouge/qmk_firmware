@@ -21,22 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* USB Device descriptor parameter */
 #define VENDOR_ID       0xFEED
-#define PRODUCT_ID      0x0000
+#define PRODUCT_ID      0xCA1A
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    FromtonRouge
 #define PRODUCT         Kaladrius
 #define DESCRIPTION     An orthographic steno keyboard
 
 /* key matrix size */
-#define MATRIX_COLS 3
+#define MATRIX_COLS 4
 #define MATRIX_ROWS 2
-//#define MATRIX_COLS_PER_SIDE (MATRIX_COLS / 2)
 
-//#define MATRIX_COL_PINS {C0, C1, C2}
-//#define MATRIX_ROW_PINS {C6, C7}
-#define UNUSED_PINS
-
-/* COL2ROW, ROW2COL, or CUSTOM_MATRIX */
+/*
+ * COL2ROW, ROW2COL, or CUSTOM_MATRIX
+ * Note: We use a CUSTOM_MATRIX but it's implemented like a COL2ROW
+ */
 #define DIODE_DIRECTION CUSTOM_MATRIX
 
 // #define BACKLIGHT_PIN B7

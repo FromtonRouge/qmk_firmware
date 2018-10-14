@@ -57,22 +57,19 @@
 #define OLATB           0x15
 
 static matrix_row_t matrix[MATRIX_ROWS];
-
-static uint8_t mcp23018_reset_loop;
 uint8_t mcp23018_status = 1;
-bool i2c_initialized = false;
 
 void init_cols(void)
 {
     // Init on teensy2pp
     // The original init_cols() function in quantum/matrix.c 
     // configure every column pins as input with pull up resistor
-    // Columns (inputs):    C0 C1 C2
+    // Columns (inputs):    C0 C1
     // Note from teensy documentation:
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
-    DDRC &= ~(1<<0 | 1<<1 | 1<<2);
-    PORTC |= (1<<0 | 1<<1 | 1<<2);
+    DDRC &= ~(1<<0 | 1<<1); // Input
+    PORTC |= (1<<0 | 1<<1); // Pullup enabled
 
     // For mcp23018 the initialization is done in init_mcp23018()
 }
@@ -179,34 +176,37 @@ bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row)
     select_row(current_row);
     wait_us(30);
 
-    // For each col...
-    for (uint8_t col_index = 0; col_index < MATRIX_COLS; ++col_index)
+    // Read columns for the teensy part
+    bool pin_state = true;
+    const uint8_t MATRIX_COLS_HALF = MATRIX_COLS/2;
+    for (uint8_t col_index = 0; col_index < MATRIX_COLS_HALF; ++col_index)
     {
         // Select the col pin to read (active low)
-        bool pin_state = true;
-
-        // Read columns on teensy
         pin_state = (PINC & (1<<col_index)) == (1<<col_index);
-
-        if (col_index < MATRIX_COLS-1)
-        {
-            // Read columns on mcp23018
-            if (!mcp23018_status)
-            {
-                uint8_t data = 0;
-                mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
-                mcp23018_status = i2c_write(GPIOA);             if (mcp23018_status) goto out;
-                mcp23018_status = i2c_start(I2C_ADDR_READ);     if (mcp23018_status) goto out;
-                data = i2c_readNak();
-
-                pin_state &= (data & (1<<col_index)) == (1<<col_index);
-out:
-                i2c_stop();
-            }
-        }
 
         // Populate the matrix row with the state of the col pin
         current_matrix[current_row] |=  pin_state ? 0 : (ROW_SHIFTER << col_index);
+    }
+
+    // Read columns for the mcp23018 part
+    if (!mcp23018_status)
+    {
+        for (uint8_t col_index = MATRIX_COLS_HALF; col_index < MATRIX_COLS; ++col_index)
+        {
+            // Select the col pin to read (active low)
+            uint8_t data = 0;
+            mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
+            mcp23018_status = i2c_write(GPIOA);             if (mcp23018_status) goto out;
+            mcp23018_status = i2c_start(I2C_ADDR_READ);     if (mcp23018_status) goto out;
+            data = i2c_readNak();
+
+            pin_state = (data & (1<<(col_index-MATRIX_COLS_HALF))) == (1<<(col_index-MATRIX_COLS_HALF));
+out:
+            i2c_stop();
+
+            // Populate the matrix row with the state of the col pin
+            current_matrix[current_row] |=  pin_state ? 0 : (ROW_SHIFTER << col_index);
+        }
     }
 
     // Unselect row
@@ -218,6 +218,7 @@ out:
 uint8_t init_mcp23018(void)
 {
     mcp23018_status = 1;
+    static bool i2c_initialized = false;
     if (!i2c_initialized)
     {
         i2c_init();
@@ -279,6 +280,7 @@ void check_mcp23018_connection(void)
 {
     if (mcp23018_status)
     { 
+        static uint8_t mcp23018_reset_loop = 0;
         if (++mcp23018_reset_loop == 0)
         {
             print("trying to reset mcp23018\n");
