@@ -53,16 +53,19 @@
 #define GPPUB           0x0D
 #define GPIOA           0x12            // general purpose i/o port register (write modifies OLAT)
 #define GPIOB           0x13
+#define OLATA           0x14            // output latch register
+#define OLATB           0x15
 
 static matrix_row_t matrix[MATRIX_ROWS];
 
 static uint8_t mcp23018_reset_loop;
-uint8_t mcp23018_status = 0x20;
+uint8_t mcp23018_status = 1;
 bool i2c_initialized = false;
 
 void init_cols(void)
 {
-    // The original int_cols() function in quantum/matrix.c 
+    // Init on teensy2pp
+    // The original init_cols() function in quantum/matrix.c 
     // configure every column pins as input with pull up resistor
     // Columns (inputs):    C0 C1 C2
     // Note from teensy documentation:
@@ -70,10 +73,13 @@ void init_cols(void)
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
     DDRC &= ~(1<<0 | 1<<1 | 1<<2);
     PORTC |= (1<<0 | 1<<1 | 1<<2);
+
+    // For mcp23018 the initialization is done in init_mcp23018()
 }
 
 void unselect_rows(void)
 {
+    // Unselect on teensy2pp
     // The original unselect_rows() function in quantum/matrix.c
     // configure every row pins as normal input without pullup resistor
     // Note from teensy documentation:
@@ -81,10 +87,21 @@ void unselect_rows(void)
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
     DDRC &= ~(1<<6 | 1<<7);
     PORTC &= ~(1<<6 | 1<<7);
+
+    // Unselect on mcp23018
+    if (!mcp23018_status)
+    {
+        mcp23018_status = i2c_start(I2C_ADDR_WRITE);        if (mcp23018_status) goto out;
+        mcp23018_status = i2c_write(GPIOB);                 if (mcp23018_status) goto out;
+        mcp23018_status = i2c_write(0xFF);                  if (mcp23018_status) goto out;
+out:
+        i2c_stop();
+    }
 }
 
 void select_row(uint8_t row)
 {
+    // Select on teensy2pp
     // The original select_row() function in quantum/matrix.c
     // configure the row pin as an output and write 0 (low) to the pin
     //  DDRx:   0=Input, 1=Output
@@ -93,14 +110,14 @@ void select_row(uint8_t row)
     {
     case 0:
         {
-            DDRC  |= (1<<6);
-            PORTC &= ~(1<<6);
+            DDRC  |= (1<<6);    // Output
+            PORTC &= ~(1<<6);   // Write 0
             break;
         }
     case 1:
         {
-            DDRC  |= (1<<7);
-            PORTC &= ~(1<<7);
+            DDRC  |= (1<<7);    // Output
+            PORTC &= ~(1<<7);   // Write 0
             break;
         }
     default:
@@ -108,10 +125,21 @@ void select_row(uint8_t row)
             break;
         }
     }
+
+    // Select on mcp23018 and auto-unselect other rows by writing 0xFF first
+    if (!mcp23018_status)
+    {
+        mcp23018_status = i2c_start(I2C_ADDR_WRITE);        if (mcp23018_status) goto out;
+        mcp23018_status = i2c_write(GPIOB);                 if (mcp23018_status) goto out;
+        mcp23018_status = i2c_write(0xFF & ~(1<<row));      if (mcp23018_status) goto out;
+out:
+        i2c_stop();
+    }
 }
 
 void unselect_row(uint8_t row)
 {
+    // Unselect on teensy2pp
     // The original unselect_row() function in quantum/matrix.c
     // configure the row pin as an input with pull up resistor
     //  DDRx:   0=Input, 1=Output
@@ -135,6 +163,8 @@ void unselect_row(uint8_t row)
             break;
         }
     }
+
+    // Useless for mcp23018 because select_row() for mcp23018 auto-unselect other rows
 }
 
 bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row)
@@ -145,7 +175,7 @@ bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row)
     // Clear data in matrix row
     current_matrix[current_row] = 0;
 
-    // Select row and wait for row selecton to stabilize
+    // Select row and wait for row selection to stabilize
     select_row(current_row);
     wait_us(30);
 
@@ -153,28 +183,25 @@ bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row)
     for (uint8_t col_index = 0; col_index < MATRIX_COLS; ++col_index)
     {
         // Select the col pin to read (active low)
-        bool pin_state = false;
+        bool pin_state = true;
 
-        switch (col_index)
+        // Read columns on teensy
+        pin_state = (PINC & (1<<col_index)) == (1<<col_index);
+
+        if (col_index < MATRIX_COLS-1)
         {
-        case 0:
+            // Read columns on mcp23018
+            if (!mcp23018_status)
             {
-                pin_state = (PINC & (1<<0)) == (1<<0);
-                break;
-            }
-        case 1:
-            {
-                pin_state = (PINC & (1<<1)) == (1<<1);
-                break;
-            }
-        case 2:
-            {
-                pin_state = (PINC & (1<<2)) == (1<<2);
-                break;
-            }
-        default:
-            {
-                break;
+                uint8_t data = 0;
+                mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
+                mcp23018_status = i2c_write(GPIOA);             if (mcp23018_status) goto out;
+                mcp23018_status = i2c_start(I2C_ADDR_READ);     if (mcp23018_status) goto out;
+                data = i2c_readNak();
+
+                pin_state &= (data & (1<<col_index)) == (1<<col_index);
+out:
+                i2c_stop();
             }
         }
 
@@ -190,8 +217,7 @@ bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row)
 
 uint8_t init_mcp23018(void)
 {
-    mcp23018_status = 0x20;
-
+    mcp23018_status = 1;
     if (!i2c_initialized)
     {
         i2c_init();
@@ -199,17 +225,26 @@ uint8_t init_mcp23018(void)
         i2c_initialized = true;
     }
 
+    // Set pins directions on A and B
+    // Columns:     A0 A1 
+    // Rows:        B0 B1
+    // From mcp23018 datasheet:
+    //      1 = Pin is configured as an input.
+    //      0 = Pin is configured as an output.
     mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(IODIRA);            if (mcp23018_status) goto out;
-    mcp23018_status = i2c_write(0b11111111);        if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b00000011);        if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(0b00000000);        if (mcp23018_status) goto out;
     i2c_stop();
 
+    // Set pull up resistors on ports A and B
+    // From mcp23018 datasheet:
+    //      1 = Pull-up enabled.
+    //      0 = Pull-up disabled.
     mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(GPPUA);             if (mcp23018_status) goto out;
-    mcp23018_status = i2c_write(0b11111111);        if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b00000011);        if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(0b00000000);        if (mcp23018_status) goto out;
-
 out:
     i2c_stop();
 
@@ -228,7 +263,6 @@ void matrix_init(void)
     // Same as quantum/matrix.c
     unselect_rows();
     init_cols();
-    
     init_mcp23018();
     
     // Same as quantum/matrix.c
