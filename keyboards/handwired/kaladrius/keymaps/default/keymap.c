@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
-#include "keycodes.h"
+#include "jackdaw/tables/keycodes.h"
 
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes
@@ -28,13 +28,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
     [0] = LAYOUT(
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, _S, _T, _D, KC_NO,                 KC_NO, _H, _N, _E, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, _C, _V, _B, KC_NO,                 KC_NO, _K, _M, _COMM, KC_NO, KC_NO, KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
                       KC_NO, KC_NO,                                                 KC_NO, KC_NO, 
                                                 KC_NO,              KC_NO, 
                                     KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO 
-  ),
+                                                KC_NO,              KC_NO ),
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record)

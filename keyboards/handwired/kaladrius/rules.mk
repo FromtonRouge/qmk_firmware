@@ -1,4 +1,9 @@
-SRC += i2cmaster/twimaster.c \
+SRC += jackdaw/tables/tables.c \
+       jackdaw/tables/shelton_tables.c \
+       jackdaw/tables/user_tables.c \
+       jackdaw/stroke.c \
+       jackdaw/undo.c \
+       i2cmaster/twimaster.c \
        matrix.c
 
 # MCU name (Teensy 2++)
@@ -71,8 +76,3 @@ AUDIO_ENABLE = no           # Audio output on port C6
 FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
 HD44780_ENABLE = no         # Enable support for HD44780 based LCDs (+400)
 CUSTOM_MATRIX = yes
-AZERTY_OS_ENABLE = yes # AZERTY OS layout, set to no if your OS is in QWERTY
-
-ifeq ($(strip $(AZERTY_OS_ENABLE)), yes)
-    OPT_DEFS += -DAZERTY_OS_ENABLE
-endif
