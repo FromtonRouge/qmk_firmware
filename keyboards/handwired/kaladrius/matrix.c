@@ -64,12 +64,13 @@ void init_cols(void)
     // Init on teensy2pp
     // The original init_cols() function in quantum/matrix.c 
     // configure every column pins as input with pull up resistor
-    // Columns (inputs):    C0 C1
+    // Columns (inputs):    C0 C1 C2 C3 C4 C5 C6 c7
     // Note from teensy documentation:
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
-    DDRC &= ~(1<<0 | 1<<1); // Input
-    PORTC |= (1<<0 | 1<<1); // Pullup enabled
+    const uint8_t bits_columns = (1<<0 | 1<<1 | 1<<2 | 1<<3 | 1<<4 | 1<<5 | 1<<6);
+    DDRC &= ~bits_columns; // Input
+    PORTC |= bits_columns; // Pullup enabled
 
     // For mcp23018 the initialization is done in init_mcp23018()
 }
@@ -82,8 +83,9 @@ void unselect_rows(void)
     // Note from teensy documentation:
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
-    DDRC &= ~(1<<6 | 1<<7);
-    PORTC &= ~(1<<6 | 1<<7);
+    const uint8_t bits_rows = (1<<0 | 1<<1 | 1<<2 | 1<<3 | 1<<4);
+    DDRF &= ~bits_rows;
+    PORTF &= ~bits_rows;
 
     // Unselect on mcp23018
     if (!mcp23018_status)
@@ -103,25 +105,9 @@ void select_row(uint8_t row)
     // configure the row pin as an output and write 0 (low) to the pin
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Set Output (when DDRx=1): 0=Low Output, 1=High Output
-    switch (row)
-    {
-    case 0:
-        {
-            DDRC  |= (1<<6);    // Output
-            PORTC &= ~(1<<6);   // Write 0
-            break;
-        }
-    case 1:
-        {
-            DDRC  |= (1<<7);    // Output
-            PORTC &= ~(1<<7);   // Write 0
-            break;
-        }
-    default:
-        {
-            break;
-        }
-    }
+    const uint8_t bit_row = (1<<row);
+    DDRF  |= bit_row;    // Output
+    PORTF &= ~bit_row;   // Write 0
 
     // Select on mcp23018 and auto-unselect other rows by writing 0xFF first
     if (!mcp23018_status)
@@ -141,25 +127,9 @@ void unselect_row(uint8_t row)
     // configure the row pin as an input with pull up resistor
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
-    switch (row)
-    {
-    case 0:
-        {
-            DDRC &= ~(1<<6);
-            PORTC |= (1<<6);
-            break;
-        }
-    case 1:
-        {
-            DDRC &= ~(1<<7);
-            PORTC |= (1<<7);
-            break;
-        }
-    default:
-        {
-            break;
-        }
-    }
+    const uint8_t bit_row = (1<<row);
+    DDRF &= ~bit_row;
+    PORTF |= bit_row;
 
     // Useless for mcp23018 because select_row() for mcp23018 auto-unselect other rows
 }
@@ -227,14 +197,14 @@ uint8_t init_mcp23018(void)
     }
 
     // Set pins directions on A and B
-    // Columns:     A0 A1 
-    // Rows:        B0 B1
+    // Columns:     A0 A1 A2 A3 A4 A5 A6
+    // Rows:        B0 B1 B2 B3 B4
     // From mcp23018 datasheet:
     //      1 = Pin is configured as an input.
     //      0 = Pin is configured as an output.
     mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(IODIRA);            if (mcp23018_status) goto out;
-    mcp23018_status = i2c_write(0b00000011);        if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b01111111);        if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(0b00000000);        if (mcp23018_status) goto out;
     i2c_stop();
 
@@ -244,7 +214,7 @@ uint8_t init_mcp23018(void)
     //      0 = Pull-up disabled.
     mcp23018_status = i2c_start(I2C_ADDR_WRITE);    if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(GPPUA);             if (mcp23018_status) goto out;
-    mcp23018_status = i2c_write(0b00000011);        if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b01111111);        if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(0b00000000);        if (mcp23018_status) goto out;
 out:
     i2c_stop();

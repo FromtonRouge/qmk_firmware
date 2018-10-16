@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+#include "keycodes.h"
 
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes
@@ -25,8 +26,14 @@ enum custom_keycodes
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 {
     [0] = LAYOUT(
-            KC_S, KC_T,     KC_H,   KC_N,      \
-            KC_C, KC_V,     KC_K,   KC_M       \
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
+        KC_NO, KC_NO, KC_NO, _S, _T, _D, KC_NO,                 KC_NO, _H, _N, _E, KC_NO, KC_NO, KC_NO, 
+        KC_NO, KC_NO, KC_NO, _C, _V, _B, KC_NO,                 KC_NO, _K, _M, _COMM, KC_NO, KC_NO, KC_NO, 
+                      KC_NO, KC_NO,                                                 KC_NO, KC_NO, 
+                                                KC_NO,              KC_NO, 
+                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
+                                                KC_NO,              KC_NO 
   ),
 };
 
