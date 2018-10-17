@@ -55,9 +55,7 @@ const uint16_t g_special_shift_table[SPECIAL_SHIFT_TABLE_SIZE] =
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes
 {
-    QMKBEST = CKC_KALADRIUS_SAFE_RANGE,
-    QMKURL,
-    CKC_SFT,    // Custom shift
+    CKC_SFT = CKC_KALADRIUS_SAFE_RANGE, // Custom shift
     CKC_SFUN,   // Shift function
     CKC_CIRC,
 };
@@ -126,32 +124,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
     switch (keycode)
     {
-    case QMKBEST:
-        {
-            if (record->event.pressed)
-            {
-                // when keycode QMKBEST is pressed
-                SEND_STRING("QMK is the best thing ever!");
-            }
-            else
-            {
-                // when keycode QMKBEST is released
-            }
-            break;
-        }
-    case QMKURL:
-        {
-            if (record->event.pressed)
-            {
-                // when keycode QMKURL is pressed
-                SEND_STRING("https://qmk.fm/" SS_TAP(X_ENTER));
-            }
-            else
-            {
-                // when keycode QMKURL is released
-            }
-            break;
-        }
     case CKC_STENO:
         {
             const uint32_t dword = pgm_read_dword(&(g_steno_keymap[record->event.key.row][record->event.key.col]));
