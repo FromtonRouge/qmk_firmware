@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
-#include "jackdaw/tables/keycodes.h"
+#include "jackdaw/keycodes.h"
 #include "jackdaw/stroke.h"
 #include "quantum/keymap_extras/keymap_french.h"
 #include "tmk_core/common/keycode.h"
