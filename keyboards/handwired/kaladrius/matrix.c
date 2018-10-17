@@ -27,6 +27,16 @@
 #include "kaladrius.h"
 #include "i2cmaster/i2cmaster.h"
 
+// Set 0 if debouncing isn't needed
+#ifndef DEBOUNCING_DELAY
+#define DEBOUNCING_DELAY 5
+#endif
+
+#if (DEBOUNCING_DELAY > 0)
+static uint16_t debouncing_time;
+static bool debouncing = false;
+#endif
+
 #if (MATRIX_COLS <= 8)
 #    define print_matrix_header()  print("\nr/c 01234567\n")
 #    define print_matrix_row(row)  print_bin_reverse8(matrix_get_row(row))
@@ -57,6 +67,7 @@
 #define OLATB           0x15
 
 static matrix_row_t matrix[MATRIX_ROWS];
+static matrix_row_t matrix_debouncing[MATRIX_ROWS];
 uint8_t mcp23018_status = 1;
 
 void init_cols(void)
@@ -241,6 +252,7 @@ void matrix_init(void)
     for (uint8_t i=0; i < MATRIX_ROWS; ++i)
     {
         matrix[i] = 0;
+        matrix_debouncing[i] = 0;
     }
 
     matrix_init_quantum();
@@ -272,13 +284,41 @@ uint8_t matrix_scan(void)
     check_mcp23018_connection();
 
     // Set row, read cols
-    for (uint8_t row = 0; row < MATRIX_ROWS; ++row)
+    for (uint8_t current_row = 0; current_row < MATRIX_ROWS; ++current_row)
     {
-        read_cols_on_row(matrix, row);
+#if (DEBOUNCING_DELAY > 0)
+        const bool matrix_changed = read_cols_on_row(matrix_debouncing, current_row);
+        if (matrix_changed)
+        {
+            debouncing = true;
+            debouncing_time = timer_read();
+        }
+#else
+        read_cols_on_row(matrix, current_row);
+#endif
     }
+
+#if (DEBOUNCING_DELAY > 0)
+    if (debouncing && (timer_elapsed(debouncing_time) > DEBOUNCING_DELAY))
+    {
+        for (uint8_t i = 0; i < MATRIX_ROWS; i++)
+        {
+            matrix[i] = matrix_debouncing[i];
+        }
+        debouncing = false;
+    }
+#endif
 
     matrix_scan_quantum();
     return 1;
+}
+
+bool matrix_is_modified(void)
+{
+#if (DEBOUNCING_DELAY > 0)
+    if (debouncing) return false;
+#endif
+    return true;
 }
 
 bool matrix_is_on(uint8_t row, uint8_t col)
