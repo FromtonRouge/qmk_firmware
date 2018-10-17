@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
-#include "jackdaw/tables/keycodes.h"
+#include "jackdaw/keycodes.h"
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 {
@@ -22,26 +22,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
                       KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
                                                   KC_NO,        KC_NO, 
                                     KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
                                                   KC_NO,        KC_NO ),
 };
 
+steno_layout_t* get_steno_layout(void) { return 0; }
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
     return true;
-}
-
-void matrix_init_user(void)
-{
-}
-
-void matrix_scan_user(void)
-{
-}
-
-void led_set_user(uint8_t usb_led)
-{
 }

@@ -17,7 +17,6 @@
 #include "jackdaw/keycodes.h"
 #include "jackdaw/stroke.h"
 #include "quantum/keymap_extras/keymap_french.h"
-#include "tmk_core/common/keycode.h"
 #include <stdint.h>
 
 // For the Programmer Colemak layout
@@ -46,8 +45,8 @@ const uint16_t g_special_shift_table[SPECIAL_SHIFT_TABLE_SIZE] =
     FR_UNDS     // [17] FR_MINS
 };
 
-#define L_BASE 0
-#define L_STENO 1
+#define L_STANDARD 1
+#define L_STENO 0
 #define L_SHIFT_COLEMAK 2
 #define L_ACCENTS 3
 #define L_FN 4
@@ -61,96 +60,72 @@ enum custom_keycodes
 };
 
 // Steno keymap
-const uint32_t PROGMEM g_steno_keymap[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                 KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO, 
-                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO );
+const uint32_t PROGMEM g_steno_layout[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
+        0,  0,   0,   0,   0,   0,       0,        0, 0,      0,   0,   0,   0,   0, 
+        0,  L3,  L2,  L1,  L0,  S_ENT,   0,        0, SC_SEP, R0,  R1,  R2,  R3,  R4, 
+        L4, L_A, L_C, L_W, L_N, SC_STAR, 0,        0, SC_SEP, R_R, R_L, R_C, R_T, RP_E, 
+        L5, L_S, L_T, L_H, L_R, SC_STAR,              SC_SEP, R_N, R_G, R_H, R_S, RP_Y, 
+                 0,   0,                                           0,   0, 
+                                   SC_STAR,        SC_STAR, 
+                        SC_LPLUS, T_E, T_O,        T_Y, T_I, SC_RPLUS, 
+                                       T_A,        T_U );
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 {
-    [L_BASE] = LAYOUT(
-        _DLR,       _LBRC,  _LCBR,      _RCBR,      _LPRN,  _EQL,   KC_LGUI,                TG(L_STENO),    _ASTR,  _RPRN,  _PLUS,      _RBRC,  _EXLM,  _SLSH, 
-        KC_TAB,     _Q,     _W,         _F,         _P,     _G,     KC_INS,                 KC_NO,          _J,     _L,     _U,         _Y,     _SCLN,  _MINS, 
-        CKC_SFT,    _A,     _R,         _S,         _T,     _D,     KC_ESC,                 _HASH,          _H,     _N,     _E,         _I,     _O,     CKC_SFT, 
-        KC_LCTL,    _Z,     _X,         _C,         _V,     _B,     _AMP,                   _BSLS,          _K,     _M,     _COMM,      _DOT,   _APOS,  KC_RCTL, 
-                            KC_LALT,    MO(L_FN),                                                                           MO(L_FN),   _AT, 
-                                                                    TG(L_FN),               TG(L_FN), 
-                                                    KC_ENT, KC_BSPC,MO(L_ACCENTS),          MO(L_ACCENTS),  KC_DEL, KC_SPC, 
-                                                                    KC_BSPC,                KC_DEL ),
     [L_STENO] = LAYOUT(
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                 KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO, 
-                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO ),
+        KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,        KC_NO, KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO, 
+        KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,        KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,        KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+                              KC_NO,     KC_NO,                                                                      KC_NO,     KC_NO, 
+                                                                      CKC_STENO,        CKC_STENO, 
+                                                CKC_STENO, CKC_STENO, CKC_STENO,        CKC_STENO, CKC_STENO, CKC_STENO, 
+                                                                      CKC_STENO,        CKC_STENO ),
+
+    [L_STANDARD] = LAYOUT(
+        _DLR,    _LBRC, _LCBR, _RCBR, _LPRN, _EQL, KC_LGUI,                TG(L_STENO), _ASTR, _RPRN, _PLUS,    _RBRC, _EXLM, _SLSH, 
+        KC_TAB,  _Q,    _W,    _F,    _P,    _G,   _AMP,                   _BSLS,       _J,    _L,    _U,       _Y,    _SCLN, _MINS, 
+        CKC_SFT, _A,    _R,    _S,    _T,    _D,   KC_ESC,                 _HASH,       _H,    _N,    _E,       _I,    _O,    CKC_SFT, 
+        KC_LCTL, _Z,    _X,    _C,    _V,    _B,                                        _K,    _M,    _COMM,    _DOT,  _APOS, KC_RCTL, 
+                            KC_LALT,    MO(L_FN),                                                     MO(L_FN), _AT, 
+                                                   TG(L_FN),                TG(L_FN), 
+                              KC_ENT, KC_BSPC,MO(L_ACCENTS),                MO(L_ACCENTS), KC_DEL, KC_SPC, 
+                                                    KC_BSPC,                KC_DEL ),
     [L_SHIFT_COLEMAK] = LAYOUT(
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                 KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
+                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
+                                                  KC_NO,        KC_NO, 
                                     KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO ),
+                                                  KC_NO,        KC_NO ),
     [L_ACCENTS] = LAYOUT(
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                 KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
+                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
+                                                  KC_NO,        KC_NO, 
                                     KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO ),
+                                                  KC_NO,        KC_NO ),
     [L_FN] = LAYOUT(
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                 KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
+                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
+                                                  KC_NO,        KC_NO, 
                                     KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                KC_NO,              KC_NO ),
+                                                  KC_NO,        KC_NO ),
 };
+
+steno_layout_t* get_steno_layout(void) { return g_steno_layout; }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
     switch (keycode)
     {
-    case CKC_STENO:
-        {
-            const uint32_t dword = pgm_read_dword(&(g_steno_keymap[record->event.key.row][record->event.key.col]));
-            if (dword & STENO_BIT)
-            {
-                const uint32_t bit_key = 1L << (dword & 0x0F);
-                const uint8_t family = (dword >> 4) & 0x0F;
-                const uint8_t family_offset = g_family_to_bit_offset[family];
-                uint32_t* keys_pressed_p = g_family_to_keys_pressed[family];
-                if (record->event.pressed)
-                {
-                    (*keys_pressed_p) |= (bit_key << family_offset);
-                    g_family_bits[family] |= bit_key;
-                }
-                else
-                {
-                    (*keys_pressed_p) &= ~(bit_key << family_offset);
-
-                    // Stroke if all steno keys are released
-                    if (can_stroke())
-                    {
-                        stroke();
-                    }
-                }
-            }
-            return false;
-        }
     case CKC_SFT: // Apply SHIFT and go to L_SHIFT_COLEMAK
         {
             const uint8_t shift_key = record->event.key.row == 0 ? KC_LSFT : KC_RSFT;
@@ -168,7 +143,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
         }
     case CKC_SFUN: // Handle special shift codes for the Programmer Colemak layout
         {
-            const uint16_t keycode = keymap_key_to_keycode(L_BASE , record->event.key);
+            const uint16_t keycode = keymap_key_to_keycode(L_STANDARD , record->event.key);
             const uint16_t special_shift_code = g_special_shift_table[keycode % SPECIAL_SHIFT_TABLE_SIZE];
             const uint8_t code = (uint8_t)special_shift_code;
             if (record->event.pressed)
@@ -185,7 +160,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
         {
             if (record->event.pressed)
             {
-                const uint16_t keycode = keymap_key_to_keycode(L_BASE , record->event.key);
+                const uint16_t keycode = keymap_key_to_keycode(L_STANDARD , record->event.key);
                 register_code(KC_LBRC);
                 unregister_code(KC_LBRC);
                 register_code(keycode);
@@ -199,16 +174,4 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
         }
     }
     return true;
-}
-
-void matrix_init_user(void)
-{
-}
-
-void matrix_scan_user(void)
-{
-}
-
-void led_set_user(uint8_t usb_led)
-{
 }
