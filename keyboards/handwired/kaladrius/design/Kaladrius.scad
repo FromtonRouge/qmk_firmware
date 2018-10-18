@@ -145,6 +145,11 @@ module thumb_transform()
 	}
 }
 
+module electronic_transform()
+{
+    rotate([0, 0, 4.5]) translate([-30, -12, 0]) {children();}
+}
+
 module holes(offset=0, height = switch_hole_height, has_additional_border = true)
 {
 	// Index
@@ -276,7 +281,7 @@ module screw_holes(offset=0, height=switch_hole_height, diameter=screws_diameter
 			// Middle
 			color("lightGreen")
 			{
-				screw_hole(height, [2*(switch_hole_width+switch_spacing) - switch_hole_width/2, offset_finger_middle + switch_spacing + case_outer_border/2, 0], diameter);
+				screw_hole(height, [2*(switch_hole_width+switch_spacing) - switch_hole_width/2, offset_finger_middle + switch_spacing, 0], diameter);
 			}
 
 			// Pinky
@@ -445,9 +450,9 @@ module case()
         {
             difference()
             {
-                difference()
+                union()
                 {
-                    union()
+                    difference()
                     {
                         difference()
                         {
@@ -457,55 +462,128 @@ module case()
                                 {
                                     union()
                                     {
-                                        small_radius = 1;
-                                        big_radius = case_shell_size;
-                                        // Bottom
-                                        minkowski()
+                                        difference()
                                         {
-                                            plate();
-                                            $fn = 30; cylinder(r1=small_radius, r2=big_radius,  h=case_shell_size);
-                                        }
-
-                                        // Middle
-                                        translate([0, 0, case_shell_size])
-                                        {
-                                            minkowski()
+                                            union()
                                             {
-                                                plate();
-                                                $fn = 30; cylinder(r=case_shell_size,  h=case_height-case_shell_size);
+                                                small_radius = 1;
+                                                big_radius = case_shell_size;
+                                                // Bottom
+                                                minkowski()
+                                                {
+                                                    plate();
+                                                    $fn = 30; cylinder(r1=small_radius, r2=big_radius,  h=case_shell_size);
+                                                }
+
+                                                // Middle
+                                                translate([0, 0, case_shell_size])
+                                                {
+                                                    minkowski()
+                                                    {
+                                                        plate();
+                                                        $fn = 30; cylinder(r=case_shell_size,  h=case_height-case_shell_size);
+                                                    }
+                                                }
+
+                                                // Top
+                                                translate([0, 0, case_height])
+                                                {
+                                                    minkowski()
+                                                    {
+                                                        plate();
+                                                        $fn = 30; cylinder(r2=small_radius, r1=big_radius,  h=case_shell_size);
+                                                    }
+                                                }
+                                            }
+
+                                            translate([0, 0, case_shell_size])
+                                            {
+                                                scale([1, 1, 8])
+                                                {
+                                                    plate();
+                                                }
                                             }
                                         }
 
-                                        // Top
-                                        translate([0, 0, case_height])
-                                        {
-                                            minkowski()
-                                            {
-                                                plate();
-                                                $fn = 30; cylinder(r2=small_radius, r1=big_radius,  h=case_shell_size);
-                                            }
-                                        }
+                                        screw_mount(height = case_height + 2*case_shell_size);
                                     }
-
-                                    translate([0, 0, case_shell_size])
-                                    {
-                                        scale([1, 1, 8])
-                                        {
-                                            plate();
-                                        }
-                                    }
+                                    translate([0, 0, -20]) screw_holes(height = 200);
                                 }
-
-                                screw_mount(height = case_height + 2*case_shell_size);
                             }
-                            translate([0, 0, -20]) screw_holes(height = 200);
+
+                            translate([0, 0, case_height+case_shell_size]) plate();
                         }
+
+                        screw_holes(0, 4, screw_nut_diameter);
                     }
-
-                    translate([0, 0, case_height+case_shell_size]) plate();
+                    electronic_transform()  electronic_mount();
                 }
+                electronic_transform() electronic_mount(holes_only = true);
+            }
 
-                screw_holes(0, 4, screw_nut_diameter);
+        }
+    }
+}
+
+module electronic_mount(holes_only = false)
+{
+    module mount(h, d1, d2, holes_only)
+    {
+        if (holes_only)
+        {
+            translate([0, 0, -h/4])
+            {
+                $fn = 60; cylinder(h=h*1.5, d=d1);
+            }
+        }
+        else
+        {
+            $fn= 60; cylinder(h=h, d=d2);
+        }
+    }
+
+    plate_size = [50, 30, 2];
+    screw_mount_height = 10;
+    screw_mount_diameter = 6;
+    screw_mount_hole_diameter = 3;
+    translate([screw_mount_diameter/2, screw_mount_diameter/2, 0])
+    {
+        mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
+    }
+
+    translate([plate_size[0]-screw_mount_diameter/2, screw_mount_diameter/2, 0])
+    {
+        mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
+    }
+
+    translate([plate_size[0]-screw_mount_diameter/2, plate_size[1]-screw_mount_diameter/2, 0])
+    {
+        mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
+    }
+
+    translate([screw_mount_diameter/2, plate_size[1]-screw_mount_diameter/2, 0])
+    {
+        mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
+    }
+
+    if (!holes_only)
+    {
+        minkowski()
+        {
+            translate([screw_mount_diameter/2, screw_mount_diameter/2, 0]) cube([plate_size[0]-screw_mount_diameter, plate_size[1]-screw_mount_diameter, plate_size[2]/2]);
+            $fn = 60; cylinder(h=plate_size[2]/2, d=screw_mount_diameter);
+        }
+    }
+    else
+    {
+        roundness = 2;
+        hole_ports_dim = [plate_size[0]/1.5-2*roundness, 20-2*roundness, screw_mount_height/1.5-2*roundness];
+        translate([(plate_size[0]-hole_ports_dim[0])/2, 2+ plate_size[1] - screw_mount_diameter/2 + roundness, 4+roundness])
+        {
+            minkowski()
+            {
+                cube(hole_ports_dim);
+                $fn = 60; sphere(r=roundness);
             }
         }
     }
@@ -513,7 +591,9 @@ module case()
 
 *plate();
 *holes();
-top_plate();
+*top_plate();
 *mirror([1, 0, 0]) top_plate();
-*case();
+
+case();
+
 *mirror([1, 0, 0]) case();
