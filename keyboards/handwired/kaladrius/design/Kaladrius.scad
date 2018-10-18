@@ -26,7 +26,7 @@ thumb_x = 9;
 thumb_y = 18;
 thumb_angle = -20;
 case_shell_size = 3;
-case_height = 8;
+case_height = 12;
 case_outer_border = 8;
 case_color = "red";
 plate_height = 2;
@@ -147,7 +147,7 @@ module thumb_transform()
 
 module electronic_transform()
 {
-    rotate([0, 0, 4.5]) translate([-30, -12, 0]) {children();}
+    rotate([0, 0, 4]) translate([-33.8, -26, 0]) {children();}
 }
 
 module holes(offset=0, height = switch_hole_height, has_additional_border = true)
@@ -402,7 +402,7 @@ module plate()
                         point_pinky_last + [switch_hole_width, 0] 
                     ];
 
-					BezWall(control_points, width = 5, height = plate_height, steps = 32, centered = true, showCtlR = false);
+					BezWall(control_points, width = 5, height = plate_height, steps = 64, centered = true, showCtlR = false);
 				}
             }
             $fn = 60; cylinder(r=case_outer_border+switch_spacing, h=plate_height);
@@ -531,7 +531,7 @@ module electronic_mount(holes_only = false)
     {
         if (holes_only)
         {
-            translate([0, 0, -h/4])
+            //translate([0, 0, -h/4])
             {
                 $fn = 60; cylinder(h=h*1.5, d=d1);
             }
@@ -542,26 +542,26 @@ module electronic_mount(holes_only = false)
         }
     }
 
-    plate_size = [50, 30, 2];
+    plate_size = [56, 36, 2];
     screw_mount_height = 10;
     screw_mount_diameter = 6;
-    screw_mount_hole_diameter = 3;
+    screw_mount_hole_diameter = 2.5;
     translate([screw_mount_diameter/2, screw_mount_diameter/2, 0])
     {
         mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
     }
 
-    translate([plate_size[0]-screw_mount_diameter/2, screw_mount_diameter/2, 0])
+    translate([plate_size[0] + screw_mount_diameter/2, screw_mount_diameter/2, 0])
     {
         mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
     }
 
-    translate([plate_size[0]-screw_mount_diameter/2, plate_size[1]-screw_mount_diameter/2, 0])
+    translate([plate_size[0]+screw_mount_diameter/2, plate_size[1]+screw_mount_diameter/2, 0])
     {
         mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
     }
 
-    translate([screw_mount_diameter/2, plate_size[1]-screw_mount_diameter/2, 0])
+    translate([screw_mount_diameter/2, plate_size[1]+screw_mount_diameter/2, 0])
     {
         mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
     }
@@ -570,15 +570,19 @@ module electronic_mount(holes_only = false)
     {
         minkowski()
         {
-            translate([screw_mount_diameter/2, screw_mount_diameter/2, 0]) cube([plate_size[0]-screw_mount_diameter, plate_size[1]-screw_mount_diameter, plate_size[2]/2]);
+            translate([screw_mount_diameter/2, screw_mount_diameter/2, 0]) cube([plate_size[0], plate_size[1], plate_size[2]/2]);
             $fn = 60; cylinder(h=plate_size[2]/2, d=screw_mount_diameter);
         }
     }
     else
     {
-        roundness = 2;
-        hole_ports_dim = [plate_size[0]/1.5-2*roundness, 20-2*roundness, screw_mount_height/1.5-2*roundness];
-        translate([(plate_size[0]-hole_ports_dim[0])/2, 2+ plate_size[1] - screw_mount_diameter/2 + roundness, 4+roundness])
+        roundness = 3;
+        y_offset = 0;
+        z_offset = 4.2;
+        hole_ports_dim = [plate_size[0]/1.2-2*roundness, 20-2*roundness, screw_mount_height/1.5-2*roundness];
+        //translate([(plate_size[0]-hole_ports_dim[0])/2, 2 + plate_size[1] - screw_mount_diameter/2 + roundness, 4+roundness])
+        translate([(plate_size[0]+screw_mount_diameter-(hole_ports_dim[0] + 2*roundness))/2, plate_size[1] + screw_mount_diameter + y_offset, z_offset])
+        translate([roundness, roundness, roundness])
         {
             minkowski()
             {
@@ -593,7 +597,10 @@ module electronic_mount(holes_only = false)
 *holes();
 *top_plate();
 *mirror([1, 0, 0]) top_plate();
-
-case();
-
-*mirror([1, 0, 0]) case();
+*difference()
+{
+    electronic_mount();
+    electronic_mount(holes_only=true);
+}
+*case();
+mirror([1, 0, 0]) case();
