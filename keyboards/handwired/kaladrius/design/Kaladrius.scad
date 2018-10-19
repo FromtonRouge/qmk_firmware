@@ -50,7 +50,7 @@ hole_positions = [
     [-switch_hole_width - 2*switch_spacing, -3*(switch_spacing+switch_hole_width), 0]
 ];
 
-module printable_nut_hole(size, tolerance = 0.02)
+module printable_nut_hole(size, tolerance = 0.5)
 {
     METRIC_NUT_THICKNESS = [
         -1, //0 index is not used but reduces computation
@@ -545,13 +545,13 @@ module case()
                         // Nut holes
                         for (index = [0:4])
                         {
-                            transform_hole(index) translate([0,0,-0.1]) printable_nut_hole(3, tolerance=0.02);
+                            transform_hole(index) translate([0,0,-0.1]) printable_nut_hole(3);
                         }
                         transform_thumb()
                         {
                             for (index = [5:7])
                             {
-                                transform_hole(index) translate([0,0,-0.1]) printable_nut_hole(3, tolerance=0.02);
+                                transform_hole(index) translate([0,0,-0.1]) printable_nut_hole(3);
                             }
                         }
                     }
@@ -599,7 +599,7 @@ module electronic_mount(holes_only = false)
 
             if (holes_only)
             {
-                translate([0,0,-0.1]) printable_nut_hole(2, tolerance=0.02);
+                translate([0,0,-0.1]) printable_nut_hole(2);
             }
         }
     }
@@ -632,7 +632,7 @@ module electronic_mount(holes_only = false)
 
 *plate();
 *holes();
-top_plate();
+*top_plate();
 *mirror([1, 0, 0]) top_plate();
 *difference()
 {
@@ -640,4 +640,4 @@ top_plate();
     electronic_mount(holes_only=true);
 }
 *case();
-*mirror([1, 0, 0]) case();
+mirror([1, 0, 0]) case();
