@@ -632,7 +632,7 @@ module electronic_mount(holes_only = false)
 
 *plate();
 *holes();
-*top_plate();
+top_plate();
 *mirror([1, 0, 0]) top_plate();
 *difference()
 {
@@ -640,4 +640,4 @@ module electronic_mount(holes_only = false)
     electronic_mount(holes_only=true);
 }
 *case();
-mirror([1, 0, 0]) case();
+*mirror([1, 0, 0]) case();
