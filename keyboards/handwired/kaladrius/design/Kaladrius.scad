@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use <BezierScad.scad>;
+use <BezierScad.scad>
+use <MCAD/nuts_and_bolts.scad>
 
 switch_hole_width = 14;
 switch_spacing = 4.8;
@@ -39,15 +40,61 @@ screw_nut_diameter = 6.5;
 mirror_translate = [60, 0, 0];
 switch_hole_height = screws_mount_height + 5;
 
-module screw_hole(height, pos, diameter=screws_diameter)
+module printable_nut_hole(size, tolerance = 0.02)
 {
-    translate(pos)
+    METRIC_NUT_THICKNESS = [
+        -1, //0 index is not used but reduces computation
+        -1,
+        1.6,//m2
+        2.40,//m3
+        3.20,//m4
+        4.00,//m5
+        5.00,//m6
+        -1,
+        6.50,//m8
+        -1,
+        8.00,//m10
+        -1,
+        10.00,//m12
+        -1,
+        -1,
+        -1,
+        13.00,//m16
+        -1,
+        -1,
+        -1,
+        16.00//m20
+            -1,
+        -1,
+        -1,
+        19.00,//m24
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        24.00,//m30
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        29.00//m36
+            ];
+    hull()
     {
-        $fn = 60; cylinder(height-2, d=diameter);
-        translate([0, 0, height-2])
-        {
-            $fn = 60; cylinder(2, d2=diameter/2, d1=diameter);
-        }
+        height = METRIC_NUT_THICKNESS[size]+tolerance;
+        translate([0, 0, height]) scale([0.2, 0.2, 1]) nutHole(size, tolerance);
+        scale([1,1,1.5]) nutHole(size, tolerance);
+    }
+}
+
+module case_hole(height, diameter=screws_diameter)
+{
+    $fn = 60; cylinder(height-2, d=diameter);
+    translate([0, 0, height-2])
+    {
+        $fn = 60; cylinder(2, d2=diameter/2, d1=diameter);
     }
 }
 
@@ -128,7 +175,7 @@ module hole(offset, height, has_additional_border = true, vertical = false)
     }
 }
 
-module thumb_transform()
+module transform_thumb()
 {
 	translate([switch_spacing-thumb_x, -thumb_y, 0])
 	{
@@ -145,7 +192,7 @@ module thumb_transform()
 	}
 }
 
-module electronic_transform()
+module transform_electronic()
 {
     rotate([0, 0, 4]) translate([-33.8, -26, 0]) {children();}
 }
@@ -232,7 +279,7 @@ module holes(offset=0, height = switch_hole_height, has_additional_border = true
 	}
 
 	// Thumbs
-	color("yellow") thumb_transform()
+	color("yellow") transform_thumb()
 	{
 		// Top
 		hole(offset, height, has_additional_border);
@@ -265,39 +312,38 @@ module holes(offset=0, height = switch_hole_height, has_additional_border = true
 	}
 }
 
-module screw_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
+module transform_hole(index)
+{
+    positions = [
+        [-2*switch_hole_width - switch_spacing - switch_spacing, switch_spacing, 0],
+        [-2*switch_hole_width - switch_spacing - switch_spacing, -3*(switch_hole_width + switch_spacing), 0],
+        [2*(switch_hole_width+switch_spacing) - switch_hole_width/2, offset_finger_middle + switch_spacing, 0],
+        [5*(switch_hole_width+switch_spacing) + switch_spacing, offset_finger_middle - offset_finger_ring - switch_hole_width, 0],
+        [5*(switch_hole_width+switch_spacing) + switch_spacing, -4*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring - switch_hole_width - switch_spacing, 0],
+        [-switch_hole_width - 2*switch_spacing, switch_spacing, 0],
+        [2*(switch_hole_width+switch_spacing)-((switch_hole_width+switch_spacing)*0.25) + switch_spacing, -2*(switch_hole_width + switch_spacing)*1.5, 0],
+        [-switch_hole_width - 2*switch_spacing, -3*(switch_spacing+switch_hole_width), 0]
+    ];
+    translate(positions[index]) children();
+}
+
+module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
 {
     if (!prototype_mode)
     {
 		translate([0, 0, -1])
 		{
-			// Index
-			color("cyan")
-			{
-				screw_hole(height, [-2*switch_hole_width - switch_spacing - switch_spacing, switch_spacing, 0], diameter);
-				screw_hole(height, [-2*switch_hole_width - switch_spacing - switch_spacing, -3*(switch_hole_width + switch_spacing), 0], diameter);
-			}
+            for (index = [0:4])
+            {
+                transform_hole(index) case_hole(height, diameter);
+            }
 
-			// Middle
-			color("lightGreen")
+            transform_thumb()
 			{
-				screw_hole(height, [2*(switch_hole_width+switch_spacing) - switch_hole_width/2, offset_finger_middle + switch_spacing, 0], diameter);
-			}
-
-			// Pinky
-			color("magenta")
-			{
-				screw_hole(height, [5*(switch_hole_width+switch_spacing) + switch_spacing, offset_finger_middle - offset_finger_ring - switch_hole_width, 0], diameter);
-				screw_hole(height, [5*(switch_hole_width+switch_spacing) + switch_spacing, -4*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring - switch_hole_width - switch_spacing, 0], diameter);
-			}
-
-			// Thumbs
-			color("yellow") thumb_transform()
-			{
-				x_adjust = (switch_hole_width+switch_spacing)*0.25;
-				screw_hole(height, [-switch_hole_width - 2*switch_spacing, switch_spacing, 0], diameter);
-				screw_hole(height, [2*(switch_hole_width+switch_spacing)-x_adjust + switch_spacing, -2*(switch_hole_width + switch_spacing)*1.5, 0], diameter);
-				screw_hole(height, [-switch_hole_width - 2*switch_spacing, -3*(switch_spacing+switch_hole_width), 0], diameter);
+                for (index = [5:7])
+                {
+                    transform_hole(index) case_hole(height, diameter);
+                }
 			}
 		}
     }
@@ -307,33 +353,17 @@ module screw_mount(offset=0, height = switch_hole_height)
 {
     if (!prototype_mode)
     {
-        // Index
-        color("cyan")
+        for (index = [0:4])
         {
-            screw_hole(height, [-2*switch_hole_width - switch_spacing - switch_spacing, switch_spacing, 0], screw_mount_diameter);
-            screw_hole(height, [-2*switch_hole_width - switch_spacing - switch_spacing, -3*(switch_hole_width + switch_spacing), 0], screw_mount_diameter);
+            transform_hole(index) case_hole(height, screw_mount_diameter);
         }
 
-		// Middle
-		color("lightGreen")
-		{
-			screw_hole(height, [2*(switch_hole_width+switch_spacing) - switch_hole_width/2, offset_finger_middle + switch_spacing, 0], screw_mount_diameter);
-		}
-
-        // Pinky
-        color("magenta")
+        transform_thumb()
         {
-            screw_hole(height, [5*(switch_hole_width+switch_spacing) + switch_spacing, offset_finger_middle - offset_finger_ring - switch_hole_width, 0], screw_mount_diameter);
-            screw_hole(height, [5*(switch_hole_width+switch_spacing) + switch_spacing, -4*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring - switch_hole_width - switch_spacing, 0], screw_mount_diameter);
-        }
-
-        // Thumbs
-        color("yellow") thumb_transform()
-        {
-            x_adjust = (switch_hole_width+switch_spacing)*0.25;
-            screw_hole(height, [-switch_hole_width - 2*switch_spacing, switch_spacing, 0], screw_mount_diameter);
-            screw_hole(height, [2*(switch_hole_width+switch_spacing)-x_adjust + switch_spacing, -2*(switch_hole_width + switch_spacing)*1.5, 0], screw_mount_diameter);
-            screw_hole(height, [-switch_hole_width - 2*switch_spacing, -3*(switch_spacing+switch_hole_width), 0], screw_mount_diameter);
+            for (index = [5:7])
+            {
+                transform_hole(index) case_hole(height, screw_mount_diameter);
+            }
         }
     }
 }
@@ -364,7 +394,7 @@ module plate()
                 linear_extrude(height=plate_height)
                 {
                     // Thumb
-                    thumb_transform()
+                    transform_thumb()
                     {
                         sub_plate(3, 3, [-switch_hole_width-switch_spacing, 0], plate_padding);
                     }
@@ -437,7 +467,7 @@ module top_plate()
                 }
                 holes();
             }
-            screw_holes();
+            case_holes();
         }
     }
 }
@@ -507,20 +537,30 @@ module case()
 
                                         screw_mount(height = case_height + 2*case_shell_size);
                                     }
-                                    translate([0, 0, -20]) screw_holes(height = 200);
+                                    translate([0, 0, -20]) case_holes(height = 200);
                                 }
                             }
 
                             translate([0, 0, case_height+case_shell_size]) plate();
                         }
 
-                        screw_holes(0, 4, screw_nut_diameter);
+                        // Nut holes
+                        for (index = [0:4])
+                        {
+                            transform_hole(index) translate([0,0,-0.1]) printable_nut_hole(3, tolerance=0.02);
+                        }
+                        transform_thumb()
+                        {
+                            for (index = [5:7])
+                            {
+                                transform_hole(index) translate([0,0,-0.1]) printable_nut_hole(3, tolerance=0.02);
+                            }
+                        }
                     }
-                    electronic_transform()  electronic_mount();
+                    transform_electronic()  electronic_mount();
                 }
-                electronic_transform() electronic_mount(holes_only = true);
+                transform_electronic() electronic_mount(holes_only = true);
             }
-
         }
     }
 }
@@ -531,7 +571,7 @@ module electronic_mount(holes_only = false)
     {
         if (holes_only)
         {
-            //translate([0, 0, -h/4])
+            translate([0, 0, -h/4])
             {
                 $fn = 60; cylinder(h=h*1.5, d=d1);
             }
@@ -546,24 +586,24 @@ module electronic_mount(holes_only = false)
     screw_mount_height = 10;
     screw_mount_diameter = 6;
     screw_mount_hole_diameter = 2.5;
-    translate([screw_mount_diameter/2, screw_mount_diameter/2, 0])
-    {
-        mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
-    }
+    positions = [
+        [screw_mount_diameter/2, screw_mount_diameter/2, 0],
+        [plate_size[0] + screw_mount_diameter/2, screw_mount_diameter/2, 0],
+        [plate_size[0]+screw_mount_diameter/2, plate_size[1]+screw_mount_diameter/2, 0],
+        [screw_mount_diameter/2, plate_size[1]+screw_mount_diameter/2, 0]
+    ];
 
-    translate([plate_size[0] + screw_mount_diameter/2, screw_mount_diameter/2, 0])
+    for (index = [0:3])
     {
-        mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
-    }
+        translate(positions[index])
+        {
+            mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
 
-    translate([plate_size[0]+screw_mount_diameter/2, plate_size[1]+screw_mount_diameter/2, 0])
-    {
-        mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
-    }
-
-    translate([screw_mount_diameter/2, plate_size[1]+screw_mount_diameter/2, 0])
-    {
-        mount(screw_mount_height, screw_mount_hole_diameter, screw_mount_diameter, holes_only);
+            if (holes_only)
+            {
+                translate([0,0,-0.1]) printable_nut_hole(2, tolerance=0.02);
+            }
+        }
     }
 
     if (!holes_only)
@@ -580,7 +620,6 @@ module electronic_mount(holes_only = false)
         y_offset = 0;
         z_offset = 4.2;
         hole_ports_dim = [plate_size[0]/1.2-2*roundness, 20-2*roundness, screw_mount_height/1.5-2*roundness];
-        //translate([(plate_size[0]-hole_ports_dim[0])/2, 2 + plate_size[1] - screw_mount_diameter/2 + roundness, 4+roundness])
         translate([(plate_size[0]+screw_mount_diameter-(hole_ports_dim[0] + 2*roundness))/2, plate_size[1] + screw_mount_diameter + y_offset, z_offset])
         translate([roundness, roundness, roundness])
         {
