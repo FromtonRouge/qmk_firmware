@@ -94,8 +94,8 @@ module printable_nut_hole(size, tolerance = 0.5)
     hull()
     {
         height = METRIC_NUT_THICKNESS[size]+tolerance;
-        translate([0, 0, height]) scale([0.2, 0.2, 1]) nutHole(size, tolerance);
-        scale([1,1,1.5]) nutHole(size, tolerance);
+        translate([0, 0, height]) scale([0.2, 0.2, 1]) nutHole(size = size, tolerance = tolerance);
+        scale([1,1,1.2]) nutHole(size = size, tolerance = tolerance);
     }
 }
 
@@ -545,13 +545,13 @@ module case()
                         // Nut holes
                         for (index = [0:4])
                         {
-                            transform_hole(index) translate([0,0,-0.1]) printable_nut_hole(3);
+                            transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
                         }
                         transform_thumb()
                         {
                             for (index = [5:7])
                             {
-                                transform_hole(index) translate([0,0,-0.1]) printable_nut_hole(3);
+                                transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
                             }
                         }
                     }
@@ -599,7 +599,7 @@ module electronic_mount(holes_only = false)
 
             if (holes_only)
             {
-                translate([0,0,-0.1]) printable_nut_hole(2);
+                translate([0,0,-0.001]) printable_nut_hole(2);
             }
         }
     }
@@ -632,7 +632,7 @@ module electronic_mount(holes_only = false)
 
 *plate();
 *holes();
-*top_plate();
+top_plate();
 *mirror([1, 0, 0]) top_plate();
 *difference()
 {
@@ -640,4 +640,11 @@ module electronic_mount(holes_only = false)
     electronic_mount(holes_only=true);
 }
 *case();
-mirror([1, 0, 0]) case();
+
+*mirror([1, 0, 0]) case();
+
+*difference()
+{
+    translate([0, 0, 2.5]) {$fn = 60;cylinder(h=5, d=15, center=true);}
+    translate([0, 0, -0.001]) printable_nut_hole(3);
+}
