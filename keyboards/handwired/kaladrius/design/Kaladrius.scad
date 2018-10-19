@@ -39,6 +39,16 @@ screw_mount_diameter = 8;
 screw_nut_diameter = 6.5;
 mirror_translate = [60, 0, 0];
 switch_hole_height = screws_mount_height + 5;
+hole_positions = [
+    [-2*switch_hole_width - switch_spacing - switch_spacing, -3*(switch_hole_width + switch_spacing), 0],
+    [-2*switch_hole_width - switch_spacing - switch_spacing, switch_spacing, 0],
+    [2*(switch_hole_width+switch_spacing) - switch_hole_width/2, offset_finger_middle + switch_spacing + case_outer_border/2, 0],
+    [5*(switch_hole_width+switch_spacing) + switch_spacing, offset_finger_middle - offset_finger_ring - switch_hole_width, 0],
+    [5*(switch_hole_width+switch_spacing) + switch_spacing, -4*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring - switch_hole_width - switch_spacing, 0],
+    [-switch_hole_width - 2*switch_spacing, switch_spacing, 0],
+    [2*(switch_hole_width+switch_spacing)-((switch_hole_width+switch_spacing)*0.25) + switch_spacing, -2*(switch_hole_width + switch_spacing)*1.5, 0],
+    [-switch_hole_width - 2*switch_spacing, -3*(switch_spacing+switch_hole_width), 0]
+];
 
 module printable_nut_hole(size, tolerance = 0.02)
 {
@@ -194,7 +204,7 @@ module transform_thumb()
 
 module transform_electronic()
 {
-    rotate([0, 0, 4]) translate([-33.8, -26, 0]) {children();}
+    rotate([0, 0, 4.7]) translate([-33.8, -24, 0]) {children();}
 }
 
 module holes(offset=0, height = switch_hole_height, has_additional_border = true)
@@ -314,17 +324,7 @@ module holes(offset=0, height = switch_hole_height, has_additional_border = true
 
 module transform_hole(index)
 {
-    positions = [
-        [-2*switch_hole_width - switch_spacing - switch_spacing, switch_spacing, 0],
-        [-2*switch_hole_width - switch_spacing - switch_spacing, -3*(switch_hole_width + switch_spacing), 0],
-        [2*(switch_hole_width+switch_spacing) - switch_hole_width/2, offset_finger_middle + switch_spacing, 0],
-        [5*(switch_hole_width+switch_spacing) + switch_spacing, offset_finger_middle - offset_finger_ring - switch_hole_width, 0],
-        [5*(switch_hole_width+switch_spacing) + switch_spacing, -4*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring - switch_hole_width - switch_spacing, 0],
-        [-switch_hole_width - 2*switch_spacing, switch_spacing, 0],
-        [2*(switch_hole_width+switch_spacing)-((switch_hole_width+switch_spacing)*0.25) + switch_spacing, -2*(switch_hole_width + switch_spacing)*1.5, 0],
-        [-switch_hole_width - 2*switch_spacing, -3*(switch_spacing+switch_hole_width), 0]
-    ];
-    translate(positions[index]) children();
+    translate(hole_positions[index]) children();
 }
 
 module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
@@ -425,10 +425,8 @@ module plate()
 
                     control_points =  [
                         point_index - [switch_hole_width + switch_spacing, 0],
-                        point_index,
                         point_middle + point_offset,
                         point_ring + point_offset,
-                        point_pinky + point_offset,
                         point_pinky_last + [switch_hole_width, 0] 
                     ];
 
@@ -617,7 +615,7 @@ module electronic_mount(holes_only = false)
     else
     {
         roundness = 3;
-        y_offset = 0;
+        y_offset = -4;
         z_offset = 4.2;
         hole_ports_dim = [plate_size[0]/1.2-2*roundness, 20-2*roundness, screw_mount_height/1.5-2*roundness];
         translate([(plate_size[0]+screw_mount_diameter-(hole_ports_dim[0] + 2*roundness))/2, plate_size[1] + screw_mount_diameter + y_offset, z_offset])
