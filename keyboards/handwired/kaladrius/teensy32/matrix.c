@@ -45,8 +45,8 @@ static bool debouncing = false;
 #endif
 
 #define MCP_I2C_ADDR        0x20 // 0x20 Because the ADDR pin is connected to the ground (@see mcp23018 datasheet)
-#define MCP_I2C_ADDR_WRITE  ( (I2C_ADDR<<1) | I2C_WRITE )
-#define MCP_I2C_ADDR_READ   ( (I2C_ADDR<<1) | I2C_READ  )
+#define MCP_I2C_ADDR_WRITE  (MCP_I2C_ADDR<<1)
+#define MCP_I2C_ADDR_READ   ((MCP_I2C_ADDR<<1)|1)
 #define MCP_IODIRA          0x00            // i/o direction register
 #define MCP_IODIRB          0x01
 #define MCP_GPPUA           0x0C            // GPIO pull-up resistor register
@@ -66,6 +66,11 @@ __attribute__ ((weak)) void matrix_scan_kb(void) { matrix_scan_user(); }
 uint8_t matrix_rows(void) { return MATRIX_ROWS; }
 uint8_t matrix_cols(void) { return MATRIX_COLS; }
 
+static const I2CConfig i2c_config =
+{
+    400000 // clock speed (Hz);
+};
+
 void matrix_init(void)
 {
     // Columns (strobe)
@@ -84,6 +89,14 @@ void matrix_init(void)
     palSetPadMode(TEENSY_PIN17_IOPORT, TEENSY_PIN17, PAL_MODE_INPUT_PULLDOWN);
     palSetPadMode(TEENSY_PIN20_IOPORT, TEENSY_PIN20, PAL_MODE_INPUT_PULLDOWN);
 
+    // Start I2C
+    palSetPadMode(TEENSY_PIN18_IOPORT, TEENSY_PIN18, PAL_MODE_OUTPUT_OPENDRAIN); // SDA
+    palSetPadMode(TEENSY_PIN19_IOPORT, TEENSY_PIN19, PAL_MODE_OUTPUT_OPENDRAIN); // SCL 
+    i2cStart(&I2CD1, &i2c_config);
+    // IT DOESN'T WORK ! CAN'T FIND A WAY TO USE I2C WITH TEENSY 3.2 :(
+    //uint8_t tx[2] = {MCP_IODIRA, 0b01111111};
+	//i2cMasterTransmit(&I2CD1, MCP_I2C_ADDR, tx, 2, 0, 0);
+
     // Initialize matrix state: all keys off
     for (uint8_t i=0; i < MATRIX_ROWS; ++i)
     {
@@ -100,6 +113,8 @@ void matrix_init(void)
 
 uint8_t matrix_scan(void)
 {
+    xprintf("matrix_scan %d\n", timer_read());
+
     const uint8_t MATRIX_COLS_HALF = MATRIX_COLS/2;
     for (int col = 0; col < MATRIX_COLS_HALF; ++col)
     {
