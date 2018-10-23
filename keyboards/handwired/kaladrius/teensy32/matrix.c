@@ -24,15 +24,8 @@
 #include "matrix.h"
 #include QMK_KEYBOARD_H
 
-// Set 0 if debouncing isn't needed
-#ifndef DEBOUNCING_DELAY
-#define DEBOUNCING_DELAY 5
-#endif
-
-#if (DEBOUNCING_DELAY > 0)
-//static uint16_t debouncing_time;
+static uint16_t debouncing_time;
 static bool debouncing = false;
-#endif
 
 #if (MATRIX_COLS <= 8)
 #    define print_matrix_header()  print("\nr/c 01234567\n")
@@ -64,8 +57,7 @@ static bool debouncing = false;
 #define MCP_OLATB           0x15
 
 static matrix_row_t matrix[MATRIX_ROWS];
-static matrix_row_t matrix_debouncing[MATRIX_ROWS];
-uint8_t mcp23018_status = 1;
+static uint8_t matrix_debouncing[MATRIX_COLS];
 
 __attribute__ ((weak)) void matrix_init_user(void) {}
 __attribute__ ((weak)) void matrix_scan_user(void) {}
@@ -76,11 +68,30 @@ uint8_t matrix_cols(void) { return MATRIX_COLS; }
 
 void matrix_init(void)
 {
-    // Same as quantum/matrix.c
+    // Columns (strobe)
+    palSetPadMode(TEENSY_PIN0_IOPORT, TEENSY_PIN0, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN1_IOPORT, TEENSY_PIN1, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN2_IOPORT, TEENSY_PIN2, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN3_IOPORT, TEENSY_PIN3, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN4_IOPORT, TEENSY_PIN4, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN5_IOPORT, TEENSY_PIN5, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN6_IOPORT, TEENSY_PIN6, PAL_MODE_OUTPUT_PUSHPULL);
+
+    // Rows (sense)
+    palSetPadMode(TEENSY_PIN14_IOPORT, TEENSY_PIN14, PAL_MODE_INPUT_PULLDOWN);
+    palSetPadMode(TEENSY_PIN15_IOPORT, TEENSY_PIN15, PAL_MODE_INPUT_PULLDOWN);
+    palSetPadMode(TEENSY_PIN16_IOPORT, TEENSY_PIN16, PAL_MODE_INPUT_PULLDOWN);
+    palSetPadMode(TEENSY_PIN17_IOPORT, TEENSY_PIN17, PAL_MODE_INPUT_PULLDOWN);
+    palSetPadMode(TEENSY_PIN20_IOPORT, TEENSY_PIN20, PAL_MODE_INPUT_PULLDOWN);
+
     // Initialize matrix state: all keys off
     for (uint8_t i=0; i < MATRIX_ROWS; ++i)
     {
         matrix[i] = 0;
+    }
+
+    for (uint8_t i=0; i < MATRIX_COLS; ++i)
+    {
         matrix_debouncing[i] = 0;
     }
 
@@ -89,16 +100,70 @@ void matrix_init(void)
 
 uint8_t matrix_scan(void)
 {
+    const uint8_t MATRIX_COLS_HALF = MATRIX_COLS/2;
+    for (int col = 0; col < MATRIX_COLS_HALF; ++col)
+    {
+        uint8_t data = 0;
+
+        // Strobe col
+        switch (col)
+        {
+        case 0: palSetPad(TEENSY_PIN0_IOPORT, TEENSY_PIN0); break;
+        case 1: palSetPad(TEENSY_PIN1_IOPORT, TEENSY_PIN1); break;
+        case 2: palSetPad(TEENSY_PIN2_IOPORT, TEENSY_PIN2); break;
+        case 3: palSetPad(TEENSY_PIN3_IOPORT, TEENSY_PIN3); break;
+        case 4: palSetPad(TEENSY_PIN4_IOPORT, TEENSY_PIN4); break;
+        case 5: palSetPad(TEENSY_PIN5_IOPORT, TEENSY_PIN5); break;
+        case 6: palSetPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
+        }
+        
+        // Need wait to settle pin state
+        wait_us(20);
+
+        // Read row data
+        data = (
+                (palReadPad(TEENSY_PIN14_IOPORT, TEENSY_PIN14) << 0) |
+                (palReadPad(TEENSY_PIN15_IOPORT, TEENSY_PIN15) << 1) |
+                (palReadPad(TEENSY_PIN16_IOPORT, TEENSY_PIN16) << 2) |
+                (palReadPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17) << 3) |
+                (palReadPad(TEENSY_PIN20_IOPORT, TEENSY_PIN20) << 4)
+               );
+
+        // Unstrobe col
+        switch (col)
+        {
+        case 0: palClearPad(TEENSY_PIN0_IOPORT, TEENSY_PIN0); break;
+        case 1: palClearPad(TEENSY_PIN1_IOPORT, TEENSY_PIN1); break;
+        case 2: palClearPad(TEENSY_PIN2_IOPORT, TEENSY_PIN2); break;
+        case 3: palClearPad(TEENSY_PIN3_IOPORT, TEENSY_PIN3); break;
+        case 4: palClearPad(TEENSY_PIN4_IOPORT, TEENSY_PIN4); break;
+        case 5: palClearPad(TEENSY_PIN5_IOPORT, TEENSY_PIN5); break;
+        case 6: palClearPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
+        }
+
+        if (matrix_debouncing[col] != data)
+        {
+            matrix_debouncing[col] = data;
+            debouncing = true;
+            debouncing_time = timer_read();
+        }
+    }
+
+    if (debouncing && timer_elapsed(debouncing_time) > DEBOUNCING_DELAY)
+    {
+        for (int row = 0; row < MATRIX_ROWS; row++)
+        {
+            matrix[row] = 0;
+            for (int col = 0; col < MATRIX_COLS; col++)
+            {
+                matrix[row] |= ((matrix_debouncing[col] & (1 << row) ? 1 : 0) << col);
+            }
+        }
+        debouncing = false;
+    }
+
     matrix_scan_quantum();
     return 1;
-}
-
-bool matrix_is_modified(void)
-{
-#if (DEBOUNCING_DELAY > 0)
-    if (debouncing) return false;
-#endif
-    return true;
 }
 
 bool matrix_is_on(uint8_t row, uint8_t col)
@@ -121,14 +186,4 @@ void matrix_print(void)
         print_matrix_row(row);
         print("\n");
     }
-}
-
-uint8_t matrix_key_count(void)
-{
-    uint8_t count = 0;
-    for (uint8_t i = 0; i < MATRIX_ROWS; ++i)
-    {
-        count += matrix_bitpop(i);
-    }
-    return count;
 }
