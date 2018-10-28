@@ -27,7 +27,7 @@ thumb_x = 9;
 thumb_y = 18;
 thumb_angle = -20;
 case_shell_size = 3;
-case_height = 16;
+case_height = 18;
 case_outer_border = 8;
 case_color = "red";
 plate_height = 3;
@@ -36,12 +36,11 @@ prototype_mode = false;
 screws_diameter = 3.5;
 screws_mount_height = 17;
 screw_mount_diameter = 10;
-screw_nut_diameter = 6.5;
 electronic_screw_mount_diameter = 6;
 electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
 electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-3.5-4;
-electronic_teensy_hole = [0, 49.5];
+electronic_teensy_hole = [0, 50];
 mirror_translate = [60, 0, 0];
 switch_hole_height = screws_mount_height + 5;
 hole_positions = [
@@ -55,7 +54,7 @@ hole_positions = [
     [-switch_hole_width - 2*switch_spacing, -3*(switch_spacing+switch_hole_width), 0]
 ];
 
-module printable_nut_hole(size, tolerance = 0.5)
+module printable_nut_hole(size, tolerance = 0.25, height_factor = 1)
 {
     METRIC_NUT_THICKNESS = [
         -1, //0 index is not used but reduces computation
@@ -99,8 +98,8 @@ module printable_nut_hole(size, tolerance = 0.5)
     hull()
     {
         height = METRIC_NUT_THICKNESS[size]+tolerance;
-        translate([0, 0, height]) scale([0.2, 0.2, 1]) nutHole(size = size, tolerance = tolerance);
-        scale([1,1,1.2]) nutHole(size = size, tolerance = tolerance);
+        translate([0, 0, height_factor*height]) scale([0.2, 0.2, 1]) nutHole(size = size, tolerance = tolerance);
+        scale([1,1,height_factor*1.2]) nutHole(size = size, tolerance = tolerance);
     }
 }
 
@@ -126,31 +125,32 @@ module hole(offset, height, has_additional_border = true, vertical = false)
         }
     }
 
+    tolerance = 0.3;
     additional_border_width = 0.5;
     clip_width = 6;
     if (vertical)
     {
-        translate([-offset-switch_hole_width + roundness, -offset-switch_hole_width - additional_border_width + roundness, has_additional_border?-2:0])
+        x = switch_hole_width + 2*offset - 2*roundness - tolerance;
+        y = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width - tolerance;
+        translate([-offset-switch_hole_width + roundness + tolerance/2, -offset-switch_hole_width - additional_border_width + roundness + tolerance/2, has_additional_border?-2:0])
         {
             minkowski()
             {
                 linear_extrude(height=height)
                 {
-                    width = switch_hole_width + 2*offset - 2*roundness;
-                    height = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width;
                     points = [
                         [0, 0],
-                        [(width-clip_width)/2, 0],
-                        [(width-clip_width)/2, additional_border_width],
-                        [(width-clip_width)/2 + clip_width, additional_border_width],
-                        [(width-clip_width)/2 + clip_width, 0],
-                        [width, 0],
-                        [width, height],
-                        [(width-clip_width)/2 + clip_width, height],
-                        [(width-clip_width)/2 + clip_width, height-additional_border_width],
-                        [(width-clip_width)/2, height-additional_border_width],
-                        [(width-clip_width)/2, height],
-                        [0, height],
+                        [(x-clip_width)/2, 0],
+                        [(x-clip_width)/2, additional_border_width],
+                        [(x-clip_width)/2 + clip_width, additional_border_width],
+                        [(x-clip_width)/2 + clip_width, 0],
+                        [x, 0],
+                        [x, y],
+                        [(x-clip_width)/2 + clip_width, y],
+                        [(x-clip_width)/2 + clip_width, y-additional_border_width],
+                        [(x-clip_width)/2, y-additional_border_width],
+                        [(x-clip_width)/2, y],
+                        [0, y],
                     ];
                     polygon(points);
                 }
@@ -160,27 +160,27 @@ module hole(offset, height, has_additional_border = true, vertical = false)
     }
     else
     {
-        translate([-offset-switch_hole_width - additional_border_width+ roundness, -offset-switch_hole_width + roundness, has_additional_border?-2:0])
+        x = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width - tolerance;
+        y = switch_hole_width + 2*offset - 2*roundness - tolerance;
+        translate([-offset-switch_hole_width - additional_border_width + roundness + tolerance/2, -offset-switch_hole_width + roundness + tolerance/2, has_additional_border?-2:0])
         {
             minkowski()
             {
                 linear_extrude(height=height)
                 {
-                    width = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width;
-                    height = switch_hole_width + 2*offset - 2*roundness;
                     points = [
                         [0, 0],
-                        [width, 0],
-                        [width, (height-clip_width)/2],
-                        [width-additional_border_width, (height-clip_width)/2],
-                        [width-additional_border_width, (height-clip_width)/2 + clip_width],
-                        [width, (height-clip_width)/2 + clip_width],
-                        [width, height],
-                        [0, height],
-                        [0, (height-clip_width)/2 + clip_width],
-                        [additional_border_width, (height-clip_width)/2 + clip_width],
-                        [additional_border_width, (height-clip_width)/2],
-                        [0, (height-clip_width)/2],
+                        [x, 0],
+                        [x, (y-clip_width)/2],
+                        [x-additional_border_width, (y-clip_width)/2],
+                        [x-additional_border_width, (y-clip_width)/2 + clip_width],
+                        [x, (y-clip_width)/2 + clip_width],
+                        [x, y],
+                        [0, y],
+                        [0, (y-clip_width)/2 + clip_width],
+                        [additional_border_width, (y-clip_width)/2 + clip_width],
+                        [additional_border_width, (y-clip_width)/2],
+                        [0, (y-clip_width)/2],
                     ];
                     polygon(points);
                 }
@@ -541,7 +541,7 @@ module case()
                 // Nut holes
                 for (index = [0:4])
                 {
-                    transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
+                    transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3, height_factor=1.6);
                 }
 
                 // Nut holes
@@ -549,7 +549,7 @@ module case()
                 {
                     for (index = [5:7])
                     {
-                        transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
+                        transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3, height_factor=1.6);
                     }
                 }
 
@@ -594,7 +594,7 @@ module electronic_mount(holes_only = false)
 
             if (holes_only)
             {
-                translate([0,0,-0.001]) printable_nut_hole(2);
+                translate([0,0,-0.001]) printable_nut_hole(2, tolerance=0.4);
             }
         }
     }
@@ -614,9 +614,9 @@ module electronic_mount(holes_only = false)
         y_offset = -6;
         z_offset = -1;
         usb_height = 4;
-        hole_port_width = plate_size[0] - electronic_screw_mount_diameter;
+        hole_port_width = plate_size[0] - electronic_screw_mount_diameter - 4;
         hole_ports_dim = [hole_port_width-2*roundness, 20-2*roundness, electronic_screw_mount_height-2*roundness];
-        translate([electronic_screw_mount_diameter,  full_plate_dim[1] + y_offset, z_offset])
+        translate([(plate_size[0] - hole_port_width + electronic_screw_mount_diameter)/2,  full_plate_dim[1] + y_offset, z_offset])
         {
             translate([roundness, roundness, roundness])
             {
@@ -629,12 +629,11 @@ module electronic_mount(holes_only = false)
         }
 
         // Usb and trrs room
-        usb_and_trrs_room = [34-2*roundness, 22-2*roundness, 10];
+        usb_and_trrs_room = [34-2*roundness, 24-2*roundness, 10];
         translate([(full_plate_dim[0]-usb_and_trrs_room[0])/2, full_plate_dim[1]-usb_and_trrs_room[1]-roundness, electronic_screw_mount_height-usb_and_trrs_room[2]])
         {
             minkowski()
             {
-                //cube(usb_and_trrs_room - [2*roundness, 2*roundness, 0]);
                 cube(usb_and_trrs_room);
                 $fn = 60; cylinder(h=1, r=roundness);
             }
@@ -666,27 +665,36 @@ module electronic_mount(holes_only = false)
 *top_plate();
 *mirror([1, 0, 0]) top_plate();
 
-*difference()
+*union()
 {
-    electronic_mount();
-    electronic_mount(holes_only=true);
+    difference()
+    {
+        electronic_mount();
+        electronic_mount(holes_only=true);
+    }
+    %electronic_mount(holes_only=true);
 }
-//%electronic_mount(holes_only=true);
 
 *mirror([1, 0, 0])
 {
     intersection()
     {
-        translate([40, -4, 0]) transform_electronic() cube([90, 80, 40]);
+        translate([40, -3, 0]) transform_electronic() cube([90, 80, 40]);
         case();
     }
 }
 
+intersection()
+{
+    translate([40, -3, 0]) transform_electronic() cube([90, 80, 40]);
+    top_plate();
+}
+
 *case();
-mirror([1, 0, 0]) case();
+*mirror([1, 0, 0]) case();
 
 *difference()
 {
     translate([0, 0, 2.5]) {$fn = 60;cylinder(h=5, d=15, center=true);}
-    translate([0, 0, -0.001]) printable_nut_hole(3);
+    translate([0, 0, -0.001]) printable_nut_hole(3, height_factor=1);
 }
