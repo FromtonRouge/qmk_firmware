@@ -27,7 +27,7 @@ thumb_x = 9;
 thumb_y = 18;
 thumb_angle = -20;
 case_shell_size = 3;
-case_height = 18;
+case_height = 5;
 case_outer_border = 8;
 case_color = "red";
 plate_height = 3;
@@ -39,7 +39,7 @@ screw_mount_diameter = 10;
 electronic_screw_mount_diameter = 6;
 electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
-electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-3.5-4;
+electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-7.5;
 electronic_teensy_hole = [0, 50];
 mirror_translate = [60, 0, 0];
 switch_hole_height = screws_mount_height + 5;
@@ -209,7 +209,7 @@ module transform_thumb()
 
 module transform_electronic()
 {
-    rotate([0, 0, 5.5]) translate([-30, -53.5, 0]) {children();}
+    transform_thumb() {rotate([0, 0, 0]) translate([-19, -62, -electronic_screw_mount_height])  {children();}}
 }
 
 module holes(offset=0, height = switch_hole_height, has_additional_border = true)
@@ -541,7 +541,7 @@ module case()
                 // Nut holes
                 for (index = [0:4])
                 {
-                    transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3, height_factor=1.6);
+                    transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
                 }
 
                 // Nut holes
@@ -549,7 +549,7 @@ module case()
                 {
                     for (index = [5:7])
                     {
-                        transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3, height_factor=1.6);
+                        transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
                     }
                 }
 
@@ -568,7 +568,7 @@ module electronic_mount(holes_only = false)
         {
             translate([0, 0, -h/4])
             {
-                $fn = 60; cylinder(h=h*1.5, d=d1);
+                $fn = 60; cylinder(h=h*2.5, d=d1);
             }
         }
         else
@@ -604,7 +604,23 @@ module electronic_mount(holes_only = false)
         minkowski()
         {
             translate([electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0]) cube([plate_size[0], plate_size[1], plate_size[2]/2]);
-            $fn = 60; cylinder(h=plate_size[2]/2, r1=electronic_screw_mount_diameter/2, r2=electronic_screw_mount_diameter/2-plate_size[2]/2);
+            $fn = 60; cylinder(h=plate_size[2]/2, r=electronic_screw_mount_diameter/2);
+        }
+
+        difference()
+        {
+            minkowski()
+            {
+                translate([electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0]) cube([plate_size[0], plate_size[1], electronic_screw_mount_height]);
+                $fn = 60; cylinder(h=plate_size[2]/2, r1=electronic_screw_mount_diameter/2, r2=electronic_screw_mount_diameter/2 + plate_size[2]/2);
+            }
+
+            minkowski()
+            {
+                wall_width = 2;
+                translate([electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0]) cube([plate_size[0], plate_size[1], electronic_screw_mount_height]);
+                $fn = 60; cylinder(h=plate_size[2]/2, r=wall_width);
+            }
         }
     }
     else
@@ -630,7 +646,7 @@ module electronic_mount(holes_only = false)
 
         // Usb and trrs room
         usb_and_trrs_room = [34-2*roundness, 24-2*roundness, 10];
-        translate([(full_plate_dim[0]-usb_and_trrs_room[0])/2, full_plate_dim[1]-usb_and_trrs_room[1]-roundness, electronic_screw_mount_height-usb_and_trrs_room[2]])
+        translate([(full_plate_dim[0]-usb_and_trrs_room[0])/2, full_plate_dim[1]-usb_and_trrs_room[1]-roundness - 2, electronic_screw_mount_height-usb_and_trrs_room[2]])
         {
             minkowski()
             {
@@ -640,7 +656,7 @@ module electronic_mount(holes_only = false)
         }
 
         // Hole for pcb
-        translate([0, 0, electronic_screw_mount_height]) 
+        *translate([0, 0, electronic_screw_mount_height]) 
         {
             translation = [(full_plate_dim[0]-electronic_pcb_dim[0])/2, (full_plate_dim[1]-electronic_pcb_dim[1])/2, 0];
             minkowski()
@@ -656,6 +672,36 @@ module electronic_mount(holes_only = false)
         {
             translate([full_plate_dim[0]/2, electronic_pcb_dim[1]-electronic_teensy_hole[1], 0]) cube(teensy_hole_rect, center=true);
             $fn = 60; cylinder(h=1, r=1.5);
+        }
+
+        // Hole for the bottom of the case
+        difference()
+        {
+            translation = [(full_plate_dim[0]-electronic_pcb_dim[0])/2, (full_plate_dim[1]-electronic_pcb_dim[1])/2, electronic_screw_mount_height];
+            translate(translation)
+            {
+                cube([electronic_pcb_dim[0], electronic_pcb_dim[1], 5*electronic_pcb_dim[2]]);
+            }
+
+            for (index = [0:3])
+            {
+                translate(positions[index])
+                {
+                    $fn= 60; cylinder(h=electronic_screw_mount_height*2, d=electronic_screw_mount_diameter);
+                }
+            }
+        }
+
+        // Additional holes
+        translate([0, 0, electronic_screw_mount_height + case_shell_size])
+        {
+            for (index = [0:3])
+            {
+                translate(positions[index])
+                {
+                    $fn= 60; cylinder(h=electronic_screw_mount_height, d=electronic_screw_mount_diameter);
+                }
+            }
         }
     }
 }
@@ -684,17 +730,17 @@ module electronic_mount(holes_only = false)
     }
 }
 
-intersection()
+*intersection()
 {
     translate([40, -3, 0]) transform_electronic() cube([90, 80, 40]);
     top_plate();
 }
 
-*case();
+case();
 *mirror([1, 0, 0]) case();
 
 *difference()
 {
     translate([0, 0, 2.5]) {$fn = 60;cylinder(h=5, d=15, center=true);}
-    translate([0, 0, -0.001]) printable_nut_hole(3, height_factor=1);
+    translate([0, 0, -0.001]) printable_nut_hole(3);
 }
