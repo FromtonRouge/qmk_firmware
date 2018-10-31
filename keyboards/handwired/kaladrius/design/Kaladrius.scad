@@ -732,7 +732,7 @@ module printable_pcb_case(printable = true)
 
 translate(mirror_translate)
 {
-    *top_plate();
+    top_plate();
     *case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
@@ -743,7 +743,7 @@ mirror([1, 0, 0])
     translate(mirror_translate)
     {
         *top_plate();
-        case();
+        *case();
         *printable_pcb_case(printable=false);
         *printable_pcb_case();
     }
