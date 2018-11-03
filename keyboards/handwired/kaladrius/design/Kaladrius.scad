@@ -390,6 +390,36 @@ module top_plate()
     }
 }
 
+module plate_supports()
+{
+    module make_support(row)
+    {
+        hull()
+        {
+            support_height = case_height+3*case_shell_size;
+            translate([0, -row*(switch_hole_width+switch_spacing) - switch_spacing/2])
+            {
+                cylinder(h=support_height, d=3.5, $fn=60);
+            }
+
+            translate([0, -row*1.25*(switch_hole_width+switch_spacing)-switch_spacing])
+            {
+                cylinder(h=support_height, d=3.5, $fn=60);
+            }
+        }
+    }
+
+    translate(point_middle + [switch_spacing/2, 0])
+    {
+        make_support(2);
+    }
+
+    translate(point_ring + [switch_spacing/2, 0])
+    {
+        make_support(3);
+    }
+}
+
 module case()
 {
     difference()
@@ -434,6 +464,8 @@ module case()
 
             // Add all bolt mounts
             screw_mount(height = case_height + 2*case_shell_size);
+
+            plate_supports();
         }
 
         // Top plate hole without chamfer
@@ -731,13 +763,14 @@ module printable_pcb_case(printable = true)
 *plate(total_height=1, chamfer=false);
 *holes();
 *top_plate();
-*case();
+*plate_supports();
+case();
 *printable_pcb_case(printable=false);
 
 translate(mirror_translate)
 {
     *top_plate();
-    case();
+    *case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
 }
