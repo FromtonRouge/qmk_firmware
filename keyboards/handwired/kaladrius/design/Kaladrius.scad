@@ -402,7 +402,7 @@ module plate_supports()
                 cylinder(h=support_height, d=3.5, $fn=60);
             }
 
-            translate([0, -row*1.25*(switch_hole_width+switch_spacing)-switch_spacing])
+            translate([0, -row*(switch_hole_width+switch_spacing) - switch_hole_width])
             {
                 cylinder(h=support_height, d=3.5, $fn=60);
             }
