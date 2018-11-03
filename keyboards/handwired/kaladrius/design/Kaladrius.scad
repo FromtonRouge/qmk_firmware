@@ -392,7 +392,7 @@ module top_plate()
 
 module plate_supports()
 {
-    module make_support(row)
+    module create_support(row)
     {
         hull()
         {
@@ -411,12 +411,8 @@ module plate_supports()
 
     translate(point_middle + [switch_spacing/2, 0])
     {
-        make_support(2);
-    }
-
-    translate(point_ring + [switch_spacing/2, 0])
-    {
-        make_support(3);
+        create_support(2);
+        create_support(4.2);
     }
 }
 
