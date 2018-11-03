@@ -19,10 +19,9 @@ use <MCAD/nuts_and_bolts.scad>
 
 switch_hole_width = 14;
 switch_spacing = 4.8;
-offset_finger_middle = 2.2;
+offset_finger_middle = -2.2;
 offset_finger_ring = 8.38;
-offset_finger_pinky_1 = 18;
-offset_finger_pinky_2 = offset_finger_pinky_1;
+offset_finger_pinky = 18;
 thumb_x = 9;
 thumb_y = 18;
 thumb_angle = -20;
@@ -30,9 +29,7 @@ case_shell_size = 3;
 case_height = 7;
 case_outer_border = 8;
 plate_height = 3;
-plate_padding = 1;
 plate_additional_border_height = 1;
-prototype_mode = false;
 screws_diameter = 3.5;
 screws_mount_height = 17;
 screw_mount_diameter = 10;
@@ -41,33 +38,36 @@ electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
 electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-5.5;
 electronic_teensy_hole = [0, 50];
-pcb_case_pos = [-29, -62];
+pcb_case_pos = [84, -50];
 pcb_plate_size = [48.40-2.12, 68.10-2.12, 2];
-pcb_case_additional_length = 59;
 mirror_translate = [60, 0, 0];
 switch_hole_height = screws_mount_height + 5;
 
-point_index = [-switch_hole_width, 0];
-point_middle = [switch_hole_width + 2*switch_spacing, offset_finger_middle];
-point_ring = [2*switch_hole_width + 3*switch_spacing, offset_finger_middle - offset_finger_ring];
-point_pinky = [3*switch_hole_width + 4*switch_spacing, offset_finger_middle - offset_finger_ring - offset_finger_pinky_1];
-point_pinky_last = [4*switch_hole_width + 5*switch_spacing, offset_finger_middle - offset_finger_ring - offset_finger_pinky_2];
+point_pinky_last = [get_kaladrius_origin()[0] + case_outer_border, get_kaladrius_origin()[1]];
+point_pinky = [point_pinky_last[0] + switch_hole_width + switch_spacing, point_pinky_last[1]];
+point_ring = [point_pinky[0] +  switch_hole_width + switch_spacing, point_pinky[1] + offset_finger_pinky];
+point_middle = [point_ring[0] + switch_hole_width + switch_spacing, point_ring[1] + offset_finger_ring];
+point_index3 = [point_middle[0] + switch_hole_width + switch_spacing, point_middle[1] + offset_finger_middle];
+point_index2 = [point_index3[0] + switch_hole_width + switch_spacing, point_index3[1]];
+point_index1 = [point_index2[0] + switch_hole_width + switch_spacing, point_index2[1]];
 
 hole_positions = [
-    [-2*switch_hole_width - switch_spacing - switch_spacing, -3*(switch_hole_width + switch_spacing), 0],
-    [-2*switch_hole_width - switch_spacing - switch_spacing, switch_spacing, 0],
-    [2*(switch_hole_width+switch_spacing) - switch_hole_width/2, offset_finger_middle + switch_spacing + case_outer_border/2, 0],
-    [5*(switch_hole_width+switch_spacing) + switch_spacing, offset_finger_middle - offset_finger_ring - switch_hole_width, 0],
-    [5*(switch_hole_width+switch_spacing) + switch_spacing, -4*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring - switch_hole_width - switch_spacing, 0],
-    [-switch_hole_width - 2*switch_spacing, switch_spacing, 0],
-    [2*(switch_hole_width+switch_spacing)-((switch_hole_width+switch_spacing)*0.25) + switch_spacing, -2*(switch_hole_width + switch_spacing)*1.5, 0],
-    [-switch_hole_width - 2*switch_spacing, -3*(switch_spacing+switch_hole_width), 0]
+    point_pinky_last,
+    point_middle + [(switch_hole_width + 2*switch_spacing)/2, switch_spacing/2],
+    point_index1 + [(switch_hole_width + 2*switch_spacing), 0],
+    point_index1 + [(switch_hole_width + 2*switch_spacing), -3*switch_hole_width - 4*switch_spacing],
+    point_pinky_last - [0, 4*switch_hole_width + 5*switch_spacing],
+    [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing, 0],
+    [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing,  -3*switch_hole_width - 4*switch_spacing],
+    [-1.75*(switch_hole_width + switch_spacing), -3*switch_hole_width - 4*switch_spacing],
 ];
 
-function get_case_right_extremity() = point_pinky_last[0] + switch_hole_width + plate_padding + case_outer_border + switch_spacing;
+function get_kaladrius_origin() = [0, 0, 0];
+function get_thumb_anchor() = point_index1 - [0, 3*(switch_hole_width+switch_spacing)];
+function get_thumb_origin() = get_thumb_anchor() + [thumb_x, -thumb_y];
 function get_pcb_case_bounding_box() = [pcb_plate_size[0] + electronic_screw_mount_diameter, pcb_plate_size[1] + electronic_screw_mount_diameter, electronic_screw_mount_height];
-function get_pcb_case_right_extremity() = pcb_case_pos[0] + get_pcb_case_bounding_box()[0];
-function get_tilt() = atan(electronic_screw_mount_height/(get_case_right_extremity()-get_pcb_case_right_extremity()));
+function get_pcb_case_origin() = get_kaladrius_origin() + pcb_case_pos;
+function get_tilt() = atan(electronic_screw_mount_height/(get_kaladrius_origin()[0]-get_pcb_case_origin()[0]));
 
 module printable_nut_hole(size, tolerance = 0.25, cone=true)
 {
@@ -102,217 +102,60 @@ module case_hole(height, diameter=screws_diameter)
     }
 }
 
-module hole(offset, height, has_additional_border = true, vertical = false)
-{
-    roundness = 0.5;
-    ext_hole = offset+1;
-    translate([-ext_hole-switch_hole_width + roundness, -ext_hole-switch_hole_width + roundness, has_additional_border?plate_additional_border_height:0])
-    {
-        minkowski()
-        {
-            cube([switch_hole_width + 2*ext_hole - 2*roundness, switch_hole_width + 2*ext_hole - 2*roundness, height]);
-            $fn = 30; cylinder(r=roundness,  h=2);
-        }
-    }
-
-    tolerance = 0.3;
-    additional_border_width = 0.5;
-    clip_width = 6;
-    if (vertical)
-    {
-        x = switch_hole_width + 2*offset - 2*roundness - tolerance;
-        y = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width - tolerance;
-        translate([-offset-switch_hole_width + roundness + tolerance/2, -offset-switch_hole_width - additional_border_width + roundness + tolerance/2, has_additional_border?-2:0])
-        {
-            minkowski()
-            {
-                linear_extrude(height=height)
-                {
-                    points = [
-                        [0, 0],
-                        [(x-clip_width)/2, 0],
-                        [(x-clip_width)/2, additional_border_width],
-                        [(x-clip_width)/2 + clip_width, additional_border_width],
-                        [(x-clip_width)/2 + clip_width, 0],
-                        [x, 0],
-                        [x, y],
-                        [(x-clip_width)/2 + clip_width, y],
-                        [(x-clip_width)/2 + clip_width, y-additional_border_width],
-                        [(x-clip_width)/2, y-additional_border_width],
-                        [(x-clip_width)/2, y],
-                        [0, y],
-                    ];
-                    polygon(points);
-                }
-                $fn = 30; cylinder(r=roundness,  h=2);
-            }
-        }
-    }
-    else
-    {
-        x = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width - tolerance;
-        y = switch_hole_width + 2*offset - 2*roundness - tolerance;
-        translate([-offset-switch_hole_width - additional_border_width + roundness + tolerance/2, -offset-switch_hole_width + roundness + tolerance/2, has_additional_border?-2:0])
-        {
-            minkowski()
-            {
-                linear_extrude(height=height)
-                {
-                    points = [
-                        [0, 0],
-                        [x, 0],
-                        [x, (y-clip_width)/2],
-                        [x-additional_border_width, (y-clip_width)/2],
-                        [x-additional_border_width, (y-clip_width)/2 + clip_width],
-                        [x, (y-clip_width)/2 + clip_width],
-                        [x, y],
-                        [0, y],
-                        [0, (y-clip_width)/2 + clip_width],
-                        [additional_border_width, (y-clip_width)/2 + clip_width],
-                        [additional_border_width, (y-clip_width)/2],
-                        [0, (y-clip_width)/2],
-                    ];
-                    polygon(points);
-                }
-                $fn = 30; cylinder(r=roundness,  h=2);
-            }
-        }
-    }
-}
-
 module transform_thumb()
 {
-    translate([switch_spacing-thumb_x, -thumb_y, 0])
+    translate(get_thumb_origin())
     {
-        translate([0, -3*(switch_hole_width + switch_spacing), 0])
+        rotate([0, 0, thumb_angle])
         {
-            translate([-(switch_hole_width+switch_spacing)*0.25 - switch_hole_width, 0, 0])
-            {
-                rotate([0, 0, -thumb_angle])
-                {
-                    children();
-                }
-            }
+            children();
         }
     }
 }
 
 module transform_pcb_case()
 {
-    translate([pcb_case_pos[0], pcb_case_pos[1], -electronic_screw_mount_height])  children();
+    translate([get_pcb_case_origin()[0], get_pcb_case_origin()[1], -electronic_screw_mount_height])  children();
 }
 
 module holes(offset=0, height = switch_hole_height, has_additional_border = true)
 {
-    // Index
-    color("cyan")
+    // Pinky 2 and Pinky 1
+    color("magenta")
     {
-        range = prototype_mode? [2:3]: [0:3];
-        for (row = range)
-        {
-            translate([0, -row*(switch_hole_width + switch_spacing), 0])
-            {
-                hole(offset, height, has_additional_border);
-            }
-
-            translate([switch_hole_width + switch_spacing, -row*(switch_hole_width + switch_spacing), 0])
-            {
-                hole(offset, height, has_additional_border);
-            }
-        }
-
-        if (!prototype_mode)
-        {
-            for (row = [0:2])
-            {
-                translate([-(switch_hole_width + switch_spacing), -row*(switch_hole_width + switch_spacing), 0])
-                {
-                    hole(offset, height, has_additional_border);
-                }
-            }
-        }
-    }
-
-    // Middle
-    color("lightGreen")
-    {
-        range = prototype_mode? [2:4]: [0:4];
-        for (row = range)
-        {
-            translate([2*(switch_hole_width+switch_spacing), -row*(switch_hole_width + switch_spacing) + offset_finger_middle, 0])
-            {
-                hole(offset, height, has_additional_border);
-            }
-        }
+        create_holes(height, 4, 1, point_pinky_last, offset, has_additional_border);
+        create_holes(height, 4, 1, point_pinky, offset, has_additional_border);
     }
 
     // Ring
     color("lightBlue")
     {
-        range = prototype_mode? [2:4]: [0:4];
-        for (row = range)
-        {
-            translate([3*(switch_hole_width+switch_spacing), -row*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring, 0])
-            {
-                hole(offset, height, has_additional_border);
-            }
-        }
+        create_holes(height, 5, 1, point_ring, offset, has_additional_border);
     }
 
-    // Pinky
-    color("magenta")
+    // Middle
+    color("lightGreen")
     {
-        range = prototype_mode? [2:4]: [0:3];
-        for (row = range)
-        {
-            translate([4*(switch_hole_width+switch_spacing), -row*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring - offset_finger_pinky_1, 0])
-            {
-                hole(offset, height, has_additional_border);
-            }
-        }
+        create_holes(height, 5, 1, point_middle, offset, has_additional_border);
+    }
 
-        if (!prototype_mode)
-        {
-            for (row = [0:3])
-            {
-                translate([5*(switch_hole_width+switch_spacing), -row*(switch_hole_width + switch_spacing) + offset_finger_middle - offset_finger_ring - offset_finger_pinky_2, 0])
-                {
-                    hole(offset, height, has_additional_border);
-                }
-            }
-        }
+    // Index
+    color("cyan")
+    {
+        create_holes(height, 4, 1, point_index3, offset, has_additional_border);
+        create_holes(height, 4, 1, point_index2, offset, has_additional_border);
+        create_holes(height, 3, 1, point_index1, offset, has_additional_border);
     }
 
     // Thumbs
     color("yellow") transform_thumb()
     {
-        // Top
-        hole(offset, height, has_additional_border);
-
-        // Middle
-        x_adjust = (switch_hole_width+switch_spacing)*0.25;
-        translate([-x_adjust, -switch_spacing-switch_hole_width, 0])
+        create_holes(height, 1, 1, [0, 0], offset, has_additional_border);
+        translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
         {
-            for (col = [0:1])
-            {
-                translate([col*(switch_hole_width+switch_spacing), 0, 0])
-                {
-                    hole(offset, height, has_additional_border);
-                }
-            }
-
-        }
-
-        // Right
-        translate([2*(switch_hole_width+switch_spacing)-x_adjust, -(switch_hole_width + switch_spacing)*1.5, 0])
-        {
-            hole(offset, height, has_additional_border, true);
-        }
-
-        // Bottom
-        translate([(switch_hole_width + switch_spacing)/2-x_adjust, -2*(switch_spacing+switch_hole_width), 0])
-        {
-            hole(offset, height, has_additional_border);
+            create_holes(height, 1, 1, [-(switch_hole_width + switch_spacing)/2 - (switch_hole_width + switch_spacing), -(switch_hole_width + switch_spacing) - (switch_hole_width + switch_spacing)/2], offset, has_additional_border, vertical = true);
+            create_holes(height, 1, 2, [-(switch_hole_width + switch_spacing)/2, -(switch_hole_width + switch_spacing)], offset, has_additional_border);
+            create_holes(height, 1, 1, [0, -2*(switch_hole_width + switch_spacing)], offset, has_additional_border);
         }
     }
 }
@@ -324,7 +167,7 @@ module transform_hole(index)
 
 module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
 {
-    if (!prototype_mode)
+    color("red")
     {
         translate([0, 0, -1])
         {
@@ -346,97 +189,182 @@ module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
 
 module screw_mount(offset=0, height = switch_hole_height)
 {
-    if (!prototype_mode)
+    for (index = [0:4])
     {
-        for (index = [0:4])
+        transform_hole(index) case_hole(height, screw_mount_diameter);
+    }
+
+    transform_thumb()
+    {
+        for (index = [5:7])
         {
             transform_hole(index) case_hole(height, screw_mount_diameter);
         }
+    }
+}
 
-        transform_thumb()
+module create_cell(height)
+{
+    linear_extrude(height = height)
+    {
+        points = [
+            [0, 0], // top left
+            [0, -switch_hole_width], // bottom left
+            [switch_hole_width, -switch_hole_width], // bottom right
+            [switch_hole_width, 0] // top right
+        ];
+
+        polygon(points);
+    }
+}
+
+module create_hole(height, offset, has_additional_border = true, vertical = false)
+{
+    tolerance = 0.3;
+    additional_border_width = 0.5;
+    clip_width = 6;
+    roundness = 0.5;
+    x = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width - tolerance;
+    y = switch_hole_width + 2*offset - 2*roundness - tolerance;
+    translate([switch_spacing + (switch_hole_width-((vertical?y:x)+2*roundness))/2, -switch_spacing - (switch_hole_width-((vertical?x:y)+2*roundness))/2, 0])
+    {
+        translate([roundness, -roundness, 0]) // minkowski compensation
         {
-            for (index = [5:7])
+            translate([vertical?y/2:x/2, vertical?-x/2:-y/2, 0]) // move top left to [0,0]
             {
-                transform_hole(index) case_hole(height, screw_mount_diameter);
+                rotate([0, 0, vertical?90:0])
+                {
+                    // External hole
+                    ext_hole = offset+1;
+                    translate([0, 0, height/2 + (has_additional_border?plate_additional_border_height:0)]) // The cube is centered, we want to move up the bottom of the cube
+                    {
+                        minkowski()
+                        {
+                            cube([switch_hole_width + 2*ext_hole - 2*roundness, switch_hole_width + 2*ext_hole - 2*roundness, height], center=true);
+                            $fn = 30; cylinder(r=roundness,  h=2);
+                        }
+                    }
+
+                    translate([0, 0, -0.01]) // Small vertical offset to have clean holes
+                    {
+                        minkowski()
+                        {
+                            linear_extrude(height=height)
+                            {
+                                // Create a centered polygon, so we can rotate it after
+                                points = [
+                                    [-x/2, y/2], // top left
+                                    [x/2, y/2], // top right
+                                    [x/2, clip_width/2],
+                                    [x/2-additional_border_width, clip_width/2],
+                                    [x/2-additional_border_width, -clip_width/2],
+                                    [x/2, -clip_width/2],
+                                    [x/2, -y/2],
+                                    [-x/2, -y/2],
+                                    [-x/2, -clip_width/2],
+                                    [-x/2 + additional_border_width, -clip_width/2],
+                                    [-x/2 + additional_border_width, clip_width/2],
+                                    [-x/2, clip_width/2],
+                                ];
+                                polygon(points);
+                            }
+                            $fn = 30; cylinder(r=roundness,  h=2);
+                        }
+                    }
+                }
             }
         }
     }
 }
 
-module plate(chamfer = false)
+module create_cells(height, rows, columns, origin)
 {
-    module sub_plate(rows, columns, origin, padding)
+    translate(origin)
     {
-        size = switch_hole_width + switch_spacing;
-        points = [
-            [origin[0] - padding, origin[1] + padding], // top left
-            [origin[0] - padding, origin[1] - padding - rows*switch_hole_width - (rows-1)*switch_spacing], // bottom left
-            [origin[0] + columns*switch_hole_width + (columns-1)*switch_spacing + padding, origin[1] - padding - rows*switch_hole_width - (rows-1)*switch_spacing], // bottom right
-            [origin[0] + columns*switch_hole_width + (columns-1)*switch_spacing + padding, origin[1] + padding] // top right
-        ];
-
-        polygon(points);
-    }
-
-    module final_plate()
-    {
-        minkowski()
-        { 
-            height1 = plate_height/3;
-            height2 = 2*height1;
-            union()
+        for (col = [0:columns-1])
+        {
+            col_offset = col*(switch_hole_width + switch_spacing);
+            for (row = [0:rows-1])
             {
-                size = switch_hole_width + switch_spacing;
-                linear_extrude(height=height1)
+                translate([col_offset, -row*(switch_hole_width+switch_spacing), 0])
                 {
-                    // Thumb
-                    transform_thumb()
-                    {
-                        sub_plate(3, 3, [-switch_hole_width-switch_spacing, 0], plate_padding);
-                    }
-                }
-
-                // Index
-                linear_extrude(height=height1) sub_plate(3, 1, point_index - [switch_hole_width+switch_spacing, 0], plate_padding);
-
-                hull()
-                {
-                    linear_extrude(height=height1)
-                    {
-                        // Index, Middle, Ring, Pinky
-                        sub_plate(4, 2, point_index, plate_padding);
-                        sub_plate(5, 1, point_middle, plate_padding);
-                        sub_plate(5, 1, point_ring, plate_padding);
-                        sub_plate(4, 1, point_pinky, plate_padding);
-                        sub_plate(4, 1, point_pinky_last, plate_padding);
-                    }
-
-                    y_offset = 6;
-                    point_offset = [switch_hole_width, 2*switch_spacing];
-
-                    control_points =  [
-                        point_index - [switch_hole_width + switch_spacing, plate_padding],
-                        point_middle + point_offset,
-                        point_ring + point_offset,
-                        point_pinky_last + [switch_hole_width-plate_padding, 0] 
-                    ];
-
-                    BezWall(control_points, width = 5, height = height1, steps = 64, centered = true, showCtlR = false);
+                    color("lightGreen") translate([switch_spacing, -switch_spacing, 0]) cube([switch_hole_width, switch_spacing, height]);
+                    translate([switch_spacing, -switch_spacing, 0]) create_cell(height = height);
                 }
             }
-            r1 = case_outer_border+switch_spacing;
-            r2 = chamfer? r1 - height2 : r1;
-            $fn = 60; cylinder(r1=r1, r2=r2, h=height2);
+            color("lightGreen") translate([switch_spacing + col_offset, -rows*(switch_hole_width+switch_spacing)-switch_spacing, 0]) cube([switch_hole_width, switch_spacing, height]);
+            color("lightGreen") translate([col_offset, -rows*(switch_hole_width+switch_spacing) - switch_spacing, 0]) cube([switch_spacing, rows*(switch_hole_width+switch_spacing) + switch_spacing, height]);
+            color("lightGreen") translate([switch_hole_width + switch_spacing + col_offset, -rows*(switch_hole_width+switch_spacing) - switch_spacing, 0]) cube([switch_spacing, rows*(switch_hole_width+switch_spacing) + switch_spacing, height]);
         }
     }
+}
 
-    if (prototype_mode)
+module create_holes(height, rows, columns, origin, offset, has_additional_border = true, vertical = false)
+{
+    translate(origin)
     {
-        holes(4, 2, false);
+        for (col = [0:columns-1])
+        {
+            col_offset = col*(switch_hole_width + switch_spacing);
+            for (row = [0:rows-1])
+            {
+                translate([col_offset, -row*(switch_hole_width+switch_spacing), 0])
+                {
+                    create_hole(height, offset, has_additional_border, vertical);
+                }
+            }
+        }
     }
-    else
-    {
-        final_plate();
+}
+
+module plate(total_height = plate_height, chamfer = false)
+{
+    minkowski()
+    { 
+        basic_height = total_height/3;
+        minkowski_height = 2*basic_height;
+        union()
+        {
+            hull()
+            {
+                // Create cells from pinky to the index finger
+                create_cells(basic_height, 4, 1, point_pinky_last);
+                create_cells(basic_height, 4, 1, point_pinky);
+                create_cells(basic_height, 5, 1, point_ring);
+                create_cells(basic_height, 5, 1, point_middle);
+                create_cells(basic_height, 4, 1, point_index3);
+                create_cells(basic_height, 4, 1, point_index2);
+
+                point_offset = [(switch_hole_width+2*switch_spacing)/2, 2*switch_spacing];
+                control_points =  [
+                    point_pinky_last,
+                    point_ring + point_offset,
+                    point_middle + point_offset,
+                    point_index1 + [switch_hole_width + 2*switch_spacing, 0],
+                ];
+
+                BezWall(control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = false);
+            }
+
+            // Thumb
+            transform_thumb()
+            {
+                *create_cells(basic_height, 1, 1, [0, 0]);
+                translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
+                {
+                    *create_cells(basic_height, 1, 1, [-(switch_hole_width + switch_spacing)/2 - (switch_hole_width + switch_spacing), -(switch_hole_width + switch_spacing) - (switch_hole_width + switch_spacing)/2]);
+                    *create_cells(basic_height, 1, 2, [-(switch_hole_width + switch_spacing)/2, -(switch_hole_width + switch_spacing)]);
+                    *create_cells(basic_height, 1, 1, [0, -2*(switch_hole_width + switch_spacing)]);
+                    translate([-1.5*(switch_hole_width+ switch_spacing), 0, 0]) create_cells(basic_height, 3, 3, [0,0]);
+                }
+            }
+
+            // Index 1
+            create_cells(basic_height, 3, 1, point_index1);
+        }
+        r1 = case_outer_border;
+        r2 = chamfer? r1 - minkowski_height : r1;
+        $fn = 60; cylinder(r1=r1, r2=r2, h=minkowski_height);
     }
 }
 
@@ -464,77 +392,74 @@ module top_plate()
 
 module case()
 {
-    if (!prototype_mode)
+    difference()
     {
-        difference()
+        union()
         {
-            union()
+            difference()
             {
-                difference()
+                union()
                 {
-                    union()
+                    big_radius = case_shell_size;
+                    // Bottom
+                    minkowski()
                     {
-                        small_radius = 1;
-                        big_radius = case_shell_size;
-                        // Bottom
+                        plate();
+                        $fn = 30; cylinder(r1=big_radius-1, r2=big_radius,  h=1);
+                    }
+
+                    // Middle
+                    translate([0, 0, case_shell_size])
+                    {
                         minkowski()
                         {
                             plate();
-                            $fn = 30; cylinder(r1=small_radius, r2=big_radius,  h=case_shell_size);
-                        }
-
-                        // Middle
-                        translate([0, 0, case_shell_size])
-                        {
-                            minkowski()
-                            {
-                                plate();
-                                $fn = 30; cylinder(r=case_shell_size,  h=case_height-case_shell_size);
-                            }
-                        }
-
-                        // Top
-                        translate([0, 0, case_height])
-                        {
-                            minkowski()
-                            {
-                                plate();
-                                $fn = 30; cylinder(r2=small_radius, r1=big_radius,  h=case_shell_size);
-                            }
+                            $fn = 30; cylinder(r=case_shell_size,  h=case_height-case_shell_size);
                         }
                     }
 
-                    translate([0, 0, case_shell_size]) scale([1, 1, 8]) plate();
+                    // Top
+                    translate([0, 0, case_height])
+                    {
+                        minkowski()
+                        {
+                            plate();
+                            $fn = 30; cylinder(r2=big_radius-1, r1=big_radius,  h=1);
+                        }
+                    }
                 }
 
-                // Add all bolt mounts
-                screw_mount(height = case_height + 2*case_shell_size);
+                translate([0, 0, case_shell_size]) scale([1, 1, 8]) plate();
             }
 
-            // Top plate hole without chamfer
-            translate([0, 0, case_height+case_shell_size - 1]) scale([1, 1, 8]) plate();
+            // Add all bolt mounts
+            screw_mount(height = case_height + 2*case_shell_size);
+        }
 
-            // Case holes
-            translate([0, 0, -20]) case_holes(height = 200);
+        // Top plate hole without chamfer
+        translate([0, 0, case_height+case_shell_size - 1]) scale([1, 1, 8]) plate();
 
-            // Nut holes
-            for (index = [0:4])
+        // Case holes
+        translate([0, 0, -20]) case_holes(height = 200);
+
+        // Nut holes
+        for (index = [0:4])
+        {
+            transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
+        }
+
+        // Nut holes
+        transform_thumb()
+        {
+            for (index = [5:7])
             {
                 transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
             }
-
-            // Nut holes
-            transform_thumb()
-            {
-                for (index = [5:7])
-                {
-                    transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
-                }
-            }
-
-            // Electronic holes
-            transform_pcb_case() pcb_case(holes_only = true, with_trrs_hole= false);
         }
+
+        // Electronic holes
+        transform_pcb_case() pcb_case(holes_only = true, with_trrs_hole= false);
+        mini_thumb_holes();
     }
 }
 
@@ -574,25 +499,6 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
                     {
                         translate([0,0,-0.001]) printable_nut_hole(2, tolerance=0.4);
                         translate([0,0,-30]) printable_nut_hole(2, tolerance=0.4, cone= false);
-                    }
-                }
-            }
-        }
-
-        if (holes_only)
-        {
-            for (index = [0:1])
-            {
-                translate(positions[index])
-                {
-                    translate([0, -pcb_case_additional_length, 0])
-                    {
-                        mount(mount_height-electronic_pcb_dim[2]-0.1, electronic_screws_hole_diameter, electronic_screw_mount_diameter, holes_only);
-                        hull()
-                        {
-                            translate([0,0,-0.001]) printable_nut_hole(2, tolerance=0.4);
-                            translate([0,0,-30]) printable_nut_hole(2, tolerance=0.4, cone= false);
-                        }
                     }
                 }
             }
@@ -692,41 +598,85 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
     }
 }
 
+module mini_thumb_holes()
+{
+    module make_hole()
+    {
+        translate([0,0,-electronic_screw_mount_height])
+        {
+            hull()
+            {
+                translate([0,0,-0.001]) printable_nut_hole(2, tolerance=0.4);
+                translate([0,0,-30]) printable_nut_hole(2, tolerance=0.4, cone= false);
+            }
+
+            cylinder(h=2*electronic_screw_mount_height, d=electronic_screws_hole_diameter, $fn = 60);
+        }
+    }
+
+    transform_thumb()
+    {
+        factor = 0.75;
+        original_width = 3*switch_hole_width + 4*switch_spacing;
+        translate([(original_width-factor*original_width)/2, -(original_width-factor*original_width)/2, 0])
+        {
+            translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
+            {
+                translate([-1.5*(switch_hole_width+ switch_spacing), 0, 0])
+                {
+                    translate([factor*original_width, 0]) make_hole();
+                    translate([factor*original_width, -factor*original_width]) make_hole();
+                    translate([0, -factor*original_width]) make_hole();
+                }
+            }
+        }
+    }
+}
+
 module printable_pcb_case(printable = true)
 {
+    module mini_thumb(factor)
+    {
+        original_width = 3*switch_hole_width + 4*switch_spacing;
+        translate([(original_width-factor*original_width)/2, -(original_width-factor*original_width)/2, 0])
+        {
+            translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
+            {
+                translate([-1.5*(switch_hole_width+ switch_spacing), 0, 0])
+                {
+                    scale([factor, factor,1]) create_cells(0.0001, 3, 3, [0,0]);
+                }
+            }
+        }
+    }
+
     rotate([0, printable?get_tilt():0, 0])
     {
         difference()
         {
-            distance = get_case_right_extremity() - get_pcb_case_right_extremity();
+            mini_thumb_scale = 0.8;
             union()
             {
-                translate([pcb_case_pos[0], pcb_case_pos[1], 0])
+                rotate_hull_around_y(angle=-get_tilt())
                 {
-                    translate([distance + get_pcb_case_bounding_box()[0], get_pcb_case_bounding_box()[1], 0])
+                    translate(get_pcb_case_origin())
                     {
-                        rotate([0, 0, 180])
+                        minkowski()
                         {
-                            difference()
-                            {
-                                rotate_hull_around_y(angle=get_tilt()) translate([distance, 0, 0])
-                                {
-                                    minkowski()
-                                    {
-                                        cube([get_pcb_case_bounding_box()[0], get_pcb_case_bounding_box()[1] + pcb_case_additional_length, 0.0001]);
-                                        $fn = 60; cylinder(r=5,  h=0.001);
-                                    }
-                                }
+                            cube([get_pcb_case_bounding_box()[0], get_pcb_case_bounding_box()[1], 0.0001]);
+                            cylinder(r=5,  h=0.001, $fn = 60);
+                        }
+                    }
+                }
 
-                                rotate_hull_around_y(angle=get_tilt()) translate([distance + 3*electronic_screw_mount_diameter/2, get_pcb_case_bounding_box()[1]+3*electronic_screw_mount_diameter/2-2.5,  0])
-                                {
-                                    minkowski()
-                                    {
-                                        cube([get_pcb_case_bounding_box()[0]-3*electronic_screw_mount_diameter, pcb_case_additional_length-3*electronic_screw_mount_diameter, 0.0001]);
-                                        $fn = 60; cylinder(r=5,  h=0.001);
-                                    }
-                                }
-                            }
+                rotate_hull_around_y(angle=-get_tilt())
+                {
+                    transform_thumb()
+                    {
+                        minkowski()
+                        {
+                            mini_thumb(mini_thumb_scale);
+                            cylinder(r=5,  h=0.001, $fn = 60);
                         }
                     }
                 }
@@ -742,18 +692,52 @@ module printable_pcb_case(printable = true)
 
                 pcb_case(holes_only = true);
             }
+
+            rotate([0, 10, 0]) rotate_hull_around_y(angle=-(get_tilt()+20))
+            {
+                transform_thumb()
+                {
+                    minkowski()
+                    {
+                        new_scale = 0.7;
+                        mini_thumb(mini_thumb_scale*new_scale);
+                        cylinder(r=5*new_scale,  h=0.001, $fn = 60);
+                    }
+                }
+            }
+
+            mini_thumb_holes();
         }
     }
 }
 
 
-*plate(chamfer=true);
+// Show helpers
+*union()
+{
+    %translate(get_kaladrius_origin()) sphere(r=2, $fn=60);
+    %translate(point_pinky_last) sphere(r=2, $fn=60);
+    %translate(point_pinky) sphere(r=2, $fn=60);
+    %translate(point_ring) sphere(r=2, $fn=60);
+    %translate(point_middle) sphere(r=2, $fn=60);
+    %translate(point_index3) sphere(r=2, $fn=60);
+    %translate(point_index2) sphere(r=2, $fn=60);
+    %translate(point_index1) sphere(r=2, $fn=60);
+    %translate(get_thumb_anchor()) sphere(r=2, $fn=60);
+    %translate(get_thumb_origin()) sphere(r=2, $fn=60);
+    %translate(get_pcb_case_origin()) sphere(r=2, $fn=60);
+}
+
+*plate(total_height=1, chamfer=false);
 *holes();
+*top_plate();
+*case();
+*printable_pcb_case(printable=false);
 
 translate(mirror_translate)
 {
     *top_plate();
-    *case();
+    case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
 }
@@ -765,7 +749,7 @@ mirror([1, 0, 0])
         *top_plate();
         *case();
         *printable_pcb_case(printable=false);
-        printable_pcb_case();
+        *printable_pcb_case();
     }
 }
 
