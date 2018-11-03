@@ -22,8 +22,8 @@ switch_spacing = 4.8;
 offset_finger_middle = -2.2;
 offset_finger_ring = 8.38;
 offset_finger_pinky = 18;
-thumb_x = 9;
-thumb_y = 18;
+thumb_x = 6.5;
+thumb_y = 13;
 thumb_angle = -20;
 case_shell_size = 3;
 case_height = 7;
@@ -63,7 +63,7 @@ hole_positions = [
 ];
 
 function get_kaladrius_origin() = [0, 0, 0];
-function get_thumb_anchor() = point_index1 - [0, 3*(switch_hole_width+switch_spacing)];
+function get_thumb_anchor() = point_index1 - [0, 3*(switch_hole_width+switch_spacing) + switch_spacing];
 function get_thumb_origin() = get_thumb_anchor() + [thumb_x, -thumb_y];
 function get_pcb_case_bounding_box() = [pcb_plate_size[0] + electronic_screw_mount_diameter, pcb_plate_size[1] + electronic_screw_mount_diameter, electronic_screw_mount_height];
 function get_pcb_case_origin() = get_kaladrius_origin() + pcb_case_pos;
@@ -372,20 +372,21 @@ module top_plate()
 {
     translate([0, 0, case_height + case_shell_size])
     {
-        rotate([0, 0, 0])
+        difference()
         {
-            difference()
+            union()
             {
-                difference()
+                plate(chamfer=true);
+
+                color("black")
                 {
-                    union()
-                    {
-                        plate(chamfer=true);
-                    }
-                    holes();
+                    mark_height = plate_height + 0.5;
+                    translate(get_thumb_anchor()) cube([thumb_x, 2, mark_height]);
+                    translate(get_thumb_anchor() + [thumb_x, -thumb_y]) cube([2, thumb_y, mark_height]);
                 }
-                case_holes();
             }
+            holes();
+            case_holes();
         }
     }
 }
@@ -741,32 +742,38 @@ module printable_pcb_case(printable = true)
 
 
 // Show helpers
+module show_point(p)
+{
+    %translate(p) cylinder(h=100, r=1, $fn=60);
+}
+
 *union()
 {
-    %translate(get_kaladrius_origin()) sphere(r=2, $fn=60);
-    %translate(point_pinky_last) sphere(r=2, $fn=60);
-    %translate(point_pinky) sphere(r=2, $fn=60);
-    %translate(point_ring) sphere(r=2, $fn=60);
-    %translate(point_middle) sphere(r=2, $fn=60);
-    %translate(point_index3) sphere(r=2, $fn=60);
-    %translate(point_index2) sphere(r=2, $fn=60);
-    %translate(point_index1) sphere(r=2, $fn=60);
-    %translate(get_thumb_anchor()) sphere(r=2, $fn=60);
-    %translate(get_thumb_origin()) sphere(r=2, $fn=60);
-    %translate(get_pcb_case_origin()) sphere(r=2, $fn=60);
+    show_point(get_kaladrius_origin());
+    show_point(point_pinky_last);
+    show_point(point_pinky);
+    show_point(point_ring);
+    show_point(point_middle);
+    show_point(point_index3);
+    show_point(point_index2);
+    show_point(point_index1);
+    show_point(get_pcb_case_origin());
+    show_point(get_thumb_anchor());
+    show_point(get_thumb_origin());
 }
 
 *plate(total_height=1, chamfer=false);
 *holes();
 *top_plate();
+
 *plate_supports();
-case();
+*case();
 *printable_pcb_case(printable=false);
 
 translate(mirror_translate)
 {
     *top_plate();
-    *case();
+    case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
 }
