@@ -67,7 +67,7 @@ function get_thumb_anchor() = point_index1 - [0, 3*(switch_hole_width+switch_spa
 function get_thumb_origin() = get_thumb_anchor() + [thumb_x, -thumb_y];
 function get_pcb_case_bounding_box() = [pcb_plate_size[0] + electronic_screw_mount_diameter, pcb_plate_size[1] + electronic_screw_mount_diameter, electronic_screw_mount_height];
 function get_pcb_case_origin() = get_kaladrius_origin() + pcb_case_pos;
-function get_tilt() = atan(electronic_screw_mount_height/(get_kaladrius_origin()[0]-get_pcb_case_origin()[0]));
+function get_tenting_angle() = atan(electronic_screw_mount_height/(get_kaladrius_origin()[0]-get_pcb_case_origin()[0]));
 
 module printable_nut_hole(size, tolerance = 0.25, cone=true)
 {
@@ -427,12 +427,12 @@ module case()
             {
                 union()
                 {
-                    big_radius = case_shell_size;
+                    small_radius = 1;
                     // Bottom
                     minkowski()
                     {
                         plate();
-                        $fn = 30; cylinder(r1=big_radius-1, r2=big_radius,  h=1);
+                        $fn = 30; cylinder(r1=small_radius, r2=case_shell_size,  h=case_shell_size);
                     }
 
                     // Middle
@@ -451,7 +451,7 @@ module case()
                         minkowski()
                         {
                             plate();
-                            $fn = 30; cylinder(r2=big_radius-1, r1=big_radius,  h=1);
+                            $fn = 30; cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size);
                         }
                     }
                 }
@@ -466,7 +466,7 @@ module case()
         }
 
         // Top plate hole without chamfer
-        translate([0, 0, case_height+case_shell_size - 1]) scale([1, 1, 8]) plate();
+        translate([0, 0, case_height + case_shell_size - 1]) scale([1, 1, 8]) plate();
 
         // Case holes
         translate([0, 0, -20]) case_holes(height = 200);
@@ -679,14 +679,14 @@ module printable_pcb_case(printable = true)
         }
     }
 
-    rotate([0, printable?get_tilt():0, 0])
+    rotate([0, printable?get_tenting_angle():0, 0])
     {
         difference()
         {
             mini_thumb_scale = 0.8;
             union()
             {
-                rotate_hull_around_y(angle=-get_tilt())
+                rotate_hull_around_y(angle=-get_tenting_angle())
                 {
                     translate(get_pcb_case_origin())
                     {
@@ -698,7 +698,7 @@ module printable_pcb_case(printable = true)
                     }
                 }
 
-                rotate_hull_around_y(angle=-get_tilt())
+                rotate_hull_around_y(angle=-get_tenting_angle())
                 {
                     transform_thumb()
                     {
@@ -722,7 +722,7 @@ module printable_pcb_case(printable = true)
                 pcb_case(holes_only = true);
             }
 
-            rotate([0, 10, 0]) rotate_hull_around_y(angle=-(get_tilt()+20))
+            rotate([0, 10, 0]) rotate_hull_around_y(angle=-(get_tenting_angle()+20))
             {
                 transform_thumb()
                 {
@@ -765,15 +765,15 @@ module show_point(p)
 *plate(total_height=1, chamfer=false);
 *holes();
 *top_plate();
-
 *plate_supports();
-*case();
+case();
+
 *printable_pcb_case(printable=false);
 
 translate(mirror_translate)
 {
     *top_plate();
-    case();
+    *case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
 }
@@ -799,8 +799,7 @@ mirror([1, 0, 0])
     %pcb_case(holes_only = true);
 }
 
-echo(get_tilt());
-echo(electronic_screw_mount_height);
+echo("Tenting Angle", abs(get_tenting_angle()));
 
 *difference()
 {
