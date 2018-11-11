@@ -40,7 +40,6 @@ electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-5.5;
 electronic_teensy_hole = [0, 50];
 pcb_case_pos = [84, -50];
 pcb_plate_size = [48.40-2.12, 68.10-2.12, 2];
-mirror_translate = [60, 0, 0];
 switch_hole_height = screws_mount_height + 5;
 
 point_pinky_last = [get_kaladrius_origin()[0] + case_outer_border, get_kaladrius_origin()[1]];
@@ -662,7 +661,7 @@ module mini_thumb_holes()
     }
 }
 
-module printable_pcb_case(printable = true)
+module printable_pcb_case(printable = true, holes_only = false)
 {
     module mini_thumb(factor)
     {
@@ -679,67 +678,81 @@ module printable_pcb_case(printable = true)
         }
     }
 
+    mini_thumb_scale = 0.8;
+    module pcb_case_holes()
+    {
+        transform_pcb_case() 
+        {
+            difference()
+            {
+                pcb_case(mount_height = electronic_screw_mount_height+0.01, bounding_box=true);
+                pcb_case();
+            }
+
+            pcb_case(holes_only = true);
+        }
+
+        rotate([0, 10, 0]) rotate_hull_around_y(angle=-(get_tenting_angle()+20))
+        {
+            transform_thumb()
+            {
+                minkowski()
+                {
+                    new_scale = 0.7;
+                    mini_thumb(mini_thumb_scale*new_scale);
+                    cylinder(r=5*new_scale,  h=0.001, $fn = 60);
+                }
+            }
+        }
+
+        mini_thumb_holes();
+    }
+
     rotate([0, printable?get_tenting_angle():0, 0])
     {
-        difference()
+        if (!holes_only)
         {
-            mini_thumb_scale = 0.8;
-            union()
+            difference()
             {
-                rotate_hull_around_y(angle=-get_tenting_angle())
+                union()
                 {
-                    translate(get_pcb_case_origin())
+                    rotate_hull_around_y(angle=-get_tenting_angle())
                     {
-                        minkowski()
+                        translate(get_pcb_case_origin())
                         {
-                            cube([get_pcb_case_bounding_box()[0], get_pcb_case_bounding_box()[1], 0.0001]);
-                            cylinder(r=5,  h=0.001, $fn = 60);
+                            minkowski()
+                            {
+                                cube([get_pcb_case_bounding_box()[0], get_pcb_case_bounding_box()[1], 0.0001]);
+                                cylinder(r=5,  h=0.001, $fn = 60);
+                            }
+                        }
+                    }
+
+                    rotate_hull_around_y(angle=-get_tenting_angle())
+                    {
+                        transform_thumb()
+                        {
+                            minkowski()
+                            {
+                                mini_thumb(mini_thumb_scale);
+                                cylinder(r=5,  h=0.001, $fn = 60);
+                            }
                         }
                     }
                 }
 
-                rotate_hull_around_y(angle=-get_tenting_angle())
-                {
-                    transform_thumb()
-                    {
-                        minkowski()
-                        {
-                            mini_thumb(mini_thumb_scale);
-                            cylinder(r=5,  h=0.001, $fn = 60);
-                        }
-                    }
-                }
+                pcb_case_holes();
             }
-
-            transform_pcb_case() 
-            {
-                difference()
-                {
-                    pcb_case(mount_height = electronic_screw_mount_height+0.01, bounding_box=true);
-                    pcb_case();
-                }
-
-                pcb_case(holes_only = true);
-            }
-
-            rotate([0, 10, 0]) rotate_hull_around_y(angle=-(get_tenting_angle()+20))
-            {
-                transform_thumb()
-                {
-                    minkowski()
-                    {
-                        new_scale = 0.7;
-                        mini_thumb(mini_thumb_scale*new_scale);
-                        cylinder(r=5*new_scale,  h=0.001, $fn = 60);
-                    }
-                }
-            }
-
-            mini_thumb_holes();
+        }
+        else
+        {
+            pcb_case_holes();
         }
     }
 }
 
+
+echo("Tenting Angle", abs(get_tenting_angle()));
 
 // Show helpers
 module show_point(p)
@@ -764,13 +777,13 @@ module show_point(p)
 
 *plate(total_height=1, chamfer=false);
 *holes();
+
 *top_plate();
-*plate_supports();
-case();
-
+*case();
 *printable_pcb_case(printable=false);
+*printable_pcb_case();
 
-translate(mirror_translate)
+mirror([1, 0, 0])
 {
     *top_plate();
     *case();
@@ -778,14 +791,48 @@ translate(mirror_translate)
     *printable_pcb_case();
 }
 
-mirror([1, 0, 0])
+// Kaladrius link system
+module transform_link_system()
 {
-    translate(mirror_translate)
+    translate([-100, 0, 0])
     {
-        *top_plate();
-        *case();
-        *printable_pcb_case(printable=false);
-        *printable_pcb_case();
+        rotate([0, 0, -15])
+        {
+            translate(-get_pcb_case_origin())
+            {
+                children();
+            }
+        }
+    }
+}
+
+union()
+{
+    transform_link_system() printable_pcb_case();
+    mirror([1, 0, 0])
+    {
+        transform_link_system() printable_pcb_case();
+    }
+    
+    difference()
+    {
+        roundness = 5;
+        link_dim = [150, 50, 15];
+        minkowski()
+        {
+            translate([-link_dim[0]/2, -link_dim[1], 0])
+            {
+                cube(link_dim);
+            }
+            small_radius = 1;
+            cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size, $fn=30);
+        }
+
+        transform_link_system() printable_pcb_case(holes_only = true);
+        mirror([1, 0, 0])
+        {
+            transform_link_system() printable_pcb_case(holes_only = true);
+        }
     }
 }
 
@@ -798,8 +845,6 @@ mirror([1, 0, 0])
     }
     %pcb_case(holes_only = true);
 }
-
-echo("Tenting Angle", abs(get_tenting_angle()));
 
 *difference()
 {
