@@ -75,7 +75,7 @@ void init_cols(void)
     // Init on teensy2pp
     // The original init_cols() function in quantum/matrix.c 
     // configure every column pins as input with pull up resistor
-    // Columns (inputs):    C0 C1 C2 C3 C4 C5 C6 c7
+    // Columns:    C0 C1 C2 C3 C4 C5 C6
     // Note from teensy documentation:
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
@@ -91,6 +91,7 @@ void unselect_rows(void)
     // Unselect on teensy2pp
     // The original unselect_rows() function in quantum/matrix.c
     // configure every row pins as normal input without pullup resistor
+    // Rows:    F0 F1 F2 F3 F4 
     // Note from teensy documentation:
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
@@ -114,6 +115,7 @@ void select_row(uint8_t row)
     // Select on teensy2pp
     // The original select_row() function in quantum/matrix.c
     // configure the row pin as an output and write 0 (low) to the pin
+    // Rows:    F0 F1 F2 F3 F4 
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Set Output (when DDRx=1): 0=Low Output, 1=High Output
     const uint8_t bit_row = (1<<row);

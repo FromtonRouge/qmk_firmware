@@ -45,8 +45,8 @@ const uint16_t g_special_shift_table[SPECIAL_SHIFT_TABLE_SIZE] =
     FR_UNDS     // [17] FR_MINS
 };
 
-#define L_STANDARD 1
-#define L_STENO 0
+#define L_STANDARD 0
+#define L_STENO 1
 #define L_SHIFT_COLEMAK 2
 #define L_ACCENTS 3
 #define L_FN 4
@@ -92,32 +92,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
                               KC_ENT, KC_BSPC,MO(L_ACCENTS),                MO(L_ACCENTS), KC_DEL, KC_SPC, 
                                                     KC_BSPC,                KC_DEL ),
     [L_SHIFT_COLEMAK] = LAYOUT(
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO, 
-                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO ),
+        CKC_SFUN, KC_7,    KC_5,    KC_3,    KC_1,    KC_9,    KC_TRNS,     KC_NO,   KC_0,    KC_2,    KC_4,     KC_6,     KC_8,     FR_COMM, 
+        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, FR_UGRV,     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,  CKC_SFUN, CKC_SFUN, 
+        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS, 
+        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                       KC_TRNS, KC_TRNS, CKC_SFUN, CKC_SFUN, CKC_SFUN, KC_TRNS, 
+                      KC_TRNS, KC_TRNS,                                              KC_TRNS, KC_TRNS, 
+                                                  KC_TRNS,        KC_TRNS, 
+                                    KC_TRNS, KC_TRNS, KC_TRNS,        KC_TRNS, KC_TRNS, KC_TRNS, 
+                                                  KC_TRNS,        KC_TRNS ),
     [L_ACCENTS] = LAYOUT(
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO,    KC_NO,    KC_NO,         KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, FR_UGRV,  KC_NO,    LSFT(KC_LBRC), KC_NO, 
+        KC_NO, KC_0,  KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_7,  KC_2,  CKC_CIRC, CKC_CIRC, CKC_CIRC,      KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_9,  KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO,    KC_NO,    KC_NO,         KC_NO, 
+                      KC_NO, KC_NO,                                                  KC_NO,    KC_NO, 
                                                   KC_NO,        KC_NO, 
-                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
+                                    KC_NO, KC_NO, KC_TRNS,      KC_TRNS, KC_NO, KC_NO, 
                                                   KC_NO,        KC_NO ),
     [L_FN] = LAYOUT(
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO, 
-                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO ),
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_TRNS,        KC_NO,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,   KC_F12, 
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, 
+        KC_LSFT, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  KC_TRNS, KC_TRNS,        KC_TRNS, KC_TRNS, KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT, KC_RSFT, 
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, 
+                      KC_TRNS, KC_TRNS,                                                                  KC_TRNS, KC_TRNS, 
+                                                  KC_TRNS,        KC_TRNS, 
+                                    KC_TRNS, KC_TRNS, KC_TRNS,        KC_TRNS, KC_TRNS, KC_TRNS, 
+                                                  KC_TRNS,        KC_TRNS ),
 };
 
 steno_layout_t* get_steno_layout(void) { return g_steno_layout; }
