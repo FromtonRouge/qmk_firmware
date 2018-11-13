@@ -17,6 +17,7 @@
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
+fragments_number = 50; // Use 0 for debugging, 50-100 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
 offset_finger_middle = -2.2;
@@ -94,10 +95,10 @@ module rotate_hull_around_y(angle, steps = 30)
 
 module case_hole(height, diameter=screws_diameter)
 {
-    $fn = 60; cylinder(height-2, d=diameter);
+    cylinder(height-2, d=diameter, $fn = fragments_number);
     translate([0, 0, height-2])
     {
-        $fn = 60; cylinder(2, d=diameter);
+        cylinder(2, d=diameter, $fn = fragments_number);
     }
 }
 
@@ -240,7 +241,7 @@ module create_hole(height, offset, has_additional_border = true, vertical = fals
                         minkowski()
                         {
                             cube([switch_hole_width + 2*ext_hole - 2*roundness, switch_hole_width + 2*ext_hole - 2*roundness, height], center=true);
-                            $fn = 30; cylinder(r=roundness,  h=2);
+                            cylinder(r=roundness,  h=2, $fn = fragments_number);
                         }
                     }
 
@@ -267,7 +268,7 @@ module create_hole(height, offset, has_additional_border = true, vertical = fals
                                 ];
                                 polygon(points);
                             }
-                            $fn = 30; cylinder(r=roundness,  h=2);
+                            cylinder(r=roundness,  h=2, $fn = fragments_number);
                         }
                     }
                 }
@@ -363,7 +364,7 @@ module plate(total_height = plate_height, chamfer = false)
         }
         r1 = case_outer_border;
         r2 = chamfer? r1 - minkowski_height : r1;
-        $fn = 60; cylinder(r1=r1, r2=r2, h=minkowski_height);
+        cylinder(r1=r1, r2=r2, h=minkowski_height, $fn = fragments_number);
     }
 }
 
@@ -399,12 +400,12 @@ module plate_supports()
             support_height = case_height+3*case_shell_size;
             translate([0, -row*(switch_hole_width+switch_spacing) - switch_spacing/2])
             {
-                cylinder(h=support_height, d=3.5, $fn=60);
+                cylinder(h=support_height, d=3.5, $fn=fragments_number);
             }
 
             translate([0, -row*(switch_hole_width+switch_spacing) - switch_hole_width/2])
             {
-                cylinder(h=support_height, d=3.5, $fn=60);
+                cylinder(h=support_height, d=3.5, $fn=fragments_number);
             }
         }
     }
@@ -431,7 +432,7 @@ module case()
                     minkowski()
                     {
                         plate();
-                        $fn = 30; cylinder(r1=small_radius, r2=case_shell_size,  h=case_shell_size);
+                        cylinder(r1=small_radius, r2=case_shell_size,  h=case_shell_size, $fn = fragments_number);
                     }
 
                     // Middle
@@ -440,7 +441,7 @@ module case()
                         minkowski()
                         {
                             plate();
-                            $fn = 30; cylinder(r=case_shell_size,  h=case_height-case_shell_size);
+                            cylinder(r=case_shell_size,  h=case_height-case_shell_size, $fn = fragments_number);
                         }
                     }
 
@@ -450,7 +451,7 @@ module case()
                         minkowski()
                         {
                             plate();
-                            $fn = 30; cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size);
+                            cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size, $fn = fragments_number);
                         }
                     }
                 }
@@ -497,11 +498,11 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
     {
         if (holes_only)
         {
-            cylinder(h=h*2, d=d1, $fn = 60);
+            cylinder(h=h*2, d=d1, $fn = fragments_number);
         }
         else
         {
-            cylinder(h=h, d=d2, $fn= 60);
+            cylinder(h=h, d=d2, $fn= fragments_number);
         }
     }
 
@@ -540,7 +541,7 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
             minkowski()
             {
                 translate([electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0]) cube([pcb_plate_size[0], pcb_plate_size[1], pcb_plate_size[2]]);
-                $fn = 60; cylinder(h=mount_height-pcb_plate_size[2], r=electronic_screw_mount_diameter/2);
+                cylinder(h=mount_height-pcb_plate_size[2], r=electronic_screw_mount_diameter/2, $fn = fragments_number);
             }
         }
         else
@@ -548,7 +549,7 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
             minkowski()
             {
                 translate([electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0]) cube([pcb_plate_size[0], pcb_plate_size[1], pcb_plate_size[2]/2]);
-                $fn = 60; cylinder(h=pcb_plate_size[2]/2, r=electronic_screw_mount_diameter/2);
+                cylinder(h=pcb_plate_size[2]/2, r=electronic_screw_mount_diameter/2, $fn = fragments_number);
             }
         }
     }
@@ -569,7 +570,7 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
                     minkowski()
                     {
                         cube(hole_ports_dim);
-                        $fn = 60; sphere(r=roundness);
+                        sphere(r=roundness, $fn = fragments_number);
                     }
                 }
             }
@@ -582,7 +583,7 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
             minkowski()
             {
                 cube(usb_and_trrs_room);
-                $fn = 60; cylinder(h=1, r=roundness);
+                cylinder(h=1, r=roundness, $fn = fragments_number);
             }
         }
 
@@ -591,7 +592,7 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
         minkowski()
         {
             translate([full_plate_dim[0]/2, electronic_pcb_dim[1]-electronic_teensy_hole[1], -10]) cube(teensy_hole_rect, center=true);
-            $fn = 60; cylinder(h=1, r=1.5);
+            cylinder(h=1, r=1.5, $fn = fragments_number);
         }
 
         // Hole for the bottom of the case
@@ -607,7 +608,7 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
             {
                 translate(positions[index])
                 {
-                    $fn= 60; cylinder(h=mount_height*2, d=electronic_screw_mount_diameter);
+                    cylinder(h=mount_height*2, d=electronic_screw_mount_diameter, $fn = fragments_number);
                 }
             }
         }
@@ -619,7 +620,7 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
             {
                 translate(positions[index])
                 {
-                    $fn= 60; cylinder(h=mount_height, d=electronic_screw_mount_diameter);
+                    cylinder(h=mount_height, d=electronic_screw_mount_diameter, $fn = fragments_number);
                 }
             }
         }
@@ -638,7 +639,7 @@ module mini_thumb_holes()
                 translate([0,0,-30]) printable_nut_hole(2, tolerance=0.4, cone= false);
             }
 
-            cylinder(h=2*electronic_screw_mount_height, d=electronic_screws_hole_diameter, $fn = 60);
+            cylinder(h=2*electronic_screw_mount_height, d=electronic_screws_hole_diameter, $fn = fragments_number);
         }
     }
 
@@ -700,7 +701,7 @@ module printable_pcb_case(printable = true, holes_only = false)
                 {
                     new_scale = 0.7;
                     mini_thumb(mini_thumb_scale*new_scale);
-                    cylinder(r=5*new_scale,  h=0.001, $fn = 60);
+                    cylinder(r=5*new_scale,  h=0.001, $fn = fragments_number);
                 }
             }
         }
@@ -723,7 +724,7 @@ module printable_pcb_case(printable = true, holes_only = false)
                             minkowski()
                             {
                                 cube([get_pcb_case_bounding_box()[0], get_pcb_case_bounding_box()[1], 0.0001]);
-                                cylinder(r=5,  h=0.001, $fn = 60);
+                                cylinder(r=5,  h=0.001, $fn = fragments_number);
                             }
                         }
                     }
@@ -735,7 +736,7 @@ module printable_pcb_case(printable = true, holes_only = false)
                             minkowski()
                             {
                                 mini_thumb(mini_thumb_scale);
-                                cylinder(r=5,  h=0.001, $fn = 60);
+                                cylinder(r=5,  h=0.001, $fn = fragments_number);
                             }
                         }
                     }
@@ -779,7 +780,7 @@ module show_point(p)
 *holes();
 
 *top_plate();
-*case();
+case();
 *printable_pcb_case(printable=false);
 *printable_pcb_case();
 
@@ -806,7 +807,7 @@ module transform_link_system()
     }
 }
 
-union()
+*union()
 {
     transform_link_system() printable_pcb_case();
     mirror([1, 0, 0])
@@ -848,6 +849,6 @@ union()
 
 *difference()
 {
-    translate([0, 0, 2.5]) {$fn = 60;cylinder(h=5, d=15, center=true);}
+    translate([0, 0, 2.5]) {cylinder(h=5, d=15, center=true, $fn = fragments_number);}
     translate([0, 0, -0.001]) printable_nut_hole(3);
 }
