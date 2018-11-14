@@ -20,14 +20,14 @@ use <MCAD/nuts_and_bolts.scad>
 fragments_number = 50; // Use 0 for debugging, 50-100 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
-offset_finger_middle = -2.2;
+offset_finger_middle = -2.5;
 offset_finger_ring = 8.38;
-offset_finger_pinky = 18;
+offset_finger_pinky = 2;
 thumb_x = 6.5;
 thumb_y = 13;
 thumb_angle = -20;
 case_shell_size = 3;
-case_height = 7;
+case_height = 9;
 case_outer_border = 8;
 plate_height = 3;
 plate_additional_border_height = 1;
@@ -39,7 +39,7 @@ electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
 electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-5.5;
 electronic_teensy_hole = [0, 50];
-pcb_case_pos = [84, -50];
+pcb_case_pos = [84, offset_finger_pinky-68];
 pcb_plate_size = [48.40-2.12, 68.10-2.12, 2];
 switch_hole_height = screws_mount_height + 5;
 
@@ -780,9 +780,9 @@ module show_point(p)
 *holes();
 
 *top_plate();
-case();
+*case();
 *printable_pcb_case(printable=false);
-*printable_pcb_case();
+printable_pcb_case();
 
 mirror([1, 0, 0])
 {
