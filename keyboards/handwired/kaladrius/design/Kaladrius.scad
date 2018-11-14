@@ -17,7 +17,7 @@
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 50; // Use 0 for debugging, 50-100 for final rendering
+fragments_number = 100; // Use 0 for debugging, 50-100 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
 offset_finger_middle = -2.5;
@@ -398,22 +398,26 @@ module plate_supports()
         hull()
         {
             support_height = case_height+3*case_shell_size;
-            translate([0, -row*(switch_hole_width+switch_spacing) - switch_spacing/2])
+            support_diameter = 3.5;
+            y = -row*(switch_spacing + switch_hole_width);
+            translate([0, y-support_diameter/2])
             {
                 cylinder(h=support_height, d=3.5, $fn=fragments_number);
             }
 
-            translate([0, -row*(switch_hole_width+switch_spacing) - switch_hole_width/2])
+            translate([0, y-support_diameter])
             {
                 cylinder(h=support_height, d=3.5, $fn=fragments_number);
             }
         }
     }
 
-    translate(point_middle + [switch_spacing/2, 0])
+    translate(point_ring + [3*switch_spacing/2 + switch_hole_width, 0])
     {
-        create_support(2);
-        create_support(4.2);
+        for (row = [1:4])
+        {
+            create_support(row);
+        }
     }
 }
 
@@ -782,7 +786,7 @@ module show_point(p)
 *top_plate();
 *case();
 *printable_pcb_case(printable=false);
-printable_pcb_case();
+*printable_pcb_case();
 
 mirror([1, 0, 0])
 {
@@ -807,7 +811,7 @@ module transform_link_system()
     }
 }
 
-*union()
+union()
 {
     transform_link_system() printable_pcb_case();
     mirror([1, 0, 0])
@@ -818,7 +822,7 @@ module transform_link_system()
     difference()
     {
         roundness = 5;
-        link_dim = [150, 50, 15];
+        link_dim = [120, 50, 15];
         minkowski()
         {
             translate([-link_dim[0]/2, -link_dim[1], 0])
