@@ -20,9 +20,16 @@ use <MCAD/nuts_and_bolts.scad>
 fragments_number = 100; // Use 0 for debugging, 50-100 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
-offset_finger_middle = -2.5;
-offset_finger_ring = 8.38;
-offset_finger_pinky = 2;
+
+// For comparison, Ergodox settings are (in mm) :
+//      offset_finger_middle = -2;
+//      offset_finger_ring = 2;
+//      offset_finger_pinky = 3;
+// My personal settings :
+offset_finger_middle = -3;
+offset_finger_ring = 1;
+offset_finger_pinky = 4;
+
 thumb_x = 6.5;
 thumb_y = 13;
 thumb_angle = -20;
@@ -39,7 +46,7 @@ electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
 electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-5.5;
 electronic_teensy_hole = [0, 50];
-pcb_case_pos = [84, offset_finger_pinky-68];
+pcb_case_pos = [84, offset_finger_pinky-77];
 pcb_plate_size = [48.40-2.12, 68.10-2.12, 2];
 switch_hole_height = screws_mount_height + 5;
 
@@ -327,23 +334,46 @@ module plate(total_height = plate_height, chamfer = false)
         {
             hull()
             {
-                // Create cells from pinky to the index finger
-                create_cells(basic_height, 4, 1, point_pinky_last);
-                create_cells(basic_height, 4, 1, point_pinky);
-                create_cells(basic_height, 5, 1, point_ring);
-                create_cells(basic_height, 5, 1, point_middle);
-                create_cells(basic_height, 4, 1, point_index3);
-                create_cells(basic_height, 4, 1, point_index2);
-
-                point_offset = [(switch_hole_width+2*switch_spacing)/2, 2*switch_spacing];
-                control_points =  [
+                top_point_offset = [(switch_hole_width+2*switch_spacing)/2, switch_spacing];
+                top_control_points =  [
                     point_pinky_last,
-                    point_ring + point_offset,
-                    point_middle + point_offset,
+                    point_pinky + top_point_offset,
+                    point_ring + top_point_offset,
+                    point_middle + top_point_offset,
+                    point_index3 + top_point_offset,
+                    point_index2 + top_point_offset,
                     point_index1 + [switch_hole_width + 2*switch_spacing, 0],
                 ];
 
-                BezWall(control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = false);
+                bottom_control_points =  [
+                    point_pinky_last + [0, -4*(switch_spacing+switch_hole_width) - switch_spacing],
+                    point_pinky + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    point_ring + [switch_spacing + switch_hole_width/2, -5*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    point_middle + [switch_spacing + switch_hole_width/2, -5*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    point_index3 + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    point_index2 + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    point_index1 + [2*switch_spacing + switch_hole_width, -3*(switch_spacing+switch_hole_width) - switch_spacing],
+                ];
+
+                difference()
+                {
+                    union()
+                    {
+                        // Create cells from pinky to the index finger
+                        create_cells(basic_height, 4, 1, point_pinky_last);
+                        create_cells(basic_height, 4, 1, point_pinky);
+                        create_cells(basic_height, 5, 1, point_ring);
+                        create_cells(basic_height, 5, 1, point_middle);
+                        create_cells(basic_height, 4, 1, point_index3);
+                        create_cells(basic_height, 4, 1, point_index2);
+                    }
+
+                    BezWall(top_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = false);
+                    BezWall(bottom_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = false);
+                }
+
+                BezWall(top_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = false);
+                BezWall(bottom_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = false);
             }
 
             // Thumb
@@ -703,7 +733,7 @@ module printable_pcb_case(printable = true, holes_only = false)
             {
                 minkowski()
                 {
-                    new_scale = 0.7;
+                    new_scale = 0.65;
                     mini_thumb(mini_thumb_scale*new_scale);
                     cylinder(r=5*new_scale,  h=0.001, $fn = fragments_number);
                 }
@@ -790,7 +820,7 @@ module show_point(p)
 
 mirror([1, 0, 0])
 {
-    *top_plate();
+    top_plate();
     *case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
@@ -801,7 +831,7 @@ module transform_link_system()
 {
     translate([-100, 0, 0])
     {
-        rotate([0, 0, -15])
+        rotate([0, 0, -20])
         {
             translate(-get_pcb_case_origin())
             {
@@ -811,34 +841,86 @@ module transform_link_system()
     }
 }
 
-union()
+module left_link()
 {
     transform_link_system() printable_pcb_case();
-    mirror([1, 0, 0])
-    {
-        transform_link_system() printable_pcb_case();
-    }
-    
     difference()
     {
+        small_radius = 1;
         roundness = 5;
-        link_dim = [120, 50, 15];
-        minkowski()
+        link_dim = [60, 50, 15];
+        translate([-30, -20, link_dim[2]/2])
         {
-            translate([-link_dim[0]/2, -link_dim[1], 0])
+            minkowski()
             {
-                cube(link_dim);
+                difference()
+                {
+                    union()
+                    {
+                        top_control_points =  [
+                            [link_dim[0]/2, link_dim[1]/2],
+                            [0, link_dim[1]/2],
+                            [0, link_dim[1]/2 + 20],
+                            [4, link_dim[1]/2+35],
+                        ];
+
+                        cube(link_dim, center=true);
+
+                        difference()
+                        {
+                            union()
+                            {
+                                translate([0, 4, 0]) cube(link_dim, center=true);
+                                translate([0, 40, 0])
+                                {
+                                    cube([45, 30, link_dim[2]], center=true);
+                                }
+                            }
+
+                            translate([0, 0, -link_dim[2]/2])
+                            {
+                                BezWall(top_control_points, width = 15, height = link_dim[2], steps = 64, centered = false, showCtlR = false);
+                            }
+                        }
+                    }
+
+                    bottom_control_points =  [
+                        [link_dim[0]/2, 0],
+                        [10, 0],
+                        [0, -link_dim[1]/40],
+                        [-22, -link_dim[1]/2],
+                    ];
+
+                    translate([0, 0, -link_dim[2]/2])
+                    {
+                        BezWall(bottom_control_points, width = -20, height = link_dim[2], steps = 64, centered = false, showCtlR = false);
+                    }
+
+                    translate([20, 50, 0]) cube([20, 20, 20], center = true);
+                    translate([20, -20, 0]) cube([30, 20, 20], center = true);
+
+                    hull()
+                    {
+                        translate([0, 12.5, 0])
+                        {
+                            translate([10, 0, 0]) cylinder(r=8, h=link_dim[2], center=true, $fn=60);
+                            translate([40, 0, 0]) cylinder(r=8, h=link_dim[2], center=true, $fn=60);
+                        }
+                    }
+                }
+
+                cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size, $fn=30);
             }
-            small_radius = 1;
-            cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size, $fn=30);
         }
 
         transform_link_system() printable_pcb_case(holes_only = true);
-        mirror([1, 0, 0])
-        {
-            transform_link_system() printable_pcb_case(holes_only = true);
-        }
     }
+}
+
+*left_link();
+*mirror([1, 0, 0])
+{
+    left_link();
 }
 
 *transform_pcb_case() 
