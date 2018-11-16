@@ -28,11 +28,11 @@ switch_spacing = 4.8;
 // My personal settings :
 offset_finger_middle = -3;
 offset_finger_ring = 1;
-offset_finger_pinky = 4;
+offset_finger_pinky = 5;
 
-thumb_x = 6.5;
-thumb_y = 13;
-thumb_angle = -20;
+thumb_x = 4;
+thumb_y = 14.5;
+thumb_angle = -21;
 case_shell_size = 3;
 case_height = 9;
 case_outer_border = 8;
@@ -411,8 +411,8 @@ module top_plate()
                 color("black")
                 {
                     mark_height = plate_height + 0.5;
-                    translate(get_thumb_anchor()) cube([thumb_x, 2, mark_height]);
-                    translate(get_thumb_anchor() + [thumb_x, -thumb_y]) cube([2, thumb_y, mark_height]);
+                    translate(get_thumb_anchor() + [0, -thumb_y]) cube([thumb_x, 2, mark_height]);
+                    translate(get_thumb_anchor() + [0, -thumb_y]) cube([2, thumb_y, mark_height]);
                 }
             }
             holes();
@@ -786,44 +786,96 @@ module printable_pcb_case(printable = true, holes_only = false)
     }
 }
 
-
-echo("Tenting Angle", abs(get_tenting_angle()));
-
-// Show helpers
-module show_point(p)
+module create_keycap(vertical = false, horizontal_stretch = 1)
 {
-    %translate(p) cylinder(h=100, r=1, $fn=60);
+    height = 4;
+    roundness = 1.5;
+    // Keycap size = base_size + 2*offset
+    offset = 2.2;
+    base_size = 14;
+    x = horizontal_stretch*(base_size + 2*offset) - 2*roundness;
+    y = (base_size + 2*offset - 2*roundness);
+    translate([switch_spacing + (base_size-((vertical?y:x)+2*roundness))/2, -switch_spacing - (base_size-((vertical?x:y)+2*roundness))/2, 0])
+    {
+        translate([roundness, -roundness, 0]) // minkowski compensation
+        {
+            translate([vertical?y/2:x/2, vertical?-x/2:-y/2, 0]) // move top left to [0,0]
+            {
+                rotate([0, 0, vertical?90:0])
+                {
+                    translate([0, 0, -0.01]) // Small vertical offset to have clean holes
+                    {
+                        minkowski()
+                        {
+                            linear_extrude(height=height)
+                            {
+                                // Create a centered polygon, so we can rotate it after
+                                points = [
+                                    [-x/2, y/2], // top left
+                                    [x/2, y/2], // top right
+                                    [x/2, 0],
+                                    [x/2, 0],
+                                    [x/2, 0],
+                                    [x/2, 0],
+                                    [x/2, -y/2],
+                                    [-x/2, -y/2],
+                                    [-x/2, 0],
+                                    [-x/2, 0],
+                                    [-x/2, 0],
+                                    [-x/2, 0],
+                                ];
+                                polygon(points);
+                            }
+                            cylinder(r=roundness,  h=2, $fn = 20);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-*union()
+module create_keycaps(rows, columns, origin, vertical = false, horizontal_stretch = 1)
 {
-    show_point(get_kaladrius_origin());
-    show_point(point_pinky_last);
-    show_point(point_pinky);
-    show_point(point_ring);
-    show_point(point_middle);
-    show_point(point_index3);
-    show_point(point_index2);
-    show_point(point_index1);
-    show_point(get_pcb_case_origin());
-    show_point(get_thumb_anchor());
-    show_point(get_thumb_origin());
+    translate(origin)
+    {
+        for (col = [0:columns-1])
+        {
+            col_offset = col*(switch_hole_width + switch_spacing);
+            for (row = [0:rows-1])
+            {
+                translate([col_offset, -row*(switch_hole_width+switch_spacing), 0])
+                {
+                    create_keycap(vertical, horizontal_stretch);
+                }
+            }
+        }
+    }
 }
 
-*plate(total_height=1, chamfer=false);
-*holes();
-
-*top_plate();
-*case();
-*printable_pcb_case(printable=false);
-*printable_pcb_case();
-
-mirror([1, 0, 0])
+module keycaps()
 {
-    top_plate();
-    *case();
-    *printable_pcb_case(printable=false);
-    *printable_pcb_case();
+    translate([0, 0, case_height + case_shell_size + plate_height])
+    {
+        create_keycaps(4, 1, point_pinky_last);
+        create_keycaps(4, 1, point_pinky);
+        create_keycaps(5, 1, point_ring);
+        create_keycaps(5, 1, point_middle);
+        create_keycaps(4, 1, point_index3);
+        create_keycaps(4, 1, point_index2);
+        create_keycaps(3, 1, point_index1);
+
+        transform_thumb()
+        {
+            create_keycaps(1, 1, [0, 0], horizontal_stretch=1.5);
+            translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
+            {
+                create_keycaps(1, 1, [-(switch_hole_width + switch_spacing)/2 - (switch_hole_width + switch_spacing), -(switch_hole_width + switch_spacing) - (switch_hole_width + switch_spacing)/2], vertical = true, horizontal_stretch = 2);
+                create_keycaps(1, 2, [-(switch_hole_width + switch_spacing)/2, -(switch_hole_width + switch_spacing)]);
+                create_keycaps(1, 1, [0, -2*(switch_hole_width + switch_spacing)], horizontal_stretch = 2);
+            }
+        }
+    }
 }
 
 // Kaladrius link system
@@ -848,8 +900,8 @@ module left_link()
     {
         small_radius = 1;
         roundness = 5;
-        link_dim = [60, 50, 15];
-        translate([-30, -20, link_dim[2]/2])
+        link_dim = [80, 50, 15];
+        translate([-link_dim[0]/2, -20, link_dim[2]/2])
         {
             minkowski()
             {
@@ -897,7 +949,7 @@ module left_link()
                     }
 
                     translate([20, 50, 0]) cube([20, 20, 20], center = true);
-                    translate([20, -20, 0]) cube([30, 20, 20], center = true);
+                    translate([25, -20, 0]) cube([50, 20, 20], center = true);
 
                     hull()
                     {
@@ -909,7 +961,7 @@ module left_link()
                     }
                 }
 
-                cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size, $fn=30);
+                cylinder(r2=small_radius, r1=case_shell_size,  h=1, $fn=30);
             }
         }
 
@@ -917,10 +969,47 @@ module left_link()
     }
 }
 
-*left_link();
-*mirror([1, 0, 0])
+
+echo("Tenting Angle", abs(get_tenting_angle()));
+
+// Show helpers
+module show_point(p)
 {
+    %translate(p) cylinder(h=100, r=1, $fn=60);
+}
+
+*union()
+{
+    show_point(get_kaladrius_origin());
+    show_point(point_pinky_last);
+    show_point(point_pinky);
+    show_point(point_ring);
+    show_point(point_middle);
+    show_point(point_index3);
+    show_point(point_index2);
+    show_point(point_index1);
+    show_point(get_pcb_case_origin());
+    show_point(get_thumb_anchor());
+    show_point(get_thumb_origin());
+}
+
+*plate(total_height=1, chamfer=false);
+*holes();
+
+*top_plate();
+*case();
+*printable_pcb_case(printable=false);
+*printable_pcb_case();
+left_link();
+
+mirror([1, 0, 0])
+{
+    *top_plate();
+    *case();
+    *printable_pcb_case(printable=false);
+    *printable_pcb_case();
     left_link();
+    *keycaps();
 }
 
 *transform_pcb_case() 
