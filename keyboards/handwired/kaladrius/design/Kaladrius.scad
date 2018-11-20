@@ -526,6 +526,15 @@ module case()
     }
 }
 
+module make_pcb_case_screw_hole()
+{
+    hull()
+    {
+        translate([0,0, 2.001]) printable_nut_hole(2, tolerance=0.4);
+        translate([0,0,-30]) printable_nut_hole(2, tolerance=0.4, cone= false);
+    }
+}
+
 module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = false, holes_only = false, with_trrs_hole = true)
 {
     module mount(h, d1, d2, holes_only)
@@ -558,11 +567,7 @@ module pcb_case(mount_height = electronic_screw_mount_height, bounding_box = fal
 
                 if (holes_only)
                 {
-                    hull()
-                    {
-                        translate([0,0,-0.001]) printable_nut_hole(2, tolerance=0.4);
-                        translate([0,0,-30]) printable_nut_hole(2, tolerance=0.4, cone= false);
-                    }
+                    make_pcb_case_screw_hole();
                 }
             }
         }
@@ -667,12 +672,7 @@ module mini_thumb_holes()
     {
         translate([0,0,-electronic_screw_mount_height])
         {
-            hull()
-            {
-                translate([0,0,-0.001]) printable_nut_hole(2, tolerance=0.4);
-                translate([0,0,-30]) printable_nut_hole(2, tolerance=0.4, cone= false);
-            }
-
+            make_pcb_case_screw_hole();
             cylinder(h=2*electronic_screw_mount_height, d=electronic_screws_hole_diameter, $fn = fragments_number);
         }
     }
@@ -1000,15 +1000,15 @@ module show_point(p)
 *case();
 *printable_pcb_case(printable=false);
 *printable_pcb_case();
-left_link();
+*left_link();
 
 mirror([1, 0, 0])
 {
-    *top_plate();
+    top_plate();
     *case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
-    left_link();
+    *left_link();
     *keycaps();
 }
 
