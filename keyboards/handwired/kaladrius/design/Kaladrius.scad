@@ -17,7 +17,7 @@
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 100; // Use 0 for debugging, 50-100 for final rendering
+fragments_number = 60; // Use 0 for debugging, 50-100 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
 
@@ -194,18 +194,33 @@ module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
     }
 }
 
-module screw_mount(offset=0, height = switch_hole_height)
+module screw_mounts()
 {
+    height = case_shell_size + case_height;
     for (index = [0:4])
     {
-        transform_hole(index) case_hole(height, screw_mount_diameter);
+        transform_hole(index) 
+        {
+            hull()
+            {
+                case_hole(height-3, screw_mount_diameter);
+                case_hole(height, screw_mount_diameter/2);
+            }
+        }
     }
 
     transform_thumb()
     {
         for (index = [5:7])
         {
-            transform_hole(index) case_hole(height, screw_mount_diameter);
+            transform_hole(index)
+            {
+                hull()
+                {
+                    case_hole(height-3, screw_mount_diameter);
+                    case_hole(height, screw_mount_diameter/2);
+                }
+            }
         }
     }
 }
@@ -427,17 +442,19 @@ module plate_supports()
     {
         hull()
         {
-            support_height = case_height+3*case_shell_size;
+            support_height = case_shell_size + case_height;
             support_diameter = 3.5;
             y = -row*(switch_spacing + switch_hole_width);
             translate([0, y-support_diameter/2])
             {
-                cylinder(h=support_height, d=3.5, $fn=fragments_number);
+                cylinder(h=support_height-3, d=3.5, $fn=30);
+                cylinder(h=support_height, d=1, $fn=30);
             }
 
             translate([0, y-support_diameter])
             {
-                cylinder(h=support_height, d=3.5, $fn=fragments_number);
+                cylinder(h=support_height-3, d=3.5, $fn=30);
+                cylinder(h=support_height, d=1, $fn=30);
             }
         }
     }
@@ -494,7 +511,7 @@ module case()
             }
 
             // Add all bolt mounts
-            screw_mount(height = case_height + 2*case_shell_size);
+            screw_mounts();
 
             plate_supports();
         }
@@ -523,6 +540,9 @@ module case()
         // Electronic holes
         transform_pcb_case() pcb_case(holes_only = true, with_trrs_hole= false);
         mini_thumb_holes();
+
+        // Special hole that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
+        translate([0, 0, -0.01]) translate((hole_positions[0] + hole_positions[4])/2) case_hole(20, screws_diameter);
     }
 }
 
@@ -969,6 +989,58 @@ module left_link()
     }
 }
 
+module test_nut_holes()
+{
+    module test_screw_hole(size, hole)
+    {
+        difference()
+        {
+            translate([0, 0, 2.5]) {cylinder(h=5, d=15, center=true, $fn = fragments_number);}
+            translate([0, 0, -0.001]) printable_nut_hole(size);
+            cylinder(h=20, d=hole, $fn = fragments_number);
+        }
+    }
+
+    test_screw_hole(3, screws_diameter);
+    translate([12, 0, 0]) test_screw_hole(2, electronic_screws_hole_diameter);
+}
+
+module test_top_plate()
+{
+    intersection()
+    {
+        minkowski()
+        {
+            hull()
+            {
+                offset = 0;
+                height = 20;
+                translate([0, -2*(switch_spacing+switch_hole_width)]) 
+                {
+                    create_holes(height, 2, 1, point_pinky, offset, true);
+                    create_holes(height, 2, 1, point_ring, offset, true);
+                    create_holes(height, 2, 1, point_middle, offset, true);
+                    create_holes(height, 2, 1, point_index3, offset, true);
+                    create_holes(height, 2, 1, point_index2, offset, true);
+                }
+
+                transform_thumb()
+                {
+                    create_holes(height, 1, 1, [0, 0], offset, true);
+                    translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
+                    {
+                        create_holes(height, 1, 1, [-(switch_hole_width + switch_spacing)/2 - (switch_hole_width + switch_spacing), -(switch_hole_width + switch_spacing) - (switch_hole_width + switch_spacing)/2], offset, has_additional_border = true, vertical = true);
+                        create_holes(height, 1, 2, [-(switch_hole_width + switch_spacing)/2, -(switch_hole_width + switch_spacing)], offset, has_additional_border = true);
+                        create_holes(height, 1, 1, [0, -2*(switch_hole_width + switch_spacing)], offset, has_additional_border=true);
+                    }
+                }
+            }
+            cylinder(h=0.001, r=2, $fn=30);
+        }
+
+        top_plate();
+    }
+}
 
 echo("Tenting Angle", abs(get_tenting_angle()));
 
@@ -1002,6 +1074,8 @@ module show_point(p)
 *printable_pcb_case(printable=false);
 *printable_pcb_case();
 left_link();
+*test_nut_holes();
+*test_top_plate();
 
 mirror([1, 0, 0])
 {
@@ -1010,7 +1084,8 @@ mirror([1, 0, 0])
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
     left_link();
-    *keycaps();
+    *%keycaps();
+    *test_top_plate();
 }
 
 *transform_pcb_case() 
@@ -1021,10 +1096,4 @@ mirror([1, 0, 0])
         pcb_case(holes_only = true);
     }
     %pcb_case(holes_only = true);
-}
-
-*difference()
-{
-    translate([0, 0, 2.5]) {cylinder(h=5, d=15, center=true, $fn = fragments_number);}
-    translate([0, 0, -0.001]) printable_nut_hole(3);
 }
