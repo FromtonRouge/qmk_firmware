@@ -17,7 +17,7 @@
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 100; // Use 0 for debugging, 50-100 for final rendering
+fragments_number = 0; // Use 0 for debugging, 50-100 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
 
@@ -30,7 +30,7 @@ offset_finger_middle = -3;
 offset_finger_ring = 1;
 offset_finger_pinky = 5;
 
-thumb_x = 4;
+thumb_x = -3;
 thumb_y = 14.5;
 thumb_angle = -21;
 case_shell_size = 3;
@@ -63,7 +63,7 @@ hole_positions = [
     point_middle + [(switch_hole_width + 2*switch_spacing)/2, switch_spacing/2],
     point_index1 + [(switch_hole_width + 2*switch_spacing), 0],
     point_index1 + [(switch_hole_width + 2*switch_spacing), -3*switch_hole_width - 4*switch_spacing],
-    point_pinky_last - [0, 4*switch_hole_width + 5*switch_spacing],
+    point_pinky_last - [0, 5*switch_hole_width + 6*switch_spacing],
     [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing, 0],
     [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing,  -3*switch_hole_width - 4*switch_spacing],
     [-1.75*(switch_hole_width + switch_spacing), -3*switch_hole_width - 4*switch_spacing],
@@ -130,8 +130,8 @@ module holes(offset=0, height = switch_hole_height, has_additional_border = true
     // Pinky 2 and Pinky 1
     color("magenta")
     {
-        create_holes(height, 4, 1, point_pinky_last, offset, has_additional_border);
-        create_holes(height, 4, 1, point_pinky, offset, has_additional_border);
+        create_holes(height, 5, 1, point_pinky_last, offset, has_additional_border);
+        create_holes(height, 5, 1, point_pinky, offset, has_additional_border);
     }
 
     // Ring
@@ -143,7 +143,7 @@ module holes(offset=0, height = switch_hole_height, has_additional_border = true
     // Middle
     color("lightGreen")
     {
-        create_holes(height, 5, 1, point_middle, offset, has_additional_border);
+        create_holes(height, 4, 1, point_middle, offset, has_additional_border);
     }
 
     // Index
@@ -346,10 +346,10 @@ module plate(total_height = plate_height, chamfer = false)
                 ];
 
                 bottom_control_points =  [
-                    point_pinky_last + [0, -4*(switch_spacing+switch_hole_width) - switch_spacing],
-                    point_pinky + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    point_pinky_last + [0, -5*(switch_spacing+switch_hole_width) - switch_spacing],
+                    point_pinky + [switch_spacing + switch_hole_width/2, -5*(switch_spacing+switch_hole_width) - 2*switch_spacing],
                     point_ring + [switch_spacing + switch_hole_width/2, -5*(switch_spacing+switch_hole_width) - 2*switch_spacing],
-                    point_middle + [switch_spacing + switch_hole_width/2, -5*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    point_middle + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
                     point_index3 + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
                     point_index2 + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
                     point_index1 + [2*switch_spacing + switch_hole_width, -3*(switch_spacing+switch_hole_width) - switch_spacing],
@@ -360,10 +360,10 @@ module plate(total_height = plate_height, chamfer = false)
                     union()
                     {
                         // Create cells from pinky to the index finger
-                        create_cells(basic_height, 4, 1, point_pinky_last);
-                        create_cells(basic_height, 4, 1, point_pinky);
+                        create_cells(basic_height, 5, 1, point_pinky_last);
+                        create_cells(basic_height, 5, 1, point_pinky);
                         create_cells(basic_height, 5, 1, point_ring);
-                        create_cells(basic_height, 5, 1, point_middle);
+                        create_cells(basic_height, 4, 1, point_middle);
                         create_cells(basic_height, 4, 1, point_index3);
                         create_cells(basic_height, 4, 1, point_index2);
                     }
@@ -857,10 +857,10 @@ module keycaps()
 {
     translate([0, 0, case_height + case_shell_size + plate_height])
     {
-        create_keycaps(4, 1, point_pinky_last);
-        create_keycaps(4, 1, point_pinky);
+        create_keycaps(5, 1, point_pinky_last);
+        create_keycaps(5, 1, point_pinky);
         create_keycaps(5, 1, point_ring);
-        create_keycaps(5, 1, point_middle);
+        create_keycaps(4, 1, point_middle);
         create_keycaps(4, 1, point_index3);
         create_keycaps(4, 1, point_index2);
         create_keycaps(3, 1, point_index1);
@@ -996,15 +996,16 @@ module show_point(p)
 *plate(total_height=1, chamfer=false);
 *holes();
 
-*top_plate();
-*case();
-*printable_pcb_case(printable=false);
+top_plate();
+%keycaps();
+case();
+printable_pcb_case(printable=false);
 *printable_pcb_case();
 *left_link();
 
 mirror([1, 0, 0])
 {
-    top_plate();
+    *top_plate();
     *case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
