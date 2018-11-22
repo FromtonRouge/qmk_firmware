@@ -17,7 +17,7 @@
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 0; // Use 0 for debugging, 50-100 for final rendering
+fragments_number = 100; // Use 0 for debugging, 50-100 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
 
@@ -881,9 +881,9 @@ module keycaps()
 // Kaladrius link system
 module transform_link_system()
 {
-    translate([-100, 0, 0])
+    translate([-102, 0, 0])
     {
-        rotate([0, 0, -20])
+        rotate([0, 0, -12])
         {
             translate(-get_pcb_case_origin())
             {
@@ -996,12 +996,12 @@ module show_point(p)
 *plate(total_height=1, chamfer=false);
 *holes();
 
-top_plate();
-%keycaps();
-case();
-printable_pcb_case(printable=false);
+*top_plate();
+*%keycaps();
+*case();
+*printable_pcb_case(printable=false);
 *printable_pcb_case();
-*left_link();
+left_link();
 
 mirror([1, 0, 0])
 {
@@ -1009,7 +1009,7 @@ mirror([1, 0, 0])
     *case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
-    *left_link();
+    left_link();
     *keycaps();
 }
 
