@@ -17,7 +17,7 @@
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 60; // Use 0 for debugging, 50-100 for final rendering
+fragments_number = 0; // Use 0 for debugging, 50-100 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
 
@@ -57,6 +57,17 @@ point_middle = [point_ring[0] + switch_hole_width + switch_spacing, point_ring[1
 point_index3 = [point_middle[0] + switch_hole_width + switch_spacing, point_middle[1] + offset_finger_middle];
 point_index2 = [point_index3[0] + switch_hole_width + switch_spacing, point_index3[1]];
 point_index1 = [point_index2[0] + switch_hole_width + switch_spacing, point_index2[1]];
+
+function create_column_data(color, rows, origin) = [color, rows, origin];
+columns_data = [
+    create_column_data("magenta", 5, point_pinky_last),
+    create_column_data("magenta", 5, point_pinky),
+    create_column_data("lightBlue", 5, point_ring),
+    create_column_data("lightGreen", 4, point_middle),
+    create_column_data("cyan", 4, point_index3),
+    create_column_data("cyan", 4, point_index2),
+    create_column_data("cyan", 3, point_index1),
+];
 
 hole_positions = [
     point_pinky_last,
@@ -127,31 +138,10 @@ module transform_pcb_case()
 
 module holes(offset=0, height = switch_hole_height, has_additional_border = true)
 {
-    // Pinky 2 and Pinky 1
-    color("magenta")
+    for (col = [0:6])
     {
-        create_holes(height, 5, 1, point_pinky_last, offset, has_additional_border);
-        create_holes(height, 5, 1, point_pinky, offset, has_additional_border);
-    }
-
-    // Ring
-    color("lightBlue")
-    {
-        create_holes(height, 5, 1, point_ring, offset, has_additional_border);
-    }
-
-    // Middle
-    color("lightGreen")
-    {
-        create_holes(height, 4, 1, point_middle, offset, has_additional_border);
-    }
-
-    // Index
-    color("cyan")
-    {
-        create_holes(height, 4, 1, point_index3, offset, has_additional_border);
-        create_holes(height, 4, 1, point_index2, offset, has_additional_border);
-        create_holes(height, 3, 1, point_index1, offset, has_additional_border);
+        data = columns_data[col];
+        color(data[0]) create_holes(height, data[1], 1, data[2], offset, has_additional_border);
     }
 
     // Thumbs
@@ -1068,12 +1058,12 @@ module show_point(p)
 *plate(total_height=1, chamfer=false);
 *holes();
 
-*top_plate();
+top_plate();
 *%keycaps();
 *case();
 *printable_pcb_case(printable=false);
 *printable_pcb_case();
-left_link();
+*left_link();
 *test_nut_holes();
 *test_top_plate();
 
@@ -1083,7 +1073,7 @@ mirror([1, 0, 0])
     *case();
     *printable_pcb_case(printable=false);
     *printable_pcb_case();
-    left_link();
+    *left_link();
     *%keycaps();
     *test_top_plate();
 }
