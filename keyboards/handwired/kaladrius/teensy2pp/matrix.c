@@ -242,8 +242,60 @@ __attribute__ ((weak)) void matrix_scan_kb(void) { matrix_scan_user(); }
 uint8_t matrix_rows(void) { return MATRIX_ROWS; }
 uint8_t matrix_cols(void) { return MATRIX_COLS; }
 
+void set_leds(bool red, bool green, bool blue)
+{
+    DDRB |= (1<<4 | 1<<5 | 1<<6);    // Output
+
+    if (red)
+    {
+        PORTB |= (1<<4);
+    }
+    else
+    {
+        PORTB &= ~(1<<4);
+    }
+
+    if (green)
+    {
+        PORTB |= (1<<5);
+    }
+    else
+    {
+        PORTB &= ~(1<<5);
+    }
+
+    if (blue)
+    {
+        PORTB |= (1<<6);
+    }
+    else
+    {
+        PORTB &= ~(1<<6);
+    }
+}
+
+void blink_leds(void)
+{
+    const uint8_t delay = 30;
+    set_leds(true, false, false);
+    _delay_ms(delay);
+    set_leds(false, true, false);
+    _delay_ms(delay);
+    set_leds(false, false, true);
+    _delay_ms(delay);
+    set_leds(true, true, false);
+    _delay_ms(delay);
+    set_leds(false, true, true);
+    _delay_ms(delay);
+    set_leds(true, false, true);
+    _delay_ms(delay);
+    set_leds(false, false, false);
+}
+
 void matrix_init(void)
 {
+    blink_leds();
+    
     // Same as quantum/matrix.c
     unselect_rows();
     init_cols();

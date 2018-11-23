@@ -17,7 +17,7 @@
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 0; // Use 0 for debugging, 50-100 for final rendering
+fragments_number = 60; // Use 0 for debugging, 60 for final rendering
 switch_hole_width = 14;
 switch_spacing = 4.8;
 
@@ -41,6 +41,8 @@ plate_additional_border_height = 1;
 screws_diameter = 3.5;
 screws_mount_height = 17;
 screw_mount_diameter = 10;
+nut_3_tolerance = 0.05;
+nut_2_tolerance = 0.2;
 electronic_screw_mount_diameter = 6;
 electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
@@ -58,36 +60,44 @@ point_index3 = [point_middle[0] + switch_hole_width + switch_spacing, point_midd
 point_index2 = [point_index3[0] + switch_hole_width + switch_spacing, point_index3[1]];
 point_index1 = [point_index2[0] + switch_hole_width + switch_spacing, point_index2[1]];
 
-function create_column_data(color, rows, origin) = [color, rows, origin];
-columns_data = [
-    create_column_data("magenta", 5, point_pinky_last),
-    create_column_data("magenta", 5, point_pinky),
-    create_column_data("lightBlue", 5, point_ring),
-    create_column_data("lightGreen", 4, point_middle),
-    create_column_data("cyan", 4, point_index3),
-    create_column_data("cyan", 4, point_index2),
-    create_column_data("cyan", 3, point_index1),
+function switches(color, rows, cols, origin, vertical=false) = [color, rows, cols, origin, vertical];
+k = [
+
+    // Fingers
+    switches("red", 5, 1, point_pinky_last),
+    switches("magenta", 5, 1, point_pinky),
+    switches("green", 5, 1, point_ring),
+    switches("lightGreen", 4, 1, point_middle),
+    switches("blue", 4, 1, point_index3),
+    switches("lightBlue", 4, 1, point_index2),
+    switches("cyan", 3, 1, point_index1),
+
+    // Thumbs
+    switches("red", 1, 1, [0, 0]),
+    switches("green", 1, 1, [-(switch_hole_width + switch_spacing)/2 - (switch_hole_width + switch_spacing), -(switch_hole_width + switch_spacing) - (switch_hole_width + switch_spacing)/2], true),
+    switches("blue", 1, 2, [-(switch_hole_width + switch_spacing)/2, -(switch_hole_width + switch_spacing)]),
+    switches("lightBlue", 1, 1, [0, -2*(switch_hole_width + switch_spacing)]),
 ];
 
 hole_positions = [
-    point_pinky_last,
-    point_middle + [(switch_hole_width + 2*switch_spacing)/2, switch_spacing/2],
-    point_index1 + [(switch_hole_width + 2*switch_spacing), 0],
-    point_index1 + [(switch_hole_width + 2*switch_spacing), -3*switch_hole_width - 4*switch_spacing],
-    point_pinky_last - [0, 5*switch_hole_width + 6*switch_spacing],
+    k[0][3],
+    k[3][3] + [(switch_hole_width + 2*switch_spacing)/2, switch_spacing/2],
+    k[6][3] + [(switch_hole_width + 2*switch_spacing), 0],
+    k[6][3]+ [(switch_hole_width + 2*switch_spacing), -k[6][1]*switch_hole_width - (k[6][1]+1)*switch_spacing],
+    k[0][3] - [0, k[0][1]*switch_hole_width + (k[0][1]+1)*switch_spacing],
     [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing, 0],
     [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing,  -3*switch_hole_width - 4*switch_spacing],
     [-1.75*(switch_hole_width + switch_spacing), -3*switch_hole_width - 4*switch_spacing],
 ];
 
 function get_kaladrius_origin() = [0, 0, 0];
-function get_thumb_anchor() = point_index1 - [0, 3*(switch_hole_width+switch_spacing) + switch_spacing];
+function get_thumb_anchor() = k[6][3] - [0, 3*(switch_hole_width+switch_spacing) + switch_spacing];
 function get_thumb_origin() = get_thumb_anchor() + [thumb_x, -thumb_y];
 function get_pcb_case_bounding_box() = [pcb_plate_size[0] + electronic_screw_mount_diameter, pcb_plate_size[1] + electronic_screw_mount_diameter, electronic_screw_mount_height];
 function get_pcb_case_origin() = get_kaladrius_origin() + pcb_case_pos;
 function get_tenting_angle() = atan(electronic_screw_mount_height/(get_kaladrius_origin()[0]-get_pcb_case_origin()[0]));
 
-module printable_nut_hole(size, tolerance = 0.25, cone=true)
+module printable_nut_hole(size, tolerance, cone=true)
 {
     hull()
     {
@@ -138,21 +148,27 @@ module transform_pcb_case()
 
 module holes(offset=0, height = switch_hole_height, has_additional_border = true)
 {
-    for (col = [0:6])
+    module make_keyboard_hole(i)
     {
-        data = columns_data[col];
-        color(data[0]) create_holes(height, data[1], 1, data[2], offset, has_additional_border);
+        color(k[i][0]) create_holes(height, k[i][1], k[i][2], k[i][3], offset, has_additional_border, k[i][4]);
+    }
+
+    // Fingers
+    for (index = [0:6])
+    {
+        make_keyboard_hole(index);
     }
 
     // Thumbs
-    color("yellow") transform_thumb()
+    transform_thumb()
     {
-        create_holes(height, 1, 1, [0, 0], offset, has_additional_border);
+        make_keyboard_hole(7);
         translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
         {
-            create_holes(height, 1, 1, [-(switch_hole_width + switch_spacing)/2 - (switch_hole_width + switch_spacing), -(switch_hole_width + switch_spacing) - (switch_hole_width + switch_spacing)/2], offset, has_additional_border, vertical = true);
-            create_holes(height, 1, 2, [-(switch_hole_width + switch_spacing)/2, -(switch_hole_width + switch_spacing)], offset, has_additional_border);
-            create_holes(height, 1, 1, [0, -2*(switch_hole_width + switch_spacing)], offset, has_additional_border);
+            for (index = [8:10])
+            {
+                make_keyboard_hole(index);
+            }
         }
     }
 }
@@ -337,40 +353,38 @@ module plate(total_height = plate_height, chamfer = false)
         minkowski_height = 2*basic_height;
         union()
         {
+            // Fingers plate
             hull()
             {
                 top_point_offset = [(switch_hole_width+2*switch_spacing)/2, switch_spacing];
                 top_control_points =  [
-                    point_pinky_last,
-                    point_pinky + top_point_offset,
-                    point_ring + top_point_offset,
-                    point_middle + top_point_offset,
-                    point_index3 + top_point_offset,
-                    point_index2 + top_point_offset,
-                    point_index1 + [switch_hole_width + 2*switch_spacing, 0],
+                    k[0][3],
+                    k[1][3] + top_point_offset,
+                    k[2][3] + top_point_offset,
+                    k[3][3] + top_point_offset,
+                    k[4][3] + top_point_offset,
+                    k[5][3] + top_point_offset,
+                    k[6][3] + [switch_hole_width + 2*switch_spacing, 0],
                 ];
 
                 bottom_control_points =  [
-                    point_pinky_last + [0, -5*(switch_spacing+switch_hole_width) - switch_spacing],
-                    point_pinky + [switch_spacing + switch_hole_width/2, -5*(switch_spacing+switch_hole_width) - 2*switch_spacing],
-                    point_ring + [switch_spacing + switch_hole_width/2, -5*(switch_spacing+switch_hole_width) - 2*switch_spacing],
-                    point_middle + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
-                    point_index3 + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
-                    point_index2 + [switch_spacing + switch_hole_width/2, -4*(switch_spacing+switch_hole_width) - 2*switch_spacing],
-                    point_index1 + [2*switch_spacing + switch_hole_width, -3*(switch_spacing+switch_hole_width) - switch_spacing],
+                    k[0][3] + [0, -k[0][1]*(switch_spacing+switch_hole_width) - switch_spacing],
+                    k[1][3] + [switch_spacing + switch_hole_width/2, -k[1][1]*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    k[2][3] + [switch_spacing + switch_hole_width/2, -k[2][1]*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    k[3][3] + [switch_spacing + switch_hole_width/2, -k[3][1]*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    k[4][3] + [switch_spacing + switch_hole_width/2, -k[4][1]*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    k[5][3] + [switch_spacing + switch_hole_width/2, -k[5][1]*(switch_spacing+switch_hole_width) - 2*switch_spacing],
+                    k[6][3]  + [2*switch_spacing + switch_hole_width, -k[6][1]*(switch_spacing+switch_hole_width) - switch_spacing],
                 ];
 
                 difference()
                 {
                     union()
                     {
-                        // Create cells from pinky to the index finger
-                        create_cells(basic_height, 5, 1, point_pinky_last);
-                        create_cells(basic_height, 5, 1, point_pinky);
-                        create_cells(basic_height, 5, 1, point_ring);
-                        create_cells(basic_height, 4, 1, point_middle);
-                        create_cells(basic_height, 4, 1, point_index3);
-                        create_cells(basic_height, 4, 1, point_index2);
+                        for (i = [0:6])
+                        {
+                            create_cells(basic_height, k[i][1], k[i][2], k[i][3]);
+                        }
                     }
 
                     BezWall(top_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = false);
@@ -381,21 +395,14 @@ module plate(total_height = plate_height, chamfer = false)
                 BezWall(bottom_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = false);
             }
 
-            // Thumb
+            // Thumb plate
             transform_thumb()
             {
-                *create_cells(basic_height, 1, 1, [0, 0]);
                 translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
                 {
-                    *create_cells(basic_height, 1, 1, [-(switch_hole_width + switch_spacing)/2 - (switch_hole_width + switch_spacing), -(switch_hole_width + switch_spacing) - (switch_hole_width + switch_spacing)/2]);
-                    *create_cells(basic_height, 1, 2, [-(switch_hole_width + switch_spacing)/2, -(switch_hole_width + switch_spacing)]);
-                    *create_cells(basic_height, 1, 1, [0, -2*(switch_hole_width + switch_spacing)]);
                     translate([-1.5*(switch_hole_width+ switch_spacing), 0, 0]) create_cells(basic_height, 3, 3, [0,0]);
                 }
             }
-
-            // Index 1
-            create_cells(basic_height, 3, 1, point_index1);
         }
         r1 = case_outer_border;
         r2 = chamfer? r1 - minkowski_height : r1;
@@ -403,7 +410,7 @@ module plate(total_height = plate_height, chamfer = false)
     }
 }
 
-module top_plate()
+module right_top_plate()
 {
     translate([0, 0, case_height + case_shell_size])
     {
@@ -449,7 +456,7 @@ module plate_supports()
         }
     }
 
-    translate(point_ring + [3*switch_spacing/2 + switch_hole_width, 0])
+    translate(k[2][3] + [3*switch_spacing/2 + switch_hole_width, 0])
     {
         for (row = [1:4])
         {
@@ -458,7 +465,7 @@ module plate_supports()
     }
 }
 
-module case()
+module left_case()
 {
     difference()
     {
@@ -515,7 +522,7 @@ module case()
         // Nut holes
         for (index = [0:4])
         {
-            transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
+            transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3, nut_3_tolerance);
         }
 
         // Nut holes
@@ -523,7 +530,7 @@ module case()
         {
             for (index = [5:7])
             {
-                transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3);
+                transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3, nut_3_tolerance);
             }
         }
 
@@ -540,8 +547,8 @@ module make_pcb_case_screw_hole()
 {
     hull()
     {
-        translate([0,0, 2.001]) printable_nut_hole(2, tolerance=0.4);
-        translate([0,0,-30]) printable_nut_hole(2, tolerance=0.4, cone= false);
+        translate([0,0, 2.001]) printable_nut_hole(2, nut_2_tolerance);
+        translate([0,0,-30]) printable_nut_hole(2, nut_2_tolerance, false);
     }
 }
 
@@ -706,7 +713,7 @@ module mini_thumb_holes()
     }
 }
 
-module printable_pcb_case(printable = true, holes_only = false)
+module left_printable_pcb_case(printable = true, holes_only = false)
 {
     module mini_thumb(factor)
     {
@@ -863,17 +870,14 @@ module create_keycaps(rows, columns, origin, vertical = false, horizontal_stretc
     }
 }
 
-module keycaps()
+module left_keycaps()
 {
     translate([0, 0, case_height + case_shell_size + plate_height])
     {
-        create_keycaps(5, 1, point_pinky_last);
-        create_keycaps(5, 1, point_pinky);
-        create_keycaps(5, 1, point_ring);
-        create_keycaps(4, 1, point_middle);
-        create_keycaps(4, 1, point_index3);
-        create_keycaps(4, 1, point_index2);
-        create_keycaps(3, 1, point_index1);
+        for (i = [0:6])
+        {
+            create_keycaps(k[i][1], k[i][2], k[i][3]);
+        }
 
         transform_thumb()
         {
@@ -905,7 +909,7 @@ module transform_link_system()
 
 module left_link()
 {
-    transform_link_system() printable_pcb_case();
+    transform_link_system() left_printable_pcb_case();
     difference()
     {
         small_radius = 1;
@@ -975,27 +979,27 @@ module left_link()
             }
         }
 
-        transform_link_system() printable_pcb_case(holes_only = true);
+        transform_link_system() left_printable_pcb_case(holes_only = true);
     }
 }
 
 module test_nut_holes()
 {
-    module test_screw_hole(size, hole)
+    module test_screw_hole(size, hole, tolerance)
     {
         difference()
         {
             translate([0, 0, 2.5]) {cylinder(h=5, d=15, center=true, $fn = fragments_number);}
-            translate([0, 0, -0.001]) printable_nut_hole(size);
+            translate([0, 0, -0.001]) printable_nut_hole(size, tolerance);
             cylinder(h=20, d=hole, $fn = fragments_number);
         }
     }
 
-    test_screw_hole(3, screws_diameter);
-    translate([12, 0, 0]) test_screw_hole(2, electronic_screws_hole_diameter);
+    test_screw_hole(3, screws_diameter, nut_3_tolerance);
+    translate([12, 0, 0]) test_screw_hole(2, electronic_screws_hole_diameter, nut_2_tolerance);
 }
 
-module test_top_plate()
+module test_right_top_plate()
 {
     intersection()
     {
@@ -1007,11 +1011,10 @@ module test_top_plate()
                 height = 20;
                 translate([0, -2*(switch_spacing+switch_hole_width)]) 
                 {
-                    create_holes(height, 2, 1, point_pinky, offset, true);
-                    create_holes(height, 2, 1, point_ring, offset, true);
-                    create_holes(height, 2, 1, point_middle, offset, true);
-                    create_holes(height, 2, 1, point_index3, offset, true);
-                    create_holes(height, 2, 1, point_index2, offset, true);
+                    for (i = [1:5])
+                    {
+                        create_holes(height, 2, k[i][2], k[i][3], offset, true);
+                    }
                 }
 
                 transform_thumb()
@@ -1028,7 +1031,7 @@ module test_top_plate()
             cylinder(h=0.001, r=2, $fn=30);
         }
 
-        top_plate();
+        right_top_plate();
     }
 }
 
@@ -1043,13 +1046,10 @@ module show_point(p)
 *union()
 {
     show_point(get_kaladrius_origin());
-    show_point(point_pinky_last);
-    show_point(point_pinky);
-    show_point(point_ring);
-    show_point(point_middle);
-    show_point(point_index3);
-    show_point(point_index2);
-    show_point(point_index1);
+    for (i = [0:6])
+    {
+        show_point(k[i][3]);
+    }
     show_point(get_pcb_case_origin());
     show_point(get_thumb_anchor());
     show_point(get_thumb_origin());
@@ -1058,24 +1058,20 @@ module show_point(p)
 *plate(total_height=1, chamfer=false);
 *holes();
 
-top_plate();
-*%keycaps();
-*case();
-*printable_pcb_case(printable=false);
-*printable_pcb_case();
-*left_link();
+*right_top_plate();
+*%left_keycaps();
+*left_case();
+*left_printable_pcb_case(printable=false);
+*left_printable_pcb_case();
+left_link();
 *test_nut_holes();
-*test_top_plate();
 
 mirror([1, 0, 0])
 {
-    *top_plate();
-    *case();
-    *printable_pcb_case(printable=false);
-    *printable_pcb_case();
-    *left_link();
-    *%keycaps();
-    *test_top_plate();
+    *right_top_plate();
+    *test_right_top_plate();
+    left_link();
+    *%left_keycaps();
 }
 
 *transform_pcb_case() 

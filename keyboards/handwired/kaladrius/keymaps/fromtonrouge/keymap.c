@@ -73,10 +73,10 @@ const uint32_t PROGMEM g_steno_layout[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 {
     [L_STENO] = LAYOUT(
-        KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,        KC_TRNS, KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO, 
-        KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,        KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,        KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        KC_F1,   KC_F2,     KC_F3,     KC_F4,     KC_F5,     KC_F6,     KC_LGUI,      KC_TRNS, KC_F7,     KC_F8,     KC_F9,     KC_F10,     KC_F11,     KC_F12, 
+        KC_LALT, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,        KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        KC_LSFT, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,        KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        KC_LCTL, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
                               KC_NO,     KC_NO,                                                                      KC_NO,     KC_NO, 
                                                                       CKC_STENO,        CKC_STENO, 
                                                 CKC_STENO, CKC_STENO, CKC_STENO,        CKC_STENO, CKC_STENO, CKC_STENO, 
@@ -174,4 +174,33 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
         }
     }
     return true;
+}
+
+void matrix_scan_user(void)
+{
+    uint8_t layer = biton32(layer_state);
+
+    switch (layer)
+    {
+    case L_STENO:
+        set_leds(true, false, false);
+        break;
+    case L_FN:
+        set_leds(false, true, false);
+        break;
+    case L_ACCENTS:
+        set_leds(false, false, true);
+        break;
+    case L_SHIFT_COLEMAK:
+        set_leds(false, true, true);
+        break;
+    default:
+        set_leds(false, false, false);
+        break;
+    }
+
+    if (!can_stroke())
+    {
+        set_leds(true, false, true);
+    }
 }
