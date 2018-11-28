@@ -42,7 +42,7 @@ screws_diameter = 3.5;
 screws_mount_height = 17;
 screw_mount_diameter = 10;
 nut_3_tolerance = 0.05;
-nut_2_tolerance = 0.2;
+nut_2_tolerance = 0.25;
 electronic_screw_mount_diameter = 6;
 electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
@@ -522,7 +522,7 @@ module left_case()
         // Nut holes
         for (index = [0:4])
         {
-            transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3, nut_3_tolerance);
+            transform_hole(index) make_case_screw_hole();
         }
 
         // Nut holes
@@ -530,7 +530,7 @@ module left_case()
         {
             for (index = [5:7])
             {
-                transform_hole(index) translate([0,0,-0.001]) printable_nut_hole(3, nut_3_tolerance);
+                transform_hole(index) make_case_screw_hole();
             }
         }
 
@@ -543,11 +543,20 @@ module left_case()
     }
 }
 
+module make_case_screw_hole()
+{
+    hull()
+    {
+        translate([0,0, 2]) printable_nut_hole(3, nut_3_tolerance);
+        translate([0,0,-30]) printable_nut_hole(3, nut_3_tolerance, false);
+    }
+}
+
 module make_pcb_case_screw_hole()
 {
     hull()
     {
-        translate([0,0, 2.001]) printable_nut_hole(2, nut_2_tolerance);
+        translate([0,0, 2]) printable_nut_hole(2, nut_2_tolerance);
         translate([0,0,-30]) printable_nut_hole(2, nut_2_tolerance, false);
     }
 }
