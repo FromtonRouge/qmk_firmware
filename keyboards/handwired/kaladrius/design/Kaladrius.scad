@@ -30,8 +30,8 @@ offset_finger_middle = -3;
 offset_finger_ring = 1;
 offset_finger_pinky = 5;
 
-thumb_x = -3;
-thumb_y = 14.5;
+thumb_x = -switch_hole_width-0.5;
+thumb_y = switch_hole_width+0.5;
 thumb_angle = -21;
 case_shell_size = 3;
 case_height = 9;
@@ -48,7 +48,7 @@ electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
 electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-5.5;
 electronic_teensy_hole = [0, 50];
-pcb_case_pos = [84, offset_finger_pinky-77];
+pcb_case_pos = [84, offset_finger_pinky-71];
 pcb_plate_size = [48.40-2.12, 68.10-2.12, 2];
 switch_hole_height = screws_mount_height + 5;
 
@@ -715,7 +715,6 @@ module mini_thumb_holes()
                 {
                     translate([factor*original_width, 0]) make_hole();
                     translate([factor*original_width, -factor*original_width]) make_hole();
-                    translate([0, -factor*original_width]) make_hole();
                 }
             }
         }
@@ -904,9 +903,9 @@ module left_keycaps()
 // Kaladrius link system
 module transform_link_system()
 {
-    translate([-102, 0, 0])
+    translate([-95, 0, 0])
     {
-        rotate([0, 0, -12])
+        rotate([0, 0, -4])
         {
             translate(-get_pcb_case_origin())
             {
@@ -923,7 +922,7 @@ module left_link()
     {
         small_radius = 1;
         roundness = 5;
-        link_dim = [80, 50, 15];
+        link_dim = [80, 50, 14];
         translate([-link_dim[0]/2, -20, link_dim[2]/2])
         {
             minkowski()
@@ -1072,14 +1071,14 @@ module show_point(p)
 *left_case();
 *left_printable_pcb_case(printable=false);
 *left_printable_pcb_case();
-left_link();
+*left_link();
 *test_nut_holes();
 
 mirror([1, 0, 0])
 {
     *right_top_plate();
-    *test_right_top_plate();
-    left_link();
+    test_right_top_plate();
+    *left_link();
     *%left_keycaps();
 }
 
