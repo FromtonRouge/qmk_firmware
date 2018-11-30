@@ -69,6 +69,7 @@ static bool debouncing = false;
 static matrix_row_t matrix[MATRIX_ROWS];
 static matrix_row_t matrix_debouncing[MATRIX_ROWS];
 uint8_t mcp23018_status = 1;
+uint8_t g_led_right = 0;
 
 void init_cols(void)
 {
@@ -104,7 +105,7 @@ void unselect_rows(void)
     {
         mcp23018_status = i2c_start(I2C_ADDR_WRITE);        if (mcp23018_status) goto out;
         mcp23018_status = i2c_write(GPIOB);                 if (mcp23018_status) goto out;
-        mcp23018_status = i2c_write(0xFF);                  if (mcp23018_status) goto out;
+        mcp23018_status = i2c_write(0b00011111);                  if (mcp23018_status) goto out;
 out:
         i2c_stop();
     }
@@ -127,7 +128,9 @@ void select_row(uint8_t row)
     {
         mcp23018_status = i2c_start(I2C_ADDR_WRITE);        if (mcp23018_status) goto out;
         mcp23018_status = i2c_write(GPIOB);                 if (mcp23018_status) goto out;
-        mcp23018_status = i2c_write(0xFF & ~(1<<row));      if (mcp23018_status) goto out;
+        uint8_t byte = 0b00011111 & ~(1<<row);
+        byte |= (g_led_right << 5);
+        mcp23018_status = i2c_write(byte);      if (mcp23018_status) goto out;
 out:
         i2c_stop();
     }
@@ -246,9 +249,11 @@ void set_leds(bool red, bool green, bool blue)
 {
     DDRB |= (1<<4 | 1<<5 | 1<<6);    // Output
 
+    g_led_right = 0;
     if (red)
     {
         PORTB |= (1<<4);
+        g_led_right |= (1<<0);
     }
     else
     {
@@ -258,6 +263,7 @@ void set_leds(bool red, bool green, bool blue)
     if (green)
     {
         PORTB |= (1<<5);
+        g_led_right |= (1<<1);
     }
     else
     {
@@ -267,6 +273,7 @@ void set_leds(bool red, bool green, bool blue)
     if (blue)
     {
         PORTB |= (1<<6);
+        g_led_right |= (1<<2);
     }
     else
     {
