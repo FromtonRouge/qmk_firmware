@@ -41,7 +41,7 @@ plate_additional_border_height = 1;
 screws_diameter = 3.5;
 screws_mount_height = 17;
 screw_mount_diameter = 10;
-nut_3_tolerance = 0.05;
+nut_3_tolerance = 0.10;
 nut_2_tolerance = 0.25;
 electronic_screw_mount_diameter = 6;
 electronic_screws_hole_diameter = 2.7;
@@ -85,6 +85,9 @@ hole_positions = [
     k[6][3] + [(switch_hole_width + 2*switch_spacing), 0],
     k[6][3]+ [(switch_hole_width + 2*switch_spacing), -k[6][1]*switch_hole_width - (k[6][1]+1)*switch_spacing],
     k[0][3] - [0, k[0][1]*switch_hole_width + (k[0][1]+1)*switch_spacing],
+    (k[0][3] - [0, k[0][1]*switch_hole_width + (k[0][1]+1)*switch_spacing] + k[0][3])/2,
+
+    // Thumb
     [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing, 0],
     [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing,  -3*switch_hole_width - 4*switch_spacing],
     [-1.75*(switch_hole_width + switch_spacing), -3*switch_hole_width - 4*switch_spacing],
@@ -184,14 +187,14 @@ module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
     {
         translate([0, 0, -1])
         {
-            for (index = [0:4])
+            for (index = [0:5])
             {
                 transform_hole(index) case_hole(height, diameter);
             }
 
             transform_thumb()
             {
-                for (index = [5:7])
+                for (index = [6:8])
                 {
                     transform_hole(index) case_hole(height, diameter);
                 }
@@ -203,7 +206,7 @@ module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
 module screw_mounts()
 {
     height = case_shell_size + case_height;
-    for (index = [0:4])
+    for (index = [0:5])
     {
         transform_hole(index) 
         {
@@ -217,7 +220,7 @@ module screw_mounts()
 
     transform_thumb()
     {
-        for (index = [5:7])
+        for (index = [6:8])
         {
             transform_hole(index)
             {
@@ -520,7 +523,7 @@ module left_case()
         translate([0, 0, -20]) case_holes(height = 200);
 
         // Nut holes
-        for (index = [0:4])
+        for (index = [0:5])
         {
             transform_hole(index) make_case_screw_hole();
         }
@@ -528,7 +531,7 @@ module left_case()
         // Nut holes
         transform_thumb()
         {
-            for (index = [5:7])
+            for (index = [6:8])
             {
                 transform_hole(index) make_case_screw_hole();
             }
@@ -538,8 +541,9 @@ module left_case()
         transform_pcb_case() pcb_case(holes_only = true, with_trrs_hole= false);
         mini_thumb_holes();
 
-        // Special hole that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
-        translate([0, 0, -0.01]) translate((hole_positions[0] + hole_positions[4])/2) case_hole(20, screws_diameter);
+        // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
+        translate([0, 0, -0.01]) translate((hole_positions[4] + hole_positions[5])/2) case_hole(20, screws_diameter);
+        translate([0, 0, -0.01]) translate((hole_positions[0] + hole_positions[5])/2) case_hole(20, screws_diameter);
     }
 }
 
@@ -1072,12 +1076,12 @@ module show_point(p)
 *left_printable_pcb_case(printable=false);
 *left_printable_pcb_case();
 *left_link();
-*test_nut_holes();
+test_nut_holes();
 
 mirror([1, 0, 0])
 {
     *right_top_plate();
-    test_right_top_plate();
+    *test_right_top_plate();
     *left_link();
     *%left_keycaps();
 }
