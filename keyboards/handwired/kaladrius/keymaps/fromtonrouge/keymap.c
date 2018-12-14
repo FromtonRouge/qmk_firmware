@@ -85,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
     [L_STANDARD] = LAYOUT(
         _AMP,    _LBRC,   _LCBR, _RCBR, _LPRN, _EQL, KC_LGUI,                TG(L_STENO), _ASTR, _RPRN, _PLUS,    _RBRC, _EXLM, _HASH, 
         _DLR,    _Q,      _W,    _F,    _P,    _G,   TG(L_FN),               TG(L_FN),    _J,    _L,    _U,       _Y,    _SCLN, _SLSH, 
-        KC_TAB,  _A,      _R,    _S,    _T,    _D,   KC_ESC,                 _HASH,       _H,    _N,    _E,       _I,    _O,    _MINS, 
+        KC_TAB,  _A,      _R,    _S,    _T,    _D,   KC_ESC,                 TG(L_FN),       _H,    _N,    _E,       _I,    _O,    _MINS, 
         CKC_SFT, _Z,      _X,    _C,    _V,    _B,                                        _K,    _M,    _COMM,    _DOT,  _APOS, CKC_SFT, 
         KC_LCTL, _AMP, KC_LALT,                                                                                _BSLS, _AT, KC_RCTL,
                                                KC_ENT,                                 KC_SPC, 
@@ -107,7 +107,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
         KC_NO, KC_NO, KC_NO, KC_9,  KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO,    KC_NO,    KC_NO,         KC_NO, 
         KC_NO, KC_NO, KC_NO,                                                                   KC_NO,    KC_NO,         KC_NO, 
                                            KC_NO,                      KC_NO, 
-                             KC_NO, KC_NO, KC_TRNS,                    KC_TRNS, KC_NO, KC_NO, 
+                             KC_NO, KC_TRNS, KC_TRNS,                  KC_TRNS, KC_TRNS, KC_NO, 
                                            KC_TRNS,                    KC_TRNS ),
     [L_FN] = LAYOUT(
         KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_TRNS,        KC_NO,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,   KC_F12, 
