@@ -85,7 +85,6 @@ hole_positions = [
     k[6][3] + [(switch_hole_width + 2*switch_spacing), 0],
     k[6][3]+ [(switch_hole_width + 2*switch_spacing), -k[6][1]*switch_hole_width - (k[6][1]+1)*switch_spacing],
     k[0][3] - [0, k[0][1]*switch_hole_width + (k[0][1]+1)*switch_spacing],
-    (k[0][3] - [0, k[0][1]*switch_hole_width + (k[0][1]+1)*switch_spacing] + k[0][3])/2,
 
     // Thumb
     [-1.75*(switch_hole_width + switch_spacing) + 3*switch_hole_width + 4*switch_spacing, 0],
@@ -187,14 +186,14 @@ module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
     {
         translate([0, 0, -1])
         {
-            for (index = [0:5])
+            for (index = [0:4])
             {
                 transform_hole(index) case_hole(height, diameter);
             }
 
             transform_thumb()
             {
-                for (index = [6:8])
+                for (index = [5:7])
                 {
                     transform_hole(index) case_hole(height, diameter);
                 }
@@ -206,7 +205,7 @@ module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
 module screw_mounts()
 {
     height = case_shell_size + case_height;
-    for (index = [0:5])
+    for (index = [0:4])
     {
         transform_hole(index) 
         {
@@ -220,7 +219,7 @@ module screw_mounts()
 
     transform_thumb()
     {
-        for (index = [6:8])
+        for (index = [5:7])
         {
             transform_hole(index)
             {
@@ -438,11 +437,11 @@ module right_top_plate()
 
 module plate_supports()
 {
+    support_height = case_shell_size + case_height;
     module create_support(row)
     {
         hull()
         {
-            support_height = case_shell_size + case_height;
             support_diameter = 3.5;
             y = -row*(switch_spacing + switch_hole_width);
             translate([0, y-support_diameter/2])
@@ -464,6 +463,20 @@ module plate_supports()
         for (row = [1:4])
         {
             create_support(row);
+        }
+    }
+
+    // Left plate support
+    left_middle_point = (hole_positions[0] + hole_positions[4])/2;
+    translate(left_middle_point)
+    {
+        hull()
+        {
+            size = 6;
+            translate([0, -size]) cylinder(h=support_height-3, d=3.5, $fn=30);
+            translate([0, -size]) cylinder(h=support_height, d=1, $fn=30);
+            translate([0, size]) cylinder(h=support_height-3, d=3.5, $fn=30);
+            translate([0, size]) cylinder(h=support_height, d=1, $fn=30);
         }
     }
 }
@@ -523,7 +536,7 @@ module left_case()
         translate([0, 0, -20]) case_holes(height = 200);
 
         // Nut holes
-        for (index = [0:5])
+        for (index = [0:4])
         {
             transform_hole(index) make_case_screw_hole();
         }
@@ -531,7 +544,7 @@ module left_case()
         // Nut holes
         transform_thumb()
         {
-            for (index = [6:8])
+            for (index = [5:7])
             {
                 transform_hole(index) make_case_screw_hole();
             }
@@ -542,8 +555,11 @@ module left_case()
         mini_thumb_holes();
 
         // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
-        translate([0, 0, -0.01]) translate((hole_positions[4] + hole_positions[5])/2) case_hole(20, screws_diameter);
-        translate([0, 0, -0.01]) translate((hole_positions[0] + hole_positions[5])/2) case_hole(20, screws_diameter);
+        left_middle_point = (hole_positions[0] + hole_positions[4])/2;
+        left_middle_up_point = (hole_positions[0] + left_middle_point)/2;
+        left_middle_down_point = (hole_positions[4] + left_middle_point)/2;
+        translate([0, 0, -0.01]) translate(left_middle_up_point) case_hole(20, screws_diameter);
+        translate([0, 0, -0.01]) translate(left_middle_down_point) case_hole(20, screws_diameter);
     }
 }
 
@@ -1076,11 +1092,11 @@ module show_point(p)
 *left_printable_pcb_case(printable=false);
 *left_printable_pcb_case();
 *left_link();
-test_nut_holes();
+*test_nut_holes();
 
 mirror([1, 0, 0])
 {
-    *right_top_plate();
+    right_top_plate();
     *test_right_top_plate();
     *left_link();
     *%left_keycaps();
