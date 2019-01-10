@@ -26,11 +26,11 @@ switch_spacing = 4.8;
 //      offset_finger_ring = 2;
 //      offset_finger_pinky = 3;
 // My personal settings :
-offset_finger_middle = -3;
-offset_finger_ring = 1;
+offset_finger_middle = 0;
+offset_finger_ring = 0;
 offset_finger_pinky = 5;
 
-thumb_x = -switch_hole_width-0.5;
+thumb_x = -switch_hole_width;
 thumb_y = switch_hole_width+0.5;
 thumb_angle = -21;
 case_shell_size = 3;
@@ -1091,14 +1091,14 @@ module show_point(p)
 *left_case();
 *left_printable_pcb_case(printable=false);
 *left_printable_pcb_case();
-*left_link();
+left_link();
 *test_nut_holes();
 
 mirror([1, 0, 0])
 {
-    right_top_plate();
+    *right_top_plate();
     *test_right_top_plate();
-    *left_link();
+    left_link();
     *%left_keycaps();
 }
 
