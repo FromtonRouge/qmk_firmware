@@ -19,6 +19,7 @@ use <MCAD/nuts_and_bolts.scad>
 
 fragments_number = 60; // Use 0 for debugging, 60 for final rendering
 switch_hole_width = 14;
+switch_hole_tolerance = -0.1;
 switch_spacing = 4.8;
 
 // For comparison, Ergodox settings are (in mm) :
@@ -41,8 +42,8 @@ plate_additional_border_height = 1;
 screws_diameter = 3.5;
 screws_mount_height = 17;
 screw_mount_diameter = 10;
-nut_3_tolerance = 0.10;
-nut_2_tolerance = 0.25;
+nut_3_tolerance = 0.25;
+nut_2_tolerance = 0.3;
 electronic_screw_mount_diameter = 6;
 electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [50.14, 70.12, 1.54];
@@ -250,12 +251,11 @@ module create_cell(height)
 
 module create_hole(height, offset, has_additional_border = true, vertical = false)
 {
-    tolerance = 0.3;
     additional_border_width = 0.5;
     clip_width = 6;
     roundness = 0.5;
-    x = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width - tolerance;
-    y = switch_hole_width + 2*offset - 2*roundness - tolerance;
+    x = switch_hole_width + 2*offset - 2*roundness + 2*additional_border_width + switch_hole_tolerance;
+    y = switch_hole_width + 2*offset - 2*roundness + switch_hole_tolerance;
     translate([switch_spacing + (switch_hole_width-((vertical?y:x)+2*roundness))/2, -switch_spacing - (switch_hole_width-((vertical?x:y)+2*roundness))/2, 0])
     {
         translate([roundness, -roundness, 0]) // minkowski compensation
@@ -1091,14 +1091,14 @@ module show_point(p)
 *left_case();
 *left_printable_pcb_case(printable=false);
 *left_printable_pcb_case();
-left_link();
+*left_link();
 *test_nut_holes();
 
 mirror([1, 0, 0])
 {
-    *right_top_plate();
+    right_top_plate();
     *test_right_top_plate();
-    left_link();
+    *left_link();
     *%left_keycaps();
 }
 
