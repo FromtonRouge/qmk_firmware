@@ -20,9 +20,9 @@ You'll need :
 - 2x 5mm RGB leds
 - 70x 1N4148 Commutation diodes
 - 70x Gateron Clear Keyswitch - Plate Mount (35g)
-- 2x 2.2 kOhms resistors
-- 3x ??? kOhms resistors
-- 6x ??? kOhms resistors
+- 2x 2.2 kOhms resistors (for mcp23018)
+- 6x 220 Ohms resistors (for all RGB leds)
+- 3x 100 Ohms resistors (pull-ups for right RGB led)
 - Wires
 - TODO
 
