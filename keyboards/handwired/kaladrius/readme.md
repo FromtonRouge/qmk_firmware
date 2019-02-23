@@ -10,26 +10,7 @@ It's a handwired and printable keyboard and use a Teensy++ 2.0
 
 You can't buy this keyboard and have to build it yourself. You'll have to do the electronics and also have to print the case.
 
-You'll need :
-
-- [1x Teensy++ 2.0 with pins](https://www.pjrc.com/store/teensypp_pins.html)
-- 1x mcp23018
-- [2x (5cm x 7cm) prototype pcb](https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F)
-- [2x TRRS 3.5 mm Jack Breakout Board](https://www.amazon.com/dp/B01N7NDCVI/ref=cm_sw_r_tw_dp_U_x_TXwCCb46PW6FF)
-- 1x male 2.54mm header pin
-- 2x 5mm RGB leds
-- 70x 1N4148 Commutation diodes
-- 70x Gateron Clear Keyswitch - Plate Mount (35g)
-- 2x 2.2 kOhms resistors (for mcp23018)
-- 6x 220 Ohms resistors (for all RGB leds)
-- 3x 100 Ohms resistors (pull-ups for right RGB led)
-- Wires
-- TODO
-
-Tools :
-
-- 1 Hot Glue gun + Glue Sticks
-- TODO
+You'll need : TODO
 
 # Firmware
 
