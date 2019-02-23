@@ -12,19 +12,19 @@ You can't buy this keyboard and have to build it yourself. You'll have to do the
 
 You'll need :
 
-    - [1x Teensy++ 2.0 with pins](https://www.pjrc.com/store/teensypp_pins.html)
-    - 1x mcp23018
-    - 2x (5cm x 7cm) prototype pcb, I took it from this kit [Amazon][2]
-    - 2x TRRS 3.5 mm Jack Breakout Board [Amazon][3]
-    - 1x male 2.54mm header pin
-    - 2x 5mm RGB leds
-    - 70x 1N4148 Commutation diodes
-    - 70x Gateron Clear Keyswitch - Plate Mount (35g)
-    - 2x 2.2 kOhms resistors
-    - 3x ??? kOhms resistors
-    - 6x ??? kOhms resistors
-    - Wires
-    - TODO
+- [1x Teensy++ 2.0 with pins](https://www.pjrc.com/store/teensypp_pins.html)
+- 1x mcp23018
+- 2x (5cm x 7cm) prototype pcb, I took it from this kit [Amazon][2]
+- 2x TRRS 3.5 mm Jack Breakout Board [Amazon][3]
+- 1x male 2.54mm header pin
+- 2x 5mm RGB leds
+- 70x 1N4148 Commutation diodes
+- 70x Gateron Clear Keyswitch - Plate Mount (35g)
+- 2x 2.2 kOhms resistors
+- 3x ??? kOhms resistors
+- 6x ??? kOhms resistors
+- Wires
+- TODO
 
 [1]: https://www.pjrc.com/store/teensypp_pins.html
 [2]: https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F
@@ -32,15 +32,15 @@ You'll need :
 
 Tools :
 
-    * 1 Hot Glue gun + Glue Sticks
-    * TODO
+- 1 Hot Glue gun + Glue Sticks
+- TODO
 
 # Firmware
 
 By default the keyboard is in full NKRO, you can test the keyboard here http://random.xem.us/rollover.html
 
-    * Keyboard Maintainer: [FromtonRouge](https://github.com/FromtonRouge)
-    * Hardware Supported: Teensy++ 2.0
+- Keyboard Maintainer: [FromtonRouge](https://github.com/FromtonRouge)
+- Hardware Supported: Teensy++ 2.0
 
 Make example for this keyboard (after setting up your build environment):
 
