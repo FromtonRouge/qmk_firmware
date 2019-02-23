@@ -12,10 +12,10 @@ You can't buy this keyboard and have to build it yourself. You'll have to do the
 
 You'll need :
 
-    * 1x Teensy++ 2.0 with pins https://www.pjrc.com/store/teensypp_pins.html
+    * 1x Teensy++ 2.0 with pins [PJRC][1]
     * 1x mcp23018
-    * 2x (5cm x 7cm) prototype pcb, I took it from this kit https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F
-    * 2x TRRS 3.5 mm Jack Breakout Board https://www.amazon.com/dp/B01N7NDCVI/ref=cm_sw_r_tw_dp_U_x_TXwCCb46PW6FF
+    * 2x (5cm x 7cm) prototype pcb, I took it from this kit [Amazon][2]
+    * 2x TRRS 3.5 mm Jack Breakout Board [Amazon][3]
     * 1x male 2.54mm header pin
     * 2x 5mm RGB leds
     * 70x 1N4148 Commutation diodes
@@ -26,7 +26,12 @@ You'll need :
     * Wires
     * TODO
 
+[1]: https://www.pjrc.com/store/teensypp_pins.html
+[2]: https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F
+[3]: https://www.amazon.com/dp/B01N7NDCVI/ref=cm_sw_r_tw_dp_U_x_TXwCCb46PW6FF
+
 Tools :
+
     * 1 Hot Glue gun + Glue Sticks
     * TODO
 
