@@ -12,7 +12,7 @@ You can't buy this keyboard and have to build it yourself. You'll have to do the
 
 You'll need :
 
-    * [1x Teensy++ 2.0 with pins][1]
+    * [1x Teensy++ 2.0 with pins](https://www.pjrc.com/store/teensypp_pins.html)
     * 1x mcp23018
     * 2x (5cm x 7cm) prototype pcb, I took it from this kit [Amazon][2]
     * 2x TRRS 3.5 mm Jack Breakout Board [Amazon][3]
@@ -36,7 +36,8 @@ Tools :
     * TODO
 
 # Firmware
-    By default the keyboard is in full NKRO, you can test the keyboard here http://random.xem.us/rollover.html
+
+By default the keyboard is in full NKRO, you can test the keyboard here http://random.xem.us/rollover.html
 
     * Keyboard Maintainer: [FromtonRouge](https://github.com/FromtonRouge)
     * Hardware Supported: Teensy++ 2.0
