@@ -12,7 +12,7 @@ You can't buy this keyboard and have to build it yourself. You'll have to do the
 
 You'll need :
 
-    * 1x Teensy++ 2.0 with pins [PJRC][1]
+    * [1x Teensy++ 2.0 with pins][1]
     * 1x mcp23018
     * 2x (5cm x 7cm) prototype pcb, I took it from this kit [Amazon][2]
     * 2x TRRS 3.5 mm Jack Breakout Board [Amazon][3]
