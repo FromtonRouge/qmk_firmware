@@ -2,8 +2,12 @@
 
 ![Kaladrius](https://i.imgur.com/hgo1kl6.jpg)
 
-The Kaladrius is an orthographic steno keyboard based on the [Jackdaw theory](https://sites.google.com/site/ploverdoc/jackdaw)
+The Kaladrius is an orthographic steno keyboard inspired by the [Jackdaw steno theory](https://sites.google.com/site/ploverdoc/jackdaw)
+It's a handwired and printable keyboard and use a Teensy++ 2.0
 
+By default the keyboard is in full NKRO, you can test the keyboard here http://random.xem.us/rollover.html
+
+# Details
 Keyboard Maintainer: [FromtonRouge](https://github.com/FromtonRouge)
 Hardware Supported: Teensy++ 2.0
 
