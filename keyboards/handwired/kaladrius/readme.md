@@ -12,24 +12,23 @@ You can't buy this keyboard and have to build it yourself. You'll have to do the
 
 You'll need :
 
-    * 1x Teensy++ 2.0 with pins [Pjrc Store](https://www.pjrc.com/store/teensypp_pins.html)
+    * 1x Teensy++ 2.0 with pins https://www.pjrc.com/store/teensypp_pins.html
     * 1x mcp23018
-    * 2x (5cm x 7cm) prototype pcb, I took it from this kit [Amazon](https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F)
-![Pcbs](https://i.imgur.com/syCLPdW.jpg)
-    * 2x TRRS 3.5 mm Jack Breakout Board [Amazon](https://www.amazon.com/dp/B01N7NDCVI/ref=cm_sw_r_tw_dp_U_x_TXwCCb46PW6FF)
+    * 2x (5cm x 7cm) prototype pcb, I took it from this kit https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F
+    * 2x TRRS 3.5 mm Jack Breakout Board https://www.amazon.com/dp/B01N7NDCVI/ref=cm_sw_r_tw_dp_U_x_TXwCCb46PW6FF
     * 1x male 2.54mm header pin
-![pins](https://i.imgur.com/4qrmDpR.jpg)
     * 2x 5mm RGB leds
-![leds](https://i.imgur.com/sqjRnXj.jpg)
     * 70x 1N4148 Commutation diodes
     * 70x Gateron Clear Keyswitch - Plate Mount (35g)
     * 2x 2.2 kOhms resistors
     * 3x ??? kOhms resistors
     * 6x ??? kOhms resistors
     * Wires
+    * TODO
 
 Tools :
     * 1 Hot Glue gun + Glue Sticks
+    * TODO
 
 # Firmware
     By default the keyboard is in full NKRO, you can test the keyboard here http://random.xem.us/rollover.html
