@@ -45,8 +45,8 @@ const uint16_t g_special_shift_table[SPECIAL_SHIFT_TABLE_SIZE] =
     FR_UNDS     // [17] FR_MINS
 };
 
-#define L_STANDARD 1
-#define L_STENO 0
+#define L_STANDARD 0
+#define L_STENO 1
 #define L_SHIFT_COLEMAK 2
 #define L_ACCENTS 3
 #define L_FN 4
@@ -65,7 +65,7 @@ const uint32_t PROGMEM g_steno_layout[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
         0,  L3,  L2,  L1,  L0,  S_ENT,   0,        0, SC_SEP, R0,  R1,  R2,  R3,  R4, 
         L4, L_A, L_C, L_W, L_N, SC_STAR, 0,        0, SC_SEP, R_R, R_L, R_C, R_T, RP_E, 
         L5, L_S, L_T, L_H, L_R, SC_STAR,              SC_SEP, R_N, R_G, R_H, R_S, RP_Y, 
-                 0,   0,                                           0,   0, 
+        0,  0,   0,                                                     0,   0,   0,
                                    SC_STAR,        SC_STAR, 
                         SC_LPLUS, T_E, T_O,        T_Y, T_I, SC_RPLUS, 
                                        T_A,        T_U );
@@ -73,51 +73,51 @@ const uint32_t PROGMEM g_steno_layout[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 {
     [L_STENO] = LAYOUT(
-        KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,        KC_NO, KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO, 
-        KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,        KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,        KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        KC_F1,     KC_F2,     KC_F3,     KC_F4,     KC_F5,     KC_F6,     KC_LGUI,      KC_TRNS, KC_F7,     KC_F8,     KC_F9,     KC_F10,     KC_F11,     KC_F12, 
+        KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_ENT,       KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_ENT,       KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
         CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-                              KC_NO,     KC_NO,                                                                      KC_NO,     KC_NO, 
-                                                                      CKC_STENO,        CKC_STENO, 
-                                                CKC_STENO, CKC_STENO, CKC_STENO,        CKC_STENO, CKC_STENO, CKC_STENO, 
-                                                                      CKC_STENO,        CKC_STENO ),
+        KC_LSFT,   KC_LCTL,   KC_LALT,                                                                                          KC_RALT,   KC_RCTL,   KC_RSFT, 
+                                                               CKC_STENO,                      CKC_STENO, 
+                                         CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, 
+                                                               CKC_STENO,                      CKC_STENO ),
 
     [L_STANDARD] = LAYOUT(
-        _DLR,    _LBRC, _LCBR, _RCBR, _LPRN, _EQL, KC_LGUI,                TG(L_STENO), _ASTR, _RPRN, _PLUS,    _RBRC, _EXLM, _SLSH, 
-        KC_TAB,  _Q,    _W,    _F,    _P,    _G,   _AMP,                   _BSLS,       _J,    _L,    _U,       _Y,    _SCLN, _MINS, 
-        CKC_SFT, _A,    _R,    _S,    _T,    _D,   KC_ESC,                 _HASH,       _H,    _N,    _E,       _I,    _O,    CKC_SFT, 
-        KC_LCTL, _Z,    _X,    _C,    _V,    _B,                                        _K,    _M,    _COMM,    _DOT,  _APOS, KC_RCTL, 
-                            KC_LALT,    MO(L_FN),                                                     MO(L_FN), _AT, 
-                                                   TG(L_FN),                TG(L_FN), 
-                              KC_ENT, KC_BSPC,MO(L_ACCENTS),                MO(L_ACCENTS), KC_DEL, KC_SPC, 
-                                                    KC_BSPC,                KC_DEL ),
+        _AMP,    _LBRC,   _LCBR, _RCBR, _LPRN, _EQL, KC_LGUI,                TG(L_STENO), _ASTR, _RPRN, _PLUS,    _RBRC, _EXLM, _HASH, 
+        _DLR,    _Q,      _W,    _F,    _P,    _G,   TG(L_FN),               TG(L_FN),    _J,    _L,    _U,       _Y,    _SCLN, _SLSH, 
+        KC_TAB,  _A,      _R,    _S,    _T,    _D,   KC_ESC,                 TG(L_FN),       _H,    _N,    _E,       _I,    _O,    _MINS, 
+        CKC_SFT, _Z,      _X,    _C,    _V,    _B,                                        _K,    _M,    _COMM,    _DOT,  _APOS, CKC_SFT, 
+        KC_LCTL, _AMP, KC_LALT,                                                                                _BSLS, _AT, KC_RCTL,
+                                               MO(L_FN),                               MO(L_FN), 
+                                   MO(L_FN), KC_ENT, KC_BSPC,                          KC_DEL, KC_SPC, MO(L_FN),
+                                               MO(L_ACCENTS),                          MO(L_ACCENTS)),
     [L_SHIFT_COLEMAK] = LAYOUT(
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO, 
-                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO ),
+        FR_UGRV, KC_7,    KC_5,    KC_3,    KC_1,    KC_9,    KC_TRNS,     KC_NO,   KC_0,    KC_2,    KC_4,     KC_6,     KC_8,     CKC_SFUN, 
+        CKC_SFUN,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,  CKC_SFUN, FR_COMM, 
+        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,  KC_TRNS,  CKC_SFUN, 
+        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                       KC_TRNS, KC_TRNS, CKC_SFUN, CKC_SFUN, CKC_SFUN, KC_TRNS, 
+        KC_TRNS,  FR_UGRV, KC_TRNS,                                                                              CKC_SFUN,  CKC_SFUN,  KC_TRNS, 
+                                                      KC_TRNS,                       KC_TRNS, 
+                                    KC_TRNS, KC_TRNS, KC_TRNS,                       KC_TRNS, KC_TRNS, KC_TRNS, 
+                                                      KC_TRNS,                       KC_TRNS ),
     [L_ACCENTS] = LAYOUT(
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO, 
-                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO ),
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO,    KC_NO,    KC_NO,         KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, FR_UGRV,  KC_NO,    LSFT(KC_LBRC), KC_NO, 
+        KC_NO, KC_0,  KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_7,  KC_2,  CKC_CIRC, CKC_CIRC, CKC_CIRC,      KC_NO, 
+        KC_NO, KC_NO, KC_NO, KC_9,  KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO,    KC_NO,    KC_NO,         KC_NO, 
+        KC_NO, KC_NO, KC_NO,                                                                   KC_NO,    KC_NO,         KC_NO, 
+                                           KC_NO,                      KC_NO, 
+                             KC_NO, KC_TRNS, KC_TRNS,                  KC_TRNS, KC_TRNS, KC_NO, 
+                                           KC_TRNS,                    KC_TRNS ),
     [L_FN] = LAYOUT(
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                      KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, 
-                      KC_NO, KC_NO,                                                  KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO, 
-                                    KC_NO, KC_NO, KC_NO,        KC_NO, KC_NO, KC_NO, 
-                                                  KC_NO,        KC_NO ),
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_TRNS,        KC_NO,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,   KC_F12, 
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,        KC_TRNS, KC_TRNS, KC_TRNS, KC_ESC, KC_TRNS, KC_TRNS,  KC_TRNS, 
+        KC_LSFT, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  KC_TRNS, RESET,          KC_TRNS, KC_TRNS, KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT, KC_RSFT, 
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, 
+        KC_TRNS, KC_TRNS, KC_TRNS,                                                                                KC_TRNS, KC_TRNS,  KC_TRNS, 
+                                                      KC_TRNS,                         KC_TRNS, 
+                                    KC_TRNS, KC_TRNS, KC_TRNS,                         KC_TRNS, KC_TRNS, KC_TRNS, 
+                                                      KC_TRNS,                         KC_TRNS ),
 };
 
 steno_layout_t* get_steno_layout(void) { return g_steno_layout; }
@@ -174,4 +174,33 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
         }
     }
     return true;
+}
+
+void matrix_scan_user(void)
+{
+    uint8_t layer = biton32(layer_state);
+
+    switch (layer)
+    {
+    case L_STENO:
+        set_leds(true, false, false);
+        break;
+    case L_FN:
+        set_leds(false, true, false);
+        break;
+    case L_ACCENTS:
+        set_leds(false, false, true);
+        break;
+    case L_SHIFT_COLEMAK:
+        set_leds(false, true, true);
+        break;
+    default:
+        set_leds(false, false, false);
+        break;
+    }
+
+    if (!can_stroke())
+    {
+        set_leds(true, false, true);
+    }
 }

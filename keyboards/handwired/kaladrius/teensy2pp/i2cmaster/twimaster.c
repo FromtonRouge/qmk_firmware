@@ -14,11 +14,11 @@
 
 /* define CPU frequency in hz here if not defined in Makefile */
 #ifndef F_CPU
-#define F_CPU 4000000UL
+#define F_CPU 16000000UL
 #endif
 
 /* I2C clock in Hz */
-#define SCL_CLOCK  100000L
+#define SCL_CLOCK  400000L
 
 
 /*************************************************************************
@@ -30,7 +30,6 @@ void i2c_init(void)
   
   TWSR = 0;                         /* no prescaler */
   TWBR = ((F_CPU/SCL_CLOCK)-16)/2;  /* must be > 10 for stable operation */
-
 }/* i2c_init */
 
 

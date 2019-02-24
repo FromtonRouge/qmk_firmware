@@ -69,13 +69,14 @@ static bool debouncing = false;
 static matrix_row_t matrix[MATRIX_ROWS];
 static matrix_row_t matrix_debouncing[MATRIX_ROWS];
 uint8_t mcp23018_status = 1;
+uint8_t g_led_right = 0;
 
 void init_cols(void)
 {
     // Init on teensy2pp
     // The original init_cols() function in quantum/matrix.c 
     // configure every column pins as input with pull up resistor
-    // Columns (inputs):    C0 C1 C2 C3 C4 C5 C6 c7
+    // Columns:    C0 C1 C2 C3 C4 C5 C6
     // Note from teensy documentation:
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
@@ -91,6 +92,7 @@ void unselect_rows(void)
     // Unselect on teensy2pp
     // The original unselect_rows() function in quantum/matrix.c
     // configure every row pins as normal input without pullup resistor
+    // Rows:    F0 F1 F2 F3 F4 
     // Note from teensy documentation:
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Config Input (when DDRx=0): 0=Normal, 1=Pullup Resistor
@@ -103,7 +105,7 @@ void unselect_rows(void)
     {
         mcp23018_status = i2c_start(I2C_ADDR_WRITE);        if (mcp23018_status) goto out;
         mcp23018_status = i2c_write(GPIOB);                 if (mcp23018_status) goto out;
-        mcp23018_status = i2c_write(0xFF);                  if (mcp23018_status) goto out;
+        mcp23018_status = i2c_write(0b00011111);                  if (mcp23018_status) goto out;
 out:
         i2c_stop();
     }
@@ -114,6 +116,7 @@ void select_row(uint8_t row)
     // Select on teensy2pp
     // The original select_row() function in quantum/matrix.c
     // configure the row pin as an output and write 0 (low) to the pin
+    // Rows:    F0 F1 F2 F3 F4 
     //  DDRx:   0=Input, 1=Output
     //  PORTx:  Set Output (when DDRx=1): 0=Low Output, 1=High Output
     const uint8_t bit_row = (1<<row);
@@ -125,7 +128,9 @@ void select_row(uint8_t row)
     {
         mcp23018_status = i2c_start(I2C_ADDR_WRITE);        if (mcp23018_status) goto out;
         mcp23018_status = i2c_write(GPIOB);                 if (mcp23018_status) goto out;
-        mcp23018_status = i2c_write(0xFF & ~(1<<row));      if (mcp23018_status) goto out;
+        uint8_t byte = 0b00011111 & ~(1<<row);
+        byte |= (g_led_right << 5);
+        mcp23018_status = i2c_write(byte);      if (mcp23018_status) goto out;
 out:
         i2c_stop();
     }
@@ -240,8 +245,64 @@ __attribute__ ((weak)) void matrix_scan_kb(void) { matrix_scan_user(); }
 uint8_t matrix_rows(void) { return MATRIX_ROWS; }
 uint8_t matrix_cols(void) { return MATRIX_COLS; }
 
+void set_leds(bool red, bool green, bool blue)
+{
+    DDRB |= (1<<4 | 1<<5 | 1<<6);    // Output
+
+    g_led_right = 0;
+    if (red)
+    {
+        PORTB |= (1<<4);
+        g_led_right |= (1<<0);
+    }
+    else
+    {
+        PORTB &= ~(1<<4);
+    }
+
+    if (green)
+    {
+        PORTB |= (1<<5);
+        g_led_right |= (1<<1);
+    }
+    else
+    {
+        PORTB &= ~(1<<5);
+    }
+
+    if (blue)
+    {
+        PORTB |= (1<<6);
+        g_led_right |= (1<<2);
+    }
+    else
+    {
+        PORTB &= ~(1<<6);
+    }
+}
+
+void blink_leds(void)
+{
+    const uint8_t delay = 30;
+    set_leds(true, false, false);
+    _delay_ms(delay);
+    set_leds(false, true, false);
+    _delay_ms(delay);
+    set_leds(false, false, true);
+    _delay_ms(delay);
+    set_leds(true, true, false);
+    _delay_ms(delay);
+    set_leds(false, true, true);
+    _delay_ms(delay);
+    set_leds(true, false, true);
+    _delay_ms(delay);
+    set_leds(false, false, false);
+}
+
 void matrix_init(void)
 {
+    blink_leds();
+    
     // Same as quantum/matrix.c
     unselect_rows();
     init_cols();
