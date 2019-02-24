@@ -23,9 +23,17 @@
 #include "util.h"
 #include "matrix.h"
 #include QMK_KEYBOARD_H
+#include "kaladrius.h"
 
+// Set 0 if debouncing isn't needed
+#ifndef DEBOUNCING_DELAY
+#define DEBOUNCING_DELAY 5
+#endif
+
+#if (DEBOUNCING_DELAY > 0)
 static uint16_t debouncing_time;
 static bool debouncing = false;
+#endif
 
 #if (MATRIX_COLS <= 8)
 #    define print_matrix_header()  print("\nr/c 01234567\n")
@@ -44,18 +52,6 @@ static bool debouncing = false;
 #    define ROW_SHIFTER  ((uint32_t)1)
 #endif
 
-#define MCP_I2C_ADDR        0x20 // 0x20 Because the ADDR pin is connected to the ground (@see mcp23018 datasheet)
-#define MCP_I2C_ADDR_WRITE  (MCP_I2C_ADDR<<1)
-#define MCP_I2C_ADDR_READ   ((MCP_I2C_ADDR<<1)|1)
-#define MCP_IODIRA          0x00            // i/o direction register
-#define MCP_IODIRB          0x01
-#define MCP_GPPUA           0x0C            // GPIO pull-up resistor register
-#define MCP_GPPUB           0x0D
-#define MCP_GPIOA           0x12            // general purpose i/o port register (write modifies OLAT)
-#define MCP_GPIOB           0x13
-#define MCP_OLATA           0x14            // output latch register
-#define MCP_OLATB           0x15
-
 static matrix_row_t matrix[MATRIX_ROWS];
 static uint8_t matrix_debouncing[MATRIX_COLS];
 
@@ -66,13 +62,20 @@ __attribute__ ((weak)) void matrix_scan_kb(void) { matrix_scan_user(); }
 uint8_t matrix_rows(void) { return MATRIX_ROWS; }
 uint8_t matrix_cols(void) { return MATRIX_COLS; }
 
-static const I2CConfig i2c_config =
+void set_leds(bool red, bool green, bool blue)
 {
-    400000 // clock speed (Hz);
-};
+    // TODO
+}
+
+void blink_leds(void)
+{
+    // TODO
+}
 
 void matrix_init(void)
 {
+    blink_leds();
+
     // Columns (strobe)
     palSetPadMode(TEENSY_PIN0_IOPORT, TEENSY_PIN0, PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(TEENSY_PIN1_IOPORT, TEENSY_PIN1, PAL_MODE_OUTPUT_PUSHPULL);
@@ -88,14 +91,6 @@ void matrix_init(void)
     palSetPadMode(TEENSY_PIN16_IOPORT, TEENSY_PIN16, PAL_MODE_INPUT_PULLDOWN);
     palSetPadMode(TEENSY_PIN17_IOPORT, TEENSY_PIN17, PAL_MODE_INPUT_PULLDOWN);
     palSetPadMode(TEENSY_PIN20_IOPORT, TEENSY_PIN20, PAL_MODE_INPUT_PULLDOWN);
-
-    // Start I2C
-    palSetPadMode(TEENSY_PIN18_IOPORT, TEENSY_PIN18, PAL_MODE_OUTPUT_OPENDRAIN); // SDA
-    palSetPadMode(TEENSY_PIN19_IOPORT, TEENSY_PIN19, PAL_MODE_OUTPUT_OPENDRAIN); // SCL 
-    i2cStart(&I2CD1, &i2c_config);
-    // IT DOESN'T WORK ! CAN'T FIND A WAY TO USE I2C WITH TEENSY 3.2 :(
-    //uint8_t tx[2] = {MCP_IODIRA, 0b01111111};
-	//i2cMasterTransmit(&I2CD1, MCP_I2C_ADDR, tx, 2, 0, 0);
 
     // Initialize matrix state: all keys off
     for (uint8_t i=0; i < MATRIX_ROWS; ++i)
@@ -156,34 +151,46 @@ uint8_t matrix_scan(void)
         case 6: palClearPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
         }
 
+#if (DEBOUNCING_DELAY > 0)
         if (matrix_debouncing[col] != data)
         {
             matrix_debouncing[col] = data;
             debouncing = true;
             debouncing_time = timer_read();
         }
+#endif
     }
 
-    if (debouncing && timer_elapsed(debouncing_time) > DEBOUNCING_DELAY)
+#if (DEBOUNCING_DELAY > 0)
+    if (debouncing && (timer_elapsed(debouncing_time) > DEBOUNCING_DELAY))
     {
-        for (int row = 0; row < MATRIX_ROWS; row++)
+        for (uint8_t row = 0; row < MATRIX_ROWS; row++)
         {
             matrix[row] = 0;
-            for (int col = 0; col < MATRIX_COLS; col++)
+            for (uint8_t col = 0; col < MATRIX_COLS; col++)
             {
                 matrix[row] |= ((matrix_debouncing[col] & (1 << row) ? 1 : 0) << col);
             }
         }
         debouncing = false;
     }
+#endif
 
     matrix_scan_quantum();
     return 1;
 }
 
+bool matrix_is_modified(void)
+{
+#if (DEBOUNCING_DELAY > 0)
+    if (debouncing) return false;
+#endif
+    return true;
+}
+
 bool matrix_is_on(uint8_t row, uint8_t col)
 {
-    return (matrix[row] & ((matrix_row_t)1<<col));
+    return (matrix[row] & ((matrix_row_t)1<col));
 }
 
 matrix_row_t matrix_get_row(uint8_t row)
