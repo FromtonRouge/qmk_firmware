@@ -115,8 +115,6 @@ void matrix_init(void)
 
 uint8_t matrix_scan(void)
 {
-    xprintf("matrix_scan %d\n", timer_read());
-
     for (uint8_t col = 0; col < MATRIX_COLS; ++col)
     {
         uint8_t data = 0;
@@ -124,20 +122,20 @@ uint8_t matrix_scan(void)
         // Strobe col
         switch (col)
         {
-        case 6: palSetPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
-        case 7: palSetPad(TEENSY_PIN7_IOPORT, TEENSY_PIN7); break;
-        case 8: palSetPad(TEENSY_PIN8_IOPORT, TEENSY_PIN8); break;
-        case 9: palSetPad(TEENSY_PIN9_IOPORT, TEENSY_PIN9); break;
-        case 10: palSetPad(TEENSY_PIN10_IOPORT, TEENSY_PIN10); break;
-        case 11: palSetPad(TEENSY_PIN11_IOPORT, TEENSY_PIN11); break;
-        case 12: palSetPad(TEENSY_PIN12_IOPORT, TEENSY_PIN12); break;
-        case 13: palSetPad(TEENSY_PIN13_IOPORT, TEENSY_PIN13); break;
-        case 14: palSetPad(TEENSY_PIN14_IOPORT, TEENSY_PIN14); break;
-        case 15: palSetPad(TEENSY_PIN15_IOPORT, TEENSY_PIN15); break;
-        case 16: palSetPad(TEENSY_PIN16_IOPORT, TEENSY_PIN16); break;
-        case 17: palSetPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
-        case 18: palSetPad(TEENSY_PIN18_IOPORT, TEENSY_PIN18); break;
-        case 19: palSetPad(TEENSY_PIN19_IOPORT, TEENSY_PIN19); break;
+        case 0: palSetPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
+        case 1: palSetPad(TEENSY_PIN7_IOPORT, TEENSY_PIN7); break;
+        case 2: palSetPad(TEENSY_PIN8_IOPORT, TEENSY_PIN8); break;
+        case 3: palSetPad(TEENSY_PIN9_IOPORT, TEENSY_PIN9); break;
+        case 4: palSetPad(TEENSY_PIN10_IOPORT, TEENSY_PIN10); break;
+        case 5: palSetPad(TEENSY_PIN11_IOPORT, TEENSY_PIN11); break;
+        case 6: palSetPad(TEENSY_PIN12_IOPORT, TEENSY_PIN12); break;
+        case 7: palSetPad(TEENSY_PIN13_IOPORT, TEENSY_PIN13); break;
+        case 8: palSetPad(TEENSY_PIN14_IOPORT, TEENSY_PIN14); break;
+        case 9: palSetPad(TEENSY_PIN15_IOPORT, TEENSY_PIN15); break;
+        case 10: palSetPad(TEENSY_PIN16_IOPORT, TEENSY_PIN16); break;
+        case 11: palSetPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
+        case 12: palSetPad(TEENSY_PIN18_IOPORT, TEENSY_PIN18); break;
+        case 13: palSetPad(TEENSY_PIN19_IOPORT, TEENSY_PIN19); break;
         }
         
         // Need wait to settle pin state
@@ -155,20 +153,20 @@ uint8_t matrix_scan(void)
         // Unstrobe col
         switch (col)
         {
-        case 6: palClearPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
-        case 7: palClearPad(TEENSY_PIN7_IOPORT, TEENSY_PIN7); break;
-        case 8: palClearPad(TEENSY_PIN8_IOPORT, TEENSY_PIN8); break;
-        case 9: palClearPad(TEENSY_PIN9_IOPORT, TEENSY_PIN9); break;
-        case 10: palClearPad(TEENSY_PIN10_IOPORT, TEENSY_PIN10); break;
-        case 11: palClearPad(TEENSY_PIN11_IOPORT, TEENSY_PIN11); break;
-        case 12: palClearPad(TEENSY_PIN12_IOPORT, TEENSY_PIN12); break;
-        case 13: palClearPad(TEENSY_PIN13_IOPORT, TEENSY_PIN13); break;
-        case 14: palClearPad(TEENSY_PIN14_IOPORT, TEENSY_PIN14); break;
-        case 15: palClearPad(TEENSY_PIN15_IOPORT, TEENSY_PIN15); break;
-        case 16: palClearPad(TEENSY_PIN16_IOPORT, TEENSY_PIN16); break;
-        case 17: palClearPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
-        case 18: palClearPad(TEENSY_PIN18_IOPORT, TEENSY_PIN18); break;
-        case 19: palClearPad(TEENSY_PIN19_IOPORT, TEENSY_PIN19); break;
+        case 0: palClearPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
+        case 1: palClearPad(TEENSY_PIN7_IOPORT, TEENSY_PIN7); break;
+        case 2: palClearPad(TEENSY_PIN8_IOPORT, TEENSY_PIN8); break;
+        case 3: palClearPad(TEENSY_PIN9_IOPORT, TEENSY_PIN9); break;
+        case 4: palClearPad(TEENSY_PIN10_IOPORT, TEENSY_PIN10); break;
+        case 5: palClearPad(TEENSY_PIN11_IOPORT, TEENSY_PIN11); break;
+        case 6: palClearPad(TEENSY_PIN12_IOPORT, TEENSY_PIN12); break;
+        case 7: palClearPad(TEENSY_PIN13_IOPORT, TEENSY_PIN13); break;
+        case 8: palClearPad(TEENSY_PIN14_IOPORT, TEENSY_PIN14); break;
+        case 9: palClearPad(TEENSY_PIN15_IOPORT, TEENSY_PIN15); break;
+        case 10: palClearPad(TEENSY_PIN16_IOPORT, TEENSY_PIN16); break;
+        case 11: palClearPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
+        case 12: palClearPad(TEENSY_PIN18_IOPORT, TEENSY_PIN18); break;
+        case 13: palClearPad(TEENSY_PIN19_IOPORT, TEENSY_PIN19); break;
         }
 
 #if (DEBOUNCING_DELAY > 0)
