@@ -13,8 +13,8 @@ You can't buy this keyboard and have to build it yourself. You'll have to do the
 You'll need : 
 
 - [1x Teensy 3.2 with pins](https://www.pjrc.com/store/teensy32_pins.html)
-- [1x prototype pcb](https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F)
-- 1x 5mm RGB led
+- [1x (4cm x 6cm) prototype pcb](https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F)
+- 1x 5mm Common Cathode RGB led
 - 70x 1N4148 Commutation diodes
 - 70x Gateron Clear Keyswitch - Plate Mount (35g)
 - 3x 220 Ohms resistors (for the RGB led)

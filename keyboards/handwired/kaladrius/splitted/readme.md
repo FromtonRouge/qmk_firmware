@@ -17,7 +17,7 @@ You'll need :
 - [2x (5cm x 7cm) prototype pcb](https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F)
 - [2x TRRS 3.5 mm Jack Breakout Board](https://www.amazon.com/dp/B01N7NDCVI/ref=cm_sw_r_tw_dp_U_x_TXwCCb46PW6FF)
 - 1x male 2.54mm header pin
-- 2x 5mm RGB leds
+- 2x 5mm Common Cathode RGB leds
 - 70x 1N4148 Commutation diodes
 - 70x Gateron Clear Keyswitch - Plate Mount (35g)
 - 2x 2.2 kOhms resistors (for mcp23018)
