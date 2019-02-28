@@ -64,12 +64,50 @@ uint8_t matrix_cols(void) { return MATRIX_COLS; }
 
 void set_leds(bool red, bool green, bool blue)
 {
-    // TODO
+    if (red)
+    {
+        palSetPad(TEENSY_PIN21_IOPORT, TEENSY_PIN21);
+    }
+    else
+    {
+        palClearPad(TEENSY_PIN21_IOPORT, TEENSY_PIN21);
+    }
+
+    if (green)
+    {
+        palSetPad(TEENSY_PIN22_IOPORT, TEENSY_PIN22);
+    }
+    else
+    {
+        palClearPad(TEENSY_PIN22_IOPORT, TEENSY_PIN22);
+    }
+
+    if (blue)
+    {
+        palSetPad(TEENSY_PIN23_IOPORT, TEENSY_PIN23);
+    }
+    else
+    {
+        palClearPad(TEENSY_PIN23_IOPORT, TEENSY_PIN23);
+    }
 }
 
 void blink_leds(void)
 {
-    // TODO
+    const uint8_t delay = 200;
+    set_leds(true, false, false);
+    chThdSleepMilliseconds(delay);
+    set_leds(false, true, false);
+    chThdSleepMilliseconds(delay);
+    set_leds(false, false, true);
+    chThdSleepMilliseconds(delay);
+    set_leds(true, true, false);
+    chThdSleepMilliseconds(delay);
+    set_leds(false, true, true);
+    chThdSleepMilliseconds(delay);
+    set_leds(true, false, true);
+    chThdSleepMilliseconds(delay);
+    set_leds(false, false, false);
 }
 
 void matrix_init(void)
@@ -91,6 +129,10 @@ void matrix_init(void)
     palSetPadMode(TEENSY_PIN17_IOPORT, TEENSY_PIN17, PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(TEENSY_PIN18_IOPORT, TEENSY_PIN18, PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(TEENSY_PIN19_IOPORT, TEENSY_PIN19, PAL_MODE_OUTPUT_PUSHPULL);
+
+    palSetPadMode(TEENSY_PIN21_IOPORT, TEENSY_PIN21, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN22_IOPORT, TEENSY_PIN22, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN23_IOPORT, TEENSY_PIN23, PAL_MODE_OUTPUT_PUSHPULL);
 
     // Rows (sense)
     palSetPadMode(TEENSY_PIN0_IOPORT, TEENSY_PIN0, PAL_MODE_INPUT_PULLDOWN);
