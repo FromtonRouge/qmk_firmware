@@ -7,7 +7,7 @@ The main goal is to be able to code with a chorded keyboard. It's still a protot
 It's a handwired and printable keyboard.
 
 At the moment there are 2 versions of the Kaladrius
-- The standard version based on a teensy 3.2 (not functional yet). More information [here](standard/readme.md)
+- The standard version based on a teensy 3.2. More information [here](standard/readme.md)
 
   This version is easy to build.
 
