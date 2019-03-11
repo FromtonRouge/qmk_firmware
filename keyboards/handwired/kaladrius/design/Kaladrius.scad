@@ -874,7 +874,7 @@ module transform_link_system()
 {
     translate([-95, 0, 0])
     {
-        rotate([0, 0, -4])
+        rotate([0, 0, 0])
         {
             translate(-get_pcb_case_origin())
             {
@@ -887,7 +887,7 @@ module transform_link_system()
 module left_link()
 {
     transform_link_system() left_tent();
-    difference()
+    *difference()
     {
         small_radius = 1;
         roundness = 5;
@@ -1012,7 +1012,7 @@ module test_right_top_plate()
     }
 }
 
-module nut_slot(height = 11)
+module nut_slot(height = 11, force_nut_slot_z = -1, smooth_junction = false, hole_only = false)
 {
     tolerance = 0.0;
     diameter = 9;
@@ -1022,36 +1022,17 @@ module nut_slot(height = 11)
         {
             intersection()
             {
-                scale([2, 2, 3]) translate([0, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
-                size = [diameter, diameter, 10];
+                scale([2, 2, 20]) translate([0, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
+                size = [diameter, diameter, 40];
                 translate([-size[0], -size[1]/2, 0]) cube(size);
             }
         }
     }
 
-    difference()
+    module nut_hole()
     {
-        circle_radius = 4;
-        union()
-        {
-            cylinder(h=height, d=diameter, $fn = fragments_number);
-            rotate_extrude($fn = fragments_number)
-            {
-                difference()
-                {
-                    points = [
-                        [0, 0],
-                        [circle_radius + diameter/2, 0],
-                        [circle_radius + diameter/2, circle_radius],
-                        [0, circle_radius],
-                    ];
-                    polygon(points);
-                    translate([circle_radius + diameter/2, circle_radius, 0]) circle(circle_radius, $fn = fragments_number);
-                }
-            }
-        }
-
-        translate([0, 0, height-5])
+        nut_slot_z = force_nut_slot_z >= 0 ? force_nut_slot_z : height - 5;
+        translate([0, 0, nut_slot_z])
         {
             hull()
             {
@@ -1063,13 +1044,50 @@ module nut_slot(height = 11)
             nut_hole_rect();
             mirror([1, 0, 0])  nut_hole_rect();
         }
+    }
 
-        translate([0, 0, -1]) case_hole(height+2);
-
-        hull()
+    if (hole_only)
+    {
+        nut_hole();
+    }
+    else
+    {
+        difference()
         {
-            case_hole(5);
-            case_hole(4, 6.2);
+            union()
+            {
+                cylinder(h=height, d=diameter, $fn = fragments_number);
+                if (smooth_junction)
+                {
+                    rotate_extrude($fn = fragments_number)
+                    {
+                        circle_radius = 4;
+                        difference()
+                        {
+                            points = [
+                                [0, 0],
+                                [circle_radius + diameter/2, 0],
+                                [circle_radius + diameter/2, circle_radius],
+                                [0, circle_radius],
+                            ];
+                                polygon(points);
+                                translate([circle_radius + diameter/2, circle_radius, 0]) circle(circle_radius, $fn = fragments_number);
+                        }
+                    }
+                }
+            }
+
+            nut_hole();
+
+            /*
+               translate([0, 0, -1]) case_hole(height+2);
+
+               hull()
+               {
+               case_hole(5);
+               case_hole(4, 6.2);
+               }
+             */
         }
     }
 }
@@ -1118,8 +1136,8 @@ module electronic_case()
     module top_slots(holes = false)
     {
         pos_top_holes = [
-            [-30, 22],
-            [-30, -20],
+            [-28, 22],
+            [-28, -20],
         ];
 
         translate([0, 0, 2])
@@ -1130,11 +1148,15 @@ module electronic_case()
                 {
                     if (holes)
                     {
-                        case_hole(40);
+                        translate([0, 0, -3]) case_hole(40);
                     }
                     else
                     {
-                        nut_slot(20);
+                        difference()
+                        {
+                            nut_slot(20);
+                            nut_slot(force_nut_slot_z = 0, hole_only = true);
+                        }
                     }
                 }
             }
@@ -1144,9 +1166,7 @@ module electronic_case()
     module bottom_slots(holes = false)
     {
         pos_top_holes = [
-            [-30, 0],
-            [-50, 22],
-            [-50, -20],
+            [-50, 0],
         ];
 
         translate([0, 0, 2])
@@ -1161,7 +1181,7 @@ module electronic_case()
                     }
                     else
                     {
-                        nut_slot(11);
+                        nut_slot(height = 5, force_nut_slot_z = 0);
                     }
                 }
             }
@@ -1170,32 +1190,29 @@ module electronic_case()
 
     difference()
     {
+        x_offset_pcb = 3;
         union()
         {
-            translate([0, 0, 2]) pcb_case();
+            translate([x_offset_pcb, 0, 0.46]) pcb_case();
             minkowski()
             {
-                dim = [110, 60, 1];
+                dim = [60, 60, 1];
                 translate([0, 0, 0.5]) cube(dim, true);
                 cylinder(h=1, r=4, $fn = fragments_number);
             }
 
             top_slots();
-            bottom_slots();
             mirror([1, 0, 0])
             {
                 top_slots();
-                bottom_slots();
             }
         }
 
-        pcb_case(holes_only = true);
+        translate([x_offset_pcb, 0, 0]) pcb_case(holes_only = true);
         top_slots(holes = true);
-        bottom_slots(holes = true);
         mirror([1, 0, 0])
         {
             top_slots(holes = true);
-            bottom_slots(holes = true);
         }
     }
 
@@ -1236,4 +1253,94 @@ module electronic_case()
     }
 }
 
-electronic_case();
+*electronic_case();
+central_case_size = [20, 20, 12];
+module central_case_pattern()
+{
+    minkowski()
+    {
+        cube(central_case_size, true);
+        cylinder(r2=1, r1=case_shell_size,  h=case_shell_size, $fn = fragments_number);
+    }
+}
+
+module central_case_top()
+{
+    translate([0, 0, central_case_size[2]/2])
+    {
+        difference()
+        {
+            central_case_pattern();
+
+            wanted_thickness = 1;
+            factor_x = (central_case_size[0] + 2*case_shell_size - 2*wanted_thickness)/(central_case_size[0] + 2*case_shell_size);
+            factor_y = (central_case_size[1] + 2*case_shell_size - 2*wanted_thickness)/(central_case_size[1] + 2*case_shell_size);
+            factor_z = (central_case_size[2] + case_shell_size - 2*wanted_thickness)/(central_case_size[2] + case_shell_size);
+            translate([0, 0, -wanted_thickness]) scale([factor_x, factor_y, 1]) central_case_pattern();
+        }
+    }
+}
+
+*central_case_top();
+
+module contour_pattern(size, height, radius, centered, chamfer = false, chamfer_angle = 45)
+{
+    minkowski()
+    {
+        cube(size, centered);
+        cylinder(h=height, r1=radius, r2=(chamfer==false)?radius:radius-(height/tan(chamfer_angle)), $fn = fragments_number);
+    }
+}
+
+module box_contour(size, roundness, thickness, centered = false)
+{
+    translation = (centered == false) ? [roundness, roundness, 0]:[0, 0, 0];
+    translate(translation)
+    {
+        difference()
+        {
+            contour_height = 0.01;
+            base_size = [size[0]-2*roundness, size[1]-2*roundness, size[2]-contour_height];
+            contour_pattern(base_size, contour_height, roundness, centered);
+            translate([0, 0, -0.01]) scale([1, 1, 2]) contour_pattern(base_size, contour_height, roundness-thickness, centered);
+        }
+    }
+}
+
+module box_plate(size, roundness, centered = false)
+{
+    translation = (centered == false) ? [roundness, roundness, 0]:[0, 0, 0];
+    translate(translation)
+    {
+        contour_height = 0.01;
+        base_size = [size[0]-2*roundness, size[1]-2*roundness, size[2]-contour_height];
+        contour_pattern(base_size, contour_height, roundness, centered);
+    }
+}
+
+module box_bottom(size, roundness, plate_thickness, contour_thickness, centered = false)
+{
+    translation = (centered == false) ? [roundness, roundness, 0]:[0, 0, 0];
+    translate(translation)
+    {
+        contour_height = 0.5;
+        base_size = [size[0]-2*roundness, size[1]-2*roundness, plate_thickness-contour_height];
+        translate((centered == false) ? [0, 0, 0]:[0, 0, (base_size[2] - size[2])/2]) contour_pattern(base_size, contour_height, roundness-contour_thickness, centered, chamfer = true);
+    }
+}
+
+module box_top(size, roundness, plate_thickness, contour_height, contour_thickness, centered = false)
+{
+    translation = (centered == false) ? [roundness, roundness, 0]:[0, 0, 0];
+    translate(translation)
+    {
+        base_size = [size[0]-2*roundness, size[1]-2*roundness, plate_thickness-contour_height];
+        translate((centered == false) ? [0, 0, size[2]] : [0, 0, (base_size[2] + size[2])/2]) contour_pattern(base_size, contour_height, roundness, centered, chamfer = true);
+    }
+}
+
+box_size = [20, 20, 20];
+box_centered = true;
+%box_contour(box_size, 3, 1, box_centered);
+box_top(box_size, 3, 2, 1, 1, box_centered);
+box_bottom(box_size, 3, 1, 1, box_centered);
