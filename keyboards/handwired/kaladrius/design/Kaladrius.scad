@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use <Boxes.scad>
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
@@ -1283,64 +1284,11 @@ module central_case_top()
 
 *central_case_top();
 
-module contour_pattern(size, height, radius, centered, chamfer = false, chamfer_angle = 45)
-{
-    minkowski()
-    {
-        cube(size, centered);
-        cylinder(h=height, r1=radius, r2=(chamfer==false)?radius:radius-(height/tan(chamfer_angle)), $fn = fragments_number);
-    }
-}
-
-module box_contour(size, roundness, thickness, centered = false)
-{
-    translation = (centered == false) ? [roundness, roundness, 0]:[0, 0, 0];
-    translate(translation)
-    {
-        difference()
-        {
-            contour_height = 0.01;
-            base_size = [size[0]-2*roundness, size[1]-2*roundness, size[2]-contour_height];
-            contour_pattern(base_size, contour_height, roundness, centered);
-            translate([0, 0, -0.01]) scale([1, 1, 2]) contour_pattern(base_size, contour_height, roundness-thickness, centered);
-        }
-    }
-}
-
-module box_plate(size, roundness, centered = false)
-{
-    translation = (centered == false) ? [roundness, roundness, 0]:[0, 0, 0];
-    translate(translation)
-    {
-        contour_height = 0.01;
-        base_size = [size[0]-2*roundness, size[1]-2*roundness, size[2]-contour_height];
-        contour_pattern(base_size, contour_height, roundness, centered);
-    }
-}
-
-module box_bottom(size, roundness, plate_thickness, contour_thickness, centered = false)
-{
-    translation = (centered == false) ? [roundness, roundness, 0]:[0, 0, 0];
-    translate(translation)
-    {
-        contour_height = 0.5;
-        base_size = [size[0]-2*roundness, size[1]-2*roundness, plate_thickness-contour_height];
-        translate((centered == false) ? [0, 0, 0]:[0, 0, (base_size[2] - size[2])/2]) contour_pattern(base_size, contour_height, roundness-contour_thickness, centered, chamfer = true);
-    }
-}
-
-module box_top(size, roundness, plate_thickness, contour_height, contour_thickness, centered = false)
-{
-    translation = (centered == false) ? [roundness, roundness, 0]:[0, 0, 0];
-    translate(translation)
-    {
-        base_size = [size[0]-2*roundness, size[1]-2*roundness, plate_thickness-contour_height];
-        translate((centered == false) ? [0, 0, size[2]] : [0, 0, (base_size[2] + size[2])/2]) contour_pattern(base_size, contour_height, roundness, centered, chamfer = true);
-    }
-}
-
 box_size = [20, 20, 20];
-box_centered = true;
-%box_contour(box_size, 3, 1, box_centered);
-box_top(box_size, 3, 2, 1, 1, box_centered);
-box_bottom(box_size, 3, 1, 1, box_centered);
+box_centered = false;
+
+box_top_plate(box_size, 3, 2, 1, 1, box_centered, $fn = fragments_number);
+%box_contour(box_size, 3, 1, box_centered, $fn = fragments_number);
+box_bottom_plate(box_size, 3, 1, 1, box_centered, $fn = fragments_number);
+base_size = get_plate_base_size(box_size, 3, 1, 0.5);
+#transform_to_box(3, box_centered) cube(base_size);
