@@ -14,12 +14,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-module contour_shape(size, height, radius, centered, chamfer = false, chamfer_angle = 45)
+// chamfer: 0 = no chamfer, 1 = top chamfer, 2 = bottom chamfer
+module contour_shape(size, minkowski_height, radius, centered, chamfer = 0, chamfer_angle = 45)
 {
     minkowski()
     {
         cube(size, centered);
-        cylinder(h=height, r1=radius, r2=(chamfer==false)?radius:radius-(height/tan(chamfer_angle)));
+
+        if (chamfer == 0)
+        {
+            cylinder(h=minkowski_height, r1=radius, r2=radius);
+        }
+        else if (chamfer == 1)
+        {
+            cylinder(h=minkowski_height, r1=radius, r2=radius-(minkowski_height/tan(chamfer_angle)));
+        }
+        else if (chamfer == 2)
+        {
+            cylinder(h=minkowski_height, r2=radius, r1=radius-(minkowski_height/tan(chamfer_angle)));
+        }
     }
 }
 
@@ -32,29 +45,37 @@ module transform_to_box(roundness, centered = false)
     }
 }
 
-module box_contour(size, roundness, thickness, centered = false)
+module box_contour(size, roundness, plate_thickness, contour_height, centered = false)
 {
     transform_to_box(roundness, centered)
     {
         difference()
         {
-            contour_height = 0.01;
-            base_size = [size[0]-2*roundness, size[1]-2*roundness, size[2]-contour_height];
-            contour_shape(base_size, contour_height, roundness, centered);
-            translate([0, 0, -0.01]) scale([1, 1, 2]) contour_shape(base_size, contour_height, roundness-thickness, centered);
+            minkowski_height = 0.01;
+            base_size = [size[0]-2*roundness, size[1]-2*roundness, size[2]-minkowski_height];
+            union()
+            {
+                translate([0, 0, plate_thickness]) contour_shape(base_size - [0, 0, plate_thickness], minkowski_height, roundness, centered);
+                bottom_size = get_plate_base_size(size, roundness, plate_thickness, contour_height);
+                contour_shape(bottom_size, contour_height, roundness, centered, chamfer = 2);
+            }
+
+            chamfer_angle = 45;
+            radius = roundness - contour_height/tan(chamfer_angle);
+            translate([0, 0, -0.01]) scale([1, 1, 2]) contour_shape(base_size, contour_height, radius, centered, chamfer_angle = chamfer_angle);
         }
     }
 }
 
 function get_plate_base_size(size, roundness, plate_thickness, contour_height) = [size[0]-2*roundness, size[1]-2*roundness, plate_thickness-contour_height];
 
-module box_bottom_plate(size, roundness, plate_thickness, contour_thickness, centered = false)
+module box_bottom_inner_plate(size, roundness, plate_thickness, contour_thickness, centered = false)
 {
     transform_to_box(roundness, centered)
     {
         contour_height = 0.5;
         base_size = get_plate_base_size(size, roundness, plate_thickness, contour_height);
-        translate((centered == false) ? [0, 0, 0]:[0, 0, (base_size[2] - size[2])/2]) contour_shape(base_size, contour_height, roundness-contour_thickness, centered, chamfer = true);
+        translate((centered == false) ? [0, 0, 0]:[0, 0, (base_size[2] - size[2])/2]) contour_shape(base_size, contour_height, roundness-contour_thickness, centered, chamfer = 1);
     }
 }
 
@@ -63,6 +84,15 @@ module box_top_plate(size, roundness, plate_thickness, contour_height, contour_t
     transform_to_box(roundness, centered)
     {
         base_size = get_plate_base_size(size, roundness, plate_thickness, contour_height);
-        translate((centered == false) ? [0, 0, size[2]] : [0, 0, (base_size[2] + size[2])/2]) contour_shape(base_size, contour_height, roundness, centered, chamfer = true);
+        translate((centered == false) ? [0, 0, size[2]] : [0, 0, (base_size[2] + size[2])/2]) contour_shape(base_size, contour_height, roundness, centered, chamfer = 1);
+    }
+}
+
+module box_bottom_plate(size, roundness, plate_thickness, contour_height, contour_thickness, centered = false)
+{
+    transform_to_box(roundness, centered)
+    {
+        base_size = get_plate_base_size(size, roundness, plate_thickness, contour_height);
+        translate((centered == false) ? [0, 0, 0] : [0, 0, (base_size[2] + size[2])/2]) contour_shape(base_size, contour_height, roundness, centered, chamfer = 2);
     }
 }

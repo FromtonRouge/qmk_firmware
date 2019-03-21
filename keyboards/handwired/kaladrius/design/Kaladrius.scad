@@ -1255,40 +1255,77 @@ module electronic_case()
 }
 
 *electronic_case();
-central_case_size = [20, 20, 12];
-module central_case_pattern()
+
+box_size = [40, 60, 20];
+box_centered = false;
+roundness = 7;
+plate_thickness = 2;
+contour_height = 1;
+
+base_size = get_plate_base_size(box_size, roundness, 1, 0.5);
+points = [
+    [0, 0],
+    [base_size[0], 0],
+    [base_size[0], base_size[1]],
+    [0, base_size[1]],
+];
+
+*box_top_plate(box_size, roundness, plate_thickness, contour_height, 1, box_centered, $fn = fragments_number);
+*box_contour(box_size, roundness, plate_thickness, contour_height, box_centered, $fn = fragments_number);
+*box_bottom_inner_plate(box_size, roundness, plate_thickness, contour_height, box_centered, $fn = fragments_number);
+
+difference()
 {
-    minkowski()
+    union()
     {
-        cube(central_case_size, true);
-        cylinder(r2=1, r1=case_shell_size,  h=case_shell_size, $fn = fragments_number);
+        box_top_plate(box_size, roundness, plate_thickness, contour_height, 1, box_centered, $fn = fragments_number);
+        box_contour(box_size, roundness, plate_thickness, contour_height, box_centered, $fn = fragments_number);
     }
-}
 
-module central_case_top()
-{
-    translate([0, 0, central_case_size[2]/2])
+    transform_to_box(roundness, box_centered)
     {
-        difference()
+        for (point = points)
         {
-            central_case_pattern();
-
-            wanted_thickness = 1;
-            factor_x = (central_case_size[0] + 2*case_shell_size - 2*wanted_thickness)/(central_case_size[0] + 2*case_shell_size);
-            factor_y = (central_case_size[1] + 2*case_shell_size - 2*wanted_thickness)/(central_case_size[1] + 2*case_shell_size);
-            factor_z = (central_case_size[2] + case_shell_size - 2*wanted_thickness)/(central_case_size[2] + case_shell_size);
-            translate([0, 0, -wanted_thickness]) scale([factor_x, factor_y, 1]) central_case_pattern();
+            translate(point)
+            {
+                translate([0, 0, -3]) case_hole(40);
+            }
         }
     }
 }
 
-*central_case_top();
+difference()
+{
+    union()
+    {
+        box_bottom_inner_plate(box_size, roundness, plate_thickness, contour_height, box_centered, $fn = fragments_number);
+        transform_to_box(roundness, box_centered)
+        {
+            for (point = points)
+            {
+                translate(point)
+                {
+                    translate([0, 0, plate_thickness])
+                    {
+                        difference()
+                        {
+                            nut_slot(box_size[2] - plate_thickness);
+                            nut_slot(force_nut_slot_z = 0, hole_only = true);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-box_size = [20, 20, 20];
-box_centered = false;
-
-box_top_plate(box_size, 3, 2, 1, 1, box_centered, $fn = fragments_number);
-%box_contour(box_size, 3, 1, box_centered, $fn = fragments_number);
-box_bottom_plate(box_size, 3, 1, 1, box_centered, $fn = fragments_number);
-base_size = get_plate_base_size(box_size, 3, 1, 0.5);
-#transform_to_box(3, box_centered) cube(base_size);
+    transform_to_box(roundness, box_centered)
+    {
+        for (point = points)
+        {
+            translate(point)
+            {
+                translate([0, 0, -3]) case_hole(40);
+            }
+        }
+    }
+}
