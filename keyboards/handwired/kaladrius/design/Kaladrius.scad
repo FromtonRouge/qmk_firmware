@@ -587,12 +587,12 @@ module make_case_screw_hole()
     }
 }
 
-module make_pcb_case_screw_hole()
+module make_pcb_case_screw_hole(height = 2)
 {
     hull()
     {
-        translate([0,0, 2]) printable_nut_hole(2, nut_2_tolerance);
-        translate([0,0,-2]) printable_nut_hole(2, nut_2_tolerance, false);
+        translate([0,0, height]) printable_nut_hole(2, nut_2_tolerance);
+        translate([0,0,-height]) printable_nut_hole(2, nut_2_tolerance, false);
     }
 }
 
@@ -610,65 +610,62 @@ module pcb_case(mount_height = electronic_screw_mount_height, holes_only = false
         }
     }
 
-    transform_pcb_case_to_center()
+    pcb_hole_positions = [
+        [electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0],
+        [electronic_hole_to_hole_dim[0] + electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0],
+        [electronic_hole_to_hole_dim[0]+electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0],
+        [electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0]
+            ];
+
+    for (index = [0:3])
     {
-        pcb_hole_positions = [
-            [electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0],
-            [electronic_hole_to_hole_dim[0] + electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0],
-            [electronic_hole_to_hole_dim[0]+electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0],
-            [electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0]
-        ];
-
-        for (index = [0:3])
+        translate(pcb_hole_positions[index])
         {
-            translate(pcb_hole_positions[index])
-            {
-                mount(mount_height-electronic_pcb_dim[2]-0.1, electronic_screws_hole_diameter, electronic_screw_mount_diameter, holes_only);
+            mount(mount_height-electronic_pcb_dim[2]-0.1, electronic_screws_hole_diameter, electronic_screw_mount_diameter, holes_only);
 
-                if (holes_only)
+            if (holes_only)
+            {
+                make_pcb_case_screw_hole();
+            }
+        }
+    }
+
+    if (holes_only)
+    {
+        // Hole for usb port
+        roundness = 3;
+        y_offset = -6;
+        z_offset = 10;
+        hole_port_width = electronic_hole_to_hole_dim[0] - electronic_screw_mount_diameter - 4;
+        hole_ports_dim = [hole_port_width-2*roundness, 20-2*roundness, mount_height-2*roundness+0.01];
+        translate([(electronic_hole_to_hole_dim[0] - hole_port_width + electronic_screw_mount_diameter)/2,  electronic_hole_to_hole_dim[1] + y_offset, z_offset])
+        {
+            translate([roundness, roundness, roundness])
+            {
+                minkowski()
                 {
-                    make_pcb_case_screw_hole();
+                    cube(hole_ports_dim);
+                    sphere(r=roundness, $fn = fragments_number);
                 }
             }
         }
 
-        if (holes_only)
+        /*
+        // Hole to access the Teensy reset button
+        teensy_hole_rect = [electronic_hole_to_hole_dim[0]/1.5, 1, 4];
+        minkowski()
         {
-            // Hole for usb port
-            roundness = 3;
-            y_offset = -6;
-            z_offset = 10;
-            hole_port_width = electronic_hole_to_hole_dim[0] - electronic_screw_mount_diameter - 4;
-            hole_ports_dim = [hole_port_width-2*roundness, 20-2*roundness, mount_height-2*roundness+0.01];
-            translate([(electronic_hole_to_hole_dim[0] - hole_port_width + electronic_screw_mount_diameter)/2,  electronic_hole_to_hole_dim[1] + y_offset, z_offset])
-            {
-                translate([roundness, roundness, roundness])
-                {
-                    minkowski()
-                    {
-                        cube(hole_ports_dim);
-                        sphere(r=roundness, $fn = fragments_number);
-                    }
-                }
-            }
-
-            /*
-            // Hole to access the Teensy reset button
-            teensy_hole_rect = [electronic_hole_to_hole_dim[0]/1.5, 1, 4];
-            minkowski()
-            {
-            translate([electronic_pcb_dim[0]/2, electronic_pcb_dim[1]-teensy_reset_button_y, 0]) cube(teensy_hole_rect, center=true);
-            cylinder(h=1, r=1.5, $fn = fragments_number);
-            }
-             */
+        translate([electronic_pcb_dim[0]/2, electronic_pcb_dim[1]-teensy_reset_button_y, 0]) cube(teensy_hole_rect, center=true);
+        cylinder(h=1, r=1.5, $fn = fragments_number);
         }
-        else
+         */
+    }
+    else
+    {
+        minkowski()
         {
-            minkowski()
-            {
-                translate([electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0]) cube([electronic_hole_to_hole_dim[0], electronic_hole_to_hole_dim[1], electronic_hole_to_hole_dim[2]/2]);
-                cylinder(h=electronic_hole_to_hole_dim[2]/2, r=electronic_screw_mount_diameter/2, $fn = fragments_number);
-            }
+            translate([electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0]) cube([electronic_hole_to_hole_dim[0], electronic_hole_to_hole_dim[1], electronic_hole_to_hole_dim[2]/2]);
+            cylinder(h=electronic_hole_to_hole_dim[2]/2, r=electronic_screw_mount_diameter/2, $fn = fragments_number);
         }
     }
 }
@@ -1132,6 +1129,7 @@ mirror([1, 0, 0])
     *%left_keycaps();
 }
 
+/*
 module electronic_case()
 {
     module top_slots(holes = false)
@@ -1253,11 +1251,9 @@ module electronic_case()
         pcb_case(holes_only = true);
     }
 }
+*/
 
-*electronic_case();
-
-box_size = [40, 60, 20];
-box_centered = false;
+box_size = [70, 65, 20];
 roundness = 7;
 plate_thickness = 2;
 contour_height = 1;
@@ -1270,62 +1266,119 @@ points = [
     [0, base_size[1]],
 ];
 
-*box_top_plate(box_size, roundness, plate_thickness, contour_height, 1, box_centered, $fn = fragments_number);
-*box_contour(box_size, roundness, plate_thickness, contour_height, box_centered, $fn = fragments_number);
-*box_bottom_inner_plate(box_size, roundness, plate_thickness, contour_height, box_centered, $fn = fragments_number);
-
-difference()
+*translate([-base_size[0]/2-roundness, -base_size[1]/2-roundness, 0])
 {
-    union()
-    {
-        box_top_plate(box_size, roundness, plate_thickness, contour_height, 1, box_centered, $fn = fragments_number);
-        box_contour(box_size, roundness, plate_thickness, contour_height, box_centered, $fn = fragments_number);
-    }
-
-    transform_to_box(roundness, box_centered)
-    {
-        for (point = points)
-        {
-            translate(point)
-            {
-                translate([0, 0, -3]) case_hole(40);
-            }
-        }
-    }
+    box_top_plate(box_size, roundness, plate_thickness, contour_height, 1, false, $fn = fragments_number);
+    box_contour(box_size, roundness, plate_thickness, contour_height, false, $fn = fragments_number);
+    box_bottom_inner_plate(box_size, roundness, plate_thickness, contour_height, false, $fn = fragments_number);
 }
 
-difference()
+module electronic_pcb(holes_only = false)
 {
-    union()
+    // Center the pcb plate on x and y
+    x_offset_to_recenter = 3;
+    translate([x_offset_to_recenter, 0, 0])
     {
-        box_bottom_inner_plate(box_size, roundness, plate_thickness, contour_height, box_centered, $fn = fragments_number);
-        transform_to_box(roundness, box_centered)
+        translate([-(electronic_hole_to_hole_dim[0]+electronic_screw_mount_diameter)/2, -(electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter)/2, plate_thickness])
         {
-            for (point = points)
+            pcb_hole_positions = [
+                [electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0],
+                [electronic_hole_to_hole_dim[0] + electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0],
+                [electronic_hole_to_hole_dim[0]+electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0],
+                [electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0]
+                    ];
+
+            mount_height = electronic_screw_mount_height-electronic_pcb_dim[2]-0.1;
+            for (pcb_hole_position = pcb_hole_positions)
             {
-                translate(point)
+                translate(pcb_hole_position)
                 {
-                    translate([0, 0, plate_thickness])
+                    if (holes_only)
                     {
-                        difference()
-                        {
-                            nut_slot(box_size[2] - plate_thickness);
-                            nut_slot(force_nut_slot_z = 0, hole_only = true);
-                        }
+                        cylinder(h=mount_height*1.5, d=electronic_screws_hole_diameter, $fn = fragments_number);
+                        translate([0, 0, -1.6]) make_pcb_case_screw_hole(0.5);
+                    }
+                    else
+                    {
+                        cylinder(h=mount_height, d=electronic_screw_mount_diameter, $fn= fragments_number);
                     }
                 }
             }
         }
     }
+}
 
-    transform_to_box(roundness, box_centered)
+module electronic_case()
+{
+    // Create holes
+    difference()
     {
-        for (point = points)
+        union()
         {
-            translate(point)
+            electronic_pcb();
+
+            // Center the case on x and y
+            translate([-base_size[0]/2-roundness, -base_size[1]/2-roundness, 0])
             {
-                translate([0, 0, -3]) case_hole(40);
+                %difference()
+                {
+                    union()
+                    {
+                        box_top_plate(box_size, roundness, plate_thickness, contour_height, 1, false, $fn = fragments_number);
+                        box_contour(box_size, roundness, plate_thickness, contour_height, false, $fn = fragments_number);
+                    }
+
+                    transform_to_box(roundness, false)
+                    {
+                        for (point = points)
+                        {
+                            translate(point)
+                            {
+                                translate([0, 0, -3]) case_hole(40);
+                            }
+                        }
+                    }
+                }
+
+                difference()
+                {
+                    union()
+                    {
+                        box_bottom_inner_plate(box_size, roundness, plate_thickness, contour_height, false, $fn = fragments_number);
+                        transform_to_box(roundness, false)
+                        {
+                            for (point = points)
+                            {
+                                translate(point)
+                                {
+                                    translate([0, 0, plate_thickness])
+                                    {
+                                        difference()
+                                        {
+                                            nut_slot(box_size[2] - plate_thickness);
+                                            nut_slot(force_nut_slot_z = 0, hole_only = true);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    transform_to_box(roundness, false)
+                    {
+                        for (point = points)
+                        {
+                            translate(point)
+                            {
+                                translate([0, 0, -3]) case_hole(40);
+                            }
+                        }
+                    }
+                }
             }
         }
+        electronic_pcb(true);
     }
 }
+
+electronic_case();
