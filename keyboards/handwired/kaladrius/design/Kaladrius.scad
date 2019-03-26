@@ -1010,10 +1010,9 @@ module test_right_top_plate()
     }
 }
 
-module nut_slot(height = 11, force_nut_slot_z = -1, smooth_junction = false, hole_only = false)
+module nut_slot(height = 11, diameter = 9, force_nut_slot_z = -1, smooth_junction = false, hole_only = false)
 {
     tolerance = 0.0;
-    diameter = 9;
     module nut_hole_rect()
     {
         translate([-3.5, 0, 0])
@@ -1175,7 +1174,7 @@ module electronic_pcb(plate_thickness, holes_only = false)
                 hole_port_width = 17;
                 hole_port_height = 8;
                 hole_ports_dim = [hole_port_width-2*roundness, 20-2*roundness, hole_port_height-2*roundness];
-                usb_offset = [17, 0, mount_height + 6.5];
+                usb_offset = [17, 0, mount_height + 6];
                 translate(pcb_hole_positions[3] + usb_offset)
                 {
                     minkowski()
@@ -1205,10 +1204,10 @@ module electronic_case(top = true, bottom = true)
         }
     }
 
-    box_size = [66, 65, 20];
+    box_size = [65, 70, 20];
     roundness = 7;
-    plate_thickness = 2;
-    contour_height = 1;
+    plate_thickness = 3;
+    contour_height = 2.999999;
 
     base_size = get_plate_base_size(box_size, roundness, 1, 0.5);
 
@@ -1304,5 +1303,13 @@ module electronic_case(top = true, bottom = true)
     }
 }
 
-electronic_case(top = false);
+*electronic_case(top = false);
+*electronic_case(bottom = false);
+
+difference()
+{
+	electronic_case(top = false);
+	electronic_case(bottom = false);
+}
+
 translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);

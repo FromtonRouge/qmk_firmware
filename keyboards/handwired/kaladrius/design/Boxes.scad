@@ -75,7 +75,7 @@ module box_bottom_inner_plate(size, roundness, plate_thickness, contour_thicknes
     {
         contour_height = 0.5;
         base_size = get_plate_base_size(size, roundness, plate_thickness, contour_height);
-        translate((centered == false) ? [0, 0, 0]:[0, 0, (base_size[2] - size[2])/2]) contour_shape(base_size, contour_height, roundness-contour_thickness, centered, chamfer = 1);
+        translate((centered == false) ? [0, 0, 0]:[0, 0, (base_size[2] - size[2])/2]) contour_shape(base_size, contour_height, roundness-contour_thickness, centered, chamfer = 0);
     }
 }
 
