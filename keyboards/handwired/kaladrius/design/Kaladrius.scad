@@ -1207,7 +1207,7 @@ module electronic_case(top = true, bottom = true)
     box_size = [65, 70, 20];
     roundness = 7;
     plate_thickness = 3;
-    contour_height = 2.999999;
+    contour_height = 2.99999;
 
     base_size = get_plate_base_size(box_size, roundness, 1, 0.5);
 
@@ -1258,6 +1258,9 @@ module electronic_case(top = true, bottom = true)
                             box_bottom_inner_plate(box_size, roundness, plate_thickness, contour_height, false, $fn = fragments_number);
                             transform_to_box(roundness, false)
                             {
+                                nut_slot_height = box_size[2] - plate_thickness;
+                                echo("nut_slot_height", nut_slot_height);
+                                echo("plate_thickness", plate_thickness);
                                 for (point = points)
                                 {
                                     translate(point)
@@ -1266,7 +1269,7 @@ module electronic_case(top = true, bottom = true)
                                         {
                                             difference()
                                             {
-                                                nut_slot(box_size[2] - plate_thickness);
+                                                nut_slot(nut_slot_height);
                                                 nut_slot(force_nut_slot_z = 0, hole_only = true);
                                             }
                                         }
@@ -1303,13 +1306,24 @@ module electronic_case(top = true, bottom = true)
     }
 }
 
-*electronic_case(top = false);
-*electronic_case(bottom = false);
-
-difference()
+l_size = [60, 60];
+plate_thickness = 3;
+roundness = 9/2;
+bottom_plate(l_size, roundness, plate_thickness, $fn = fragments_number);
+points = get_points_from_rect(l_size);
+for (p = points)
 {
-	electronic_case(top = false);
-	electronic_case(bottom = false);
+    translate(p)
+    {
+        translate([0, 0, plate_thickness])
+        difference()
+        {
+            nut_slot(20);
+            nut_slot(force_nut_slot_z = 0, hole_only = true);
+        }
+    }
 }
 
-translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
+*electronic_case(top = false);
+*electronic_case(bottom = false);
+*translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);

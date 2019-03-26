@@ -75,11 +75,11 @@ module box_bottom_inner_plate(size, roundness, plate_thickness, contour_thicknes
     {
         contour_height = 0.5;
         base_size = get_plate_base_size(size, roundness, plate_thickness, contour_height);
-        translate((centered == false) ? [0, 0, 0]:[0, 0, (base_size[2] - size[2])/2]) contour_shape(base_size, contour_height, roundness-contour_thickness, centered, chamfer = 0);
+        translate((centered == false) ? [0, 0, 0]:[0, 0, (base_size[2] - size[2])/2]) contour_shape(base_size, contour_height, roundness-contour_thickness, centered, chamfer = 1);
     }
 }
 
-module box_top_plate(size, roundness, plate_thickness, contour_height, contour_thickness, centered = false)
+module box_top_plate(size, roundness, plate_thickness, contour_height, centered = false)
 {
     transform_to_box(roundness, centered)
     {
@@ -88,11 +88,11 @@ module box_top_plate(size, roundness, plate_thickness, contour_height, contour_t
     }
 }
 
-module box_bottom_plate(size, roundness, plate_thickness, contour_height, contour_thickness, centered = false)
+module bottom_plate(size_xy, roundness, plate_thickness)
 {
-    transform_to_box(roundness, centered)
-    {
-        base_size = get_plate_base_size(size, roundness, plate_thickness, contour_height);
-        translate((centered == false) ? [0, 0, 0] : [0, 0, (base_size[2] + size[2])/2]) contour_shape(base_size, contour_height, roundness, centered, chamfer = 2);
-    }
+    minkowski_height = plate_thickness/2;
+    size_xyz = [size_xy[0], size_xy[1], plate_thickness-minkowski_height];
+    translate([0, 0, size_xyz[2]/2]) contour_shape(size_xyz, minkowski_height, roundness, centered = true, chamfer = 1);
 }
+
+function get_points_from_rect(rect) = [[-rect[0]/2, -rect[1]/2], [rect[0]/2, -rect[1]/2], [rect[0]/2, rect[1]/2], [-rect[0]/2, rect[1]/2]];
