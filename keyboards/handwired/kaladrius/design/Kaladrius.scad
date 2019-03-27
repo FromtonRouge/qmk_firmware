@@ -1308,9 +1308,18 @@ module electronic_case(top = true, bottom = true)
 
 l_size = [60, 60];
 plate_thickness = 3;
+contour_height = 2.99999;
 roundness = 9/2;
 bottom_plate(l_size, roundness, plate_thickness, $fn = fragments_number);
-points = get_points_from_rect(l_size);
+
+base = get_bottom_plate_base_cube(l_size, roundness, plate_thickness);
+bounding_box = get_bottom_plate_bounding_box(l_size, roundness, plate_thickness);
+%translate([0, 0, bounding_box[2]/2])
+{
+	cube(bounding_box, center = true);
+}
+
+points = get_points_from_rect(base);
 for (p = points)
 {
     translate(p)
