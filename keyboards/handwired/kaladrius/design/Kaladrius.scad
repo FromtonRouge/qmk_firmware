@@ -1308,27 +1308,63 @@ module electronic_case(top = true, bottom = true)
 
 l_size = [60, 60];
 plate_thickness = 3;
+wall_thickness = 3;
+nut_slot_height = 20;
 contour_height = 2.99999;
 roundness = 9/2;
-bottom_plate(l_size, roundness, plate_thickness, $fn = fragments_number);
+parameters = get_box_parameters(l_size, roundness, plate_thickness, wall_thickness);
+minkowski_height = parameters[4]*tan(45);
 
-base = get_bottom_plate_base_cube(l_size, roundness, plate_thickness);
-bounding_box = get_bottom_plate_bounding_box(l_size, roundness, plate_thickness);
-%translate([0, 0, bounding_box[2]/2])
+union()
 {
-	cube(bounding_box, center = true);
+    bottom_plate(parameters, $fn = fragments_number);
+    points = get_points_from_rect(parameters[0]);
+    for (p = points)
+    {
+        translate(p)
+        {
+            translate([0, 0, plate_thickness])
+            {
+                difference()
+                {
+                    nut_slot(nut_slot_height - 0.3);
+                    nut_slot(force_nut_slot_z = 0, hole_only = true);
+                }
+            }
+        }
+    }
 }
 
-points = get_points_from_rect(base);
-for (p = points)
+union()
 {
-    translate(p)
+    difference()
     {
-        translate([0, 0, plate_thickness])
-        difference()
+        cube_size = [parameters[0][0], parameters[0][1], nut_slot_height + plate_thickness - minkowski_height];
+        translate([0, 0, cube_size[2]/2])
         {
-            nut_slot(20);
-            nut_slot(force_nut_slot_z = 0, hole_only = true);
+            minkowski()
+            {
+                cube(cube_size, true);
+                cylinder(h=minkowski_height, r1=parameters[3], r2=parameters[3]+parameters[4], $fn = fragments_number);
+            }
+        }
+
+        translate([0, 0, cube_size[2]/2])
+        {
+            minkowski()
+            {
+                cube(cube_size + [0, 0, 1], true);
+                cylinder(h=minkowski_height, r=parameters[3], $fn = fragments_number);
+            }
+        }
+    }
+
+    translate([0, 0, parameters[0][2]/2 + nut_slot_height + plate_thickness])
+    {
+        minkowski()
+        {
+            cube(parameters[0], true);
+            cylinder(h=minkowski_height, r2=parameters[3], r1=parameters[3]+parameters[4], $fn = fragments_number);
         }
     }
 }

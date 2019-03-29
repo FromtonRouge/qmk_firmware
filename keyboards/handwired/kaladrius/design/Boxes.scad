@@ -88,20 +88,34 @@ module box_top_plate(size, roundness, plate_thickness, contour_height, centered 
     }
 }
 
-function get_bottom_plate_base_cube(size_xy, radius, plate_thickness) = [size_xy[0]-2*radius, size_xy[1]-2*radius, plate_thickness/2];
-function get_bottom_plate_bounding_box(size_xy, radius, plate_thickness) = get_bottom_plate_base_cube(size_xy, radius, plate_thickness) + [2*(radius+plate_thickness/(2*tan(45))), 2*(radius+plate_thickness/(2*tan(45))), plate_thickness/2];
-module bottom_plate(size_xy, radius, plate_thickness)
-{
-    minkowski_height = plate_thickness/2;
-    size_xyz = get_bottom_plate_base_cube(size_xy, radius, plate_thickness);
-    translate([0, 0, size_xyz[2]/2])
-	{
-		minkowski()
-		{
-			cube(size_xyz, center = true);
-			cylinder(h=minkowski_height, r1=radius+(minkowski_height/tan(45)), r2=radius);
-		}
-	}
-}
-
 function get_points_from_rect(rect) = [[-rect[0]/2, -rect[1]/2], [rect[0]/2, -rect[1]/2], [rect[0]/2, rect[1]/2], [-rect[0]/2, rect[1]/2]];
+function get_box_parameters(size_xy, radius, plate_thickness, wall_thickness) =
+[
+    // Base Cube
+    [size_xy[0]-2*radius, size_xy[1]-2*radius, plate_thickness/2],
+
+    // Minkowski height
+    plate_thickness/2,
+
+    // Internal radius,
+    radius,
+
+    // External radius
+    radius + plate_thickness/2*tan(45),
+
+    // Wall thickness
+    wall_thickness,
+];
+
+module bottom_plate(parameters)
+{
+    base_cube = parameters[0];
+    translate([0, 0, base_cube[2]/2])
+    {
+        minkowski()
+        {
+            cube(base_cube, center = true);
+            cylinder(h=parameters[1], r1=parameters[3], r2=parameters[2]);
+        }
+    }
+}
