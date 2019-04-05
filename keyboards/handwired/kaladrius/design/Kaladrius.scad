@@ -100,7 +100,6 @@ function get_thumb_anchor() = k[6][3] - [0, 3*(switch_hole_width+switch_spacing)
 function get_thumb_origin() = get_thumb_anchor() + [thumb_x, -thumb_y];
 function get_tent_bounding_box() = [tent_size[0] + electronic_screw_mount_diameter, tent_size[1] + electronic_screw_mount_diameter, electronic_screw_mount_height];
 function get_pcb_case_origin() = get_kaladrius_origin() + pcb_case_pos;
-function get_pcb_case_size() = [electronic_hole_to_hole_dim[0] + electronic_screw_mount_diameter, electronic_hole_to_hole_dim[1] + electronic_screw_mount_diameter, electronic_screw_mount_height];
 function get_tenting_angle() = atan(electronic_screw_mount_height/(get_kaladrius_origin()[0]-get_pcb_case_origin()[0]));
 
 module printable_nut_hole(size, tolerance, cone=true)
@@ -158,11 +157,6 @@ module transform_thumb()
             children();
         }
     }
-}
-
-module transform_pcb_case()
-{
-    translate([get_pcb_case_origin()[0], get_pcb_case_origin()[1], -electronic_screw_mount_height])  children();
 }
 
 module holes(offset=0, height = switch_hole_height, has_additional_border = true)
@@ -1143,7 +1137,7 @@ module electronic_pcb(plate_thickness, holes_only = false)
                 [electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0]
                     ];
 
-            mount_height = electronic_screw_mount_height-electronic_pcb_dim[2]-0.1;
+            mount_height = 5;
             for (pcb_hole_position = pcb_hole_positions)
             {
                 translate(pcb_hole_position)
@@ -1151,7 +1145,7 @@ module electronic_pcb(plate_thickness, holes_only = false)
                     if (holes_only)
                     {
                         cylinder(h=mount_height*1.5, d=electronic_screws_hole_diameter, $fn = fragments_number);
-                        translate([0, 0, -1.6]) make_pcb_case_screw_hole(0.5);
+                        translate([0, 0, -2.9]) make_pcb_case_screw_hole();
                     }
                     else
                     {
@@ -1159,40 +1153,25 @@ module electronic_pcb(plate_thickness, holes_only = false)
                     }
                 }
             }
-
-            if (holes_only)
-            {
-                // Led hole
-                led_offset = [17, 7, 5];
-                translate(pcb_hole_positions[0] + led_offset)
-                {
-                    cylinder(h=20, d=5, $fn = fragments_number);
-                }
-
-                // Usb hole
-                roundness = 3;
-                hole_port_width = 17;
-                hole_port_height = 8;
-                hole_ports_dim = [hole_port_width-2*roundness, 20-2*roundness, hole_port_height-2*roundness];
-                usb_offset = [17, 0, mount_height + 6];
-                translate(pcb_hole_positions[3] + usb_offset)
-                {
-                    minkowski()
-                    {
-                        cube(hole_ports_dim, center = true);
-                        sphere(r=roundness, $fn = fragments_number);
-                    }
-                }
-            }
         }
     }
 }
+
+plate_size = [60, 63];
+plate_thickness = 3;
+wall_thickness = 3;
+nut_slot_height = 20;
+contour_height = 2.99999;
+roundness = 9/2;
+parameters = get_box_parameters(plate_size, roundness, plate_thickness, wall_thickness);
+minkowski_height = parameters[4]*tan(45);
+points = get_points_from_rect(parameters[0]);
 
 module electronic_case(top = true, bottom = true)
 {
     module lateral_hole()
     {
-        lateral_hole_dim = [6, 30, 15];
+        lateral_hole_dim = [10, 30, 15];
         translate([-30, 0, lateral_hole_dim[2]/2])
         {
             roundness = 3;
@@ -1204,87 +1183,30 @@ module electronic_case(top = true, bottom = true)
         }
     }
 
-    box_size = [65, 70, 20];
-    roundness = 7;
-    plate_thickness = 3;
-    contour_height = 2.99999;
-
-    base_size = get_plate_base_size(box_size, roundness, 1, 0.5);
-
-    points = [
-        [0, 0],
-        [base_size[0], 0],
-        [base_size[0], base_size[1]],
-        [0, base_size[1]],
-    ];
-
     // Create holes
     difference()
     {
+        // Bottom + Top case
         union()
         {
-            // Center the case on x and y
-            translate([-base_size[0]/2-roundness, -base_size[1]/2-roundness, 0])
+            // Bottom case
+            if (bottom)
             {
-                if (top)
+                union()
                 {
-                    difference()
+                    electronic_pcb(plate_thickness);
+
+                    bottom_plate(parameters, $fn = fragments_number);
+                    for (p = points)
                     {
-                        union()
+                        translate(p)
                         {
-                            box_top_plate(box_size, roundness, plate_thickness, contour_height, 1, false, $fn = fragments_number);
-                            box_contour(box_size, roundness, plate_thickness, contour_height, false, $fn = fragments_number);
-                        }
-
-                        transform_to_box(roundness, false)
-                        {
-                            for (point = points)
+                            translate([0, 0, plate_thickness])
                             {
-                                translate(point)
+                                difference()
                                 {
-                                    translate([0, 0, -3]) case_hole(40);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (bottom)
-                {
-                    difference()
-                    {
-                        union()
-                        {
-                            box_bottom_inner_plate(box_size, roundness, plate_thickness, contour_height, false, $fn = fragments_number);
-                            transform_to_box(roundness, false)
-                            {
-                                nut_slot_height = box_size[2] - plate_thickness;
-                                echo("nut_slot_height", nut_slot_height);
-                                echo("plate_thickness", plate_thickness);
-                                for (point = points)
-                                {
-                                    translate(point)
-                                    {
-                                        translate([0, 0, plate_thickness])
-                                        {
-                                            difference()
-                                            {
-                                                nut_slot(nut_slot_height);
-                                                nut_slot(force_nut_slot_z = 0, hole_only = true);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        transform_to_box(roundness, false)
-                        {
-                            for (point = points)
-                            {
-                                translate(point)
-                                {
-                                    translate([0, 0, -3]) case_hole(40);
+                                    nut_slot(nut_slot_height - 0.3);
+                                    nut_slot(force_nut_slot_z = 0, hole_only = true);
                                 }
                             }
                         }
@@ -1292,13 +1214,77 @@ module electronic_case(top = true, bottom = true)
                 }
             }
 
-            if (bottom)
+            // Top case
+            if (top)
             {
-                electronic_pcb(plate_thickness);
+                union()
+                {
+                    difference()
+                    {
+                        cube_size = [parameters[0][0], parameters[0][1], nut_slot_height + plate_thickness - minkowski_height];
+                        translate([0, 0, cube_size[2]/2])
+                        {
+                            minkowski()
+                            {
+                                cube(cube_size, true);
+                                cylinder(h=minkowski_height, r1=parameters[3], r2=parameters[3]+parameters[4], $fn = fragments_number);
+                            }
+                        }
+
+                        translate([0, 0, cube_size[2]/2])
+                        {
+                            minkowski()
+                            {
+                                cube(cube_size + [0, 0, 1], true);
+                                cylinder(h=minkowski_height, r=parameters[3], $fn = fragments_number);
+                            }
+                        }
+                    }
+
+                    translate([0, 0, parameters[0][2]/2 + nut_slot_height + plate_thickness])
+                    {
+                        minkowski()
+                        {
+                            cube(parameters[0], true);
+                            cylinder(h=minkowski_height, r2=parameters[3], r1=parameters[3]+parameters[4], $fn = fragments_number);
+                        }
+                    }
+                }
             }
         }
 
+        // Holes for the pcb mount
         electronic_pcb(plate_thickness, holes_only = true);
+
+        // Holes for the link between the top and bottom cases
+        for (p = points)
+        {
+            translate(p)
+            {
+                translate([0, 0, -3]) case_hole(40);
+            }
+        }
+
+        // Led hole
+        hull()
+        {
+            translate([0, points[0][1]+15, 6]) cylinder(h=40, d=5, $fn = fragments_number);
+            translate([0, points[0][1], 6]) cylinder(h=40, d=5, $fn = fragments_number);
+        }
+
+        // Usb hole
+        roundness = 3;
+        hole_port_width = 17;
+        hole_port_height = 8;
+        hole_ports_dim = [hole_port_width-2*roundness, 20-2*roundness, hole_port_height-2*roundness];
+        translate([0, plate_size[1]/2, 14])
+        {
+            minkowski()
+            {
+                cube(hole_ports_dim, center = true);
+                sphere(r=roundness, $fn = fragments_number);
+            }
+        }
 
         // Lateral holes
         lateral_hole();
@@ -1306,69 +1292,5 @@ module electronic_case(top = true, bottom = true)
     }
 }
 
-l_size = [60, 60];
-plate_thickness = 3;
-wall_thickness = 3;
-nut_slot_height = 20;
-contour_height = 2.99999;
-roundness = 9/2;
-parameters = get_box_parameters(l_size, roundness, plate_thickness, wall_thickness);
-minkowski_height = parameters[4]*tan(45);
-
-union()
-{
-    bottom_plate(parameters, $fn = fragments_number);
-    points = get_points_from_rect(parameters[0]);
-    for (p = points)
-    {
-        translate(p)
-        {
-            translate([0, 0, plate_thickness])
-            {
-                difference()
-                {
-                    nut_slot(nut_slot_height - 0.3);
-                    nut_slot(force_nut_slot_z = 0, hole_only = true);
-                }
-            }
-        }
-    }
-}
-
-union()
-{
-    difference()
-    {
-        cube_size = [parameters[0][0], parameters[0][1], nut_slot_height + plate_thickness - minkowski_height];
-        translate([0, 0, cube_size[2]/2])
-        {
-            minkowski()
-            {
-                cube(cube_size, true);
-                cylinder(h=minkowski_height, r1=parameters[3], r2=parameters[3]+parameters[4], $fn = fragments_number);
-            }
-        }
-
-        translate([0, 0, cube_size[2]/2])
-        {
-            minkowski()
-            {
-                cube(cube_size + [0, 0, 1], true);
-                cylinder(h=minkowski_height, r=parameters[3], $fn = fragments_number);
-            }
-        }
-    }
-
-    translate([0, 0, parameters[0][2]/2 + nut_slot_height + plate_thickness])
-    {
-        minkowski()
-        {
-            cube(parameters[0], true);
-            cylinder(h=minkowski_height, r2=parameters[3], r1=parameters[3]+parameters[4], $fn = fragments_number);
-        }
-    }
-}
-
-*electronic_case(top = false);
-*electronic_case(bottom = false);
+electronic_case(top = false);
 *translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
