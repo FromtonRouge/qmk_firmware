@@ -1167,18 +1167,29 @@ module pcb_prototype_board_and_teensy(holes_only)
     // Mine is an Elegoo (40 x 60 mm)
     board_dim = [40, 60, 1.5];
     x_offset = -1;
+    led_diameter = 5;
+    led_height = 12;
 
     if (holes_only)
     {
         translate([x_offset, board_dim[1]/2 - 4.66, board_dim[2]])
         {
             teensy32(holes_only);
+
+            hole_diameter = led_diameter + 2;
+            hole_height = led_height + 1;
+            translate([0, -35.56 - 12, 0])
+            {
+                translate([0, 0, hole_height-hole_diameter/2]) sphere(d=hole_diameter, $fn = fragments_number);
+                cylinder(h=hole_height-hole_diameter/2, d=hole_diameter, $fn = fragments_number);
+            }
         }
     }
     else
     {
         %union()
         {
+            // Board
             translate([0, 0, board_dim[2]/2])
             {
                 cube(board_dim, true);
@@ -1186,7 +1197,15 @@ module pcb_prototype_board_and_teensy(holes_only)
 
             translate([x_offset, board_dim[1]/2 - 4.66, board_dim[2]])
             {
+                // Teensy
                 teensy32();
+
+                // Led
+                translate([0, -35.56 - 12, 0])
+                {
+                    translate([0, 0, led_height-led_diameter/2]) sphere(d=led_diameter, $fn = fragments_number);
+                    cylinder(h=led_height-led_diameter/2, d=led_diameter, $fn = fragments_number);
+                }
             }
         }
     }
@@ -1225,29 +1244,44 @@ module teensy32(holes_only)
 
     translate([0, -pcb[1]/2, pins_dim[2]])
     {
-        // Pcb
-        translate([0, 0, pcb[2]/2])
+        if (!holes_only)
         {
-            cube(pcb, true);
-        }
-
-        // Reset button
-        translate([0, pcb[1]/2 - 1.27 - 29.97, 0])
-        {
-            reset = [3, 2.2, 2.5];
-            translate([0, 0, reset[2]/2 + pcb[2]])
+            // Pcb
+            translate([0, 0, pcb[2]/2])
             {
-                cube(reset, true);
+                cube(pcb, true);
+            }
+
+            // Reset button
+            translate([0, pcb[1]/2 - 1.27 - 29.97, 0])
+            {
+                reset = [3, 2.2, 2.5];
+                translate([0, 0, reset[2]/2 + pcb[2]])
+                {
+                    cube(reset, true);
+                }
+            }
+
+            // Usb
+            usb = [7.5, 5, 2.5];
+            translate([0, pcb[1]/2 - usb[1]/2, 0])
+            {
+                translate([0, 0, usb[2]/2 + pcb[2]])
+                {
+                    cube(usb, true);
+                }
             }
         }
-
-        // Usb
-        usb = [7.5, 5, 2.5];
-        translate([0, pcb[1]/2 - usb[1]/2, 0])
+        else
         {
-            translate([0, 0, usb[2]/2 + pcb[2]])
+            // Reset button hole
+            translate([0, pcb[1]/2 - 1.27 - 29.97, 0])
             {
-                cube(usb, true);
+                reset = [3, 2.2, 2.5];
+                translate([0, 0, reset[2] + pcb[2]])
+                {
+                    cylinder(h=20, d=3, $fn = fragments_number);
+                }
             }
         }
 
@@ -1260,7 +1294,7 @@ module teensy32(holes_only)
 plate_size = [60, 63];
 plate_thickness = 3;
 wall_thickness = 3;
-nut_slot_height = 20;
+nut_slot_height = 14;
 contour_height = 2.99999;
 roundness = 9/2;
 parameters = get_box_parameters(plate_size, roundness, plate_thickness, wall_thickness);
@@ -1305,7 +1339,7 @@ module electronic_case(top = true, bottom = true)
                             {
                                 difference()
                                 {
-                                    nut_slot(nut_slot_height - 0.3);
+                                    nut_slot(nut_slot_height - 1);
                                     nut_slot(force_nut_slot_z = 0, hole_only = true);
                                 }
                             }
@@ -1365,13 +1399,6 @@ module electronic_case(top = true, bottom = true)
             }
         }
 
-        // Led hole
-        hull()
-        {
-            translate([0, points[0][1]+15, 6]) cylinder(h=40, d=5, $fn = fragments_number);
-            translate([0, points[0][1], 6]) cylinder(h=40, d=5, $fn = fragments_number);
-        }
-
         // Usb hole
         roundness = 3;
         hole_port_width = 17;
@@ -1392,5 +1419,6 @@ module electronic_case(top = true, bottom = true)
     }
 }
 
-electronic_case(top = false);
-*translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
+*electronic_case(bottom = false);
+*electronic_case(top = false);
+translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
