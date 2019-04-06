@@ -1294,7 +1294,7 @@ module teensy32(holes_only)
 plate_size = [60, 63];
 plate_thickness = 3;
 wall_thickness = 3;
-nut_slot_height = 14;
+nut_slot_height = 15;
 contour_height = 2.99999;
 roundness = 9/2;
 parameters = get_box_parameters(plate_size, roundness, plate_thickness, wall_thickness);
@@ -1420,5 +1420,5 @@ module electronic_case(top = true, bottom = true)
 }
 
 *electronic_case(bottom = false);
-*electronic_case(top = false);
-translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
+electronic_case(top = false);
+*translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
