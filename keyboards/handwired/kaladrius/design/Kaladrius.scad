@@ -1126,6 +1126,7 @@ module electronic_pcb(plate_thickness, holes_only = false)
 {
     // Center the pcb plate on x and y
     x_offset_to_recenter = 1;
+    mount_height = 4;
     translate([x_offset_to_recenter, 0, 0])
     {
         translate([-(electronic_hole_to_hole_dim[0]+electronic_screw_mount_diameter)/2, -(electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter)/2, plate_thickness])
@@ -1137,7 +1138,6 @@ module electronic_pcb(plate_thickness, holes_only = false)
                 [electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0]
                     ];
 
-            mount_height = 5;
             for (pcb_hole_position = pcb_hole_positions)
             {
                 translate(pcb_hole_position)
@@ -1154,6 +1154,106 @@ module electronic_pcb(plate_thickness, holes_only = false)
                 }
             }
         }
+
+        translate([0, 0, plate_thickness + mount_height])
+        {
+            pcb_prototype_board_and_teensy(holes_only);
+        }
+    }
+}
+
+module pcb_prototype_board_and_teensy(holes_only)
+{
+    // Mine is an Elegoo (40 x 60 mm)
+    board_dim = [40, 60, 1.5];
+    x_offset = -1;
+
+    if (holes_only)
+    {
+        translate([x_offset, board_dim[1]/2 - 4.66, board_dim[2]])
+        {
+            teensy32(holes_only);
+        }
+    }
+    else
+    {
+        %union()
+        {
+            translate([0, 0, board_dim[2]/2])
+            {
+                cube(board_dim, true);
+            }
+
+            translate([x_offset, board_dim[1]/2 - 4.66, board_dim[2]])
+            {
+                teensy32();
+            }
+        }
+    }
+}
+
+module teensy32(holes_only)
+{
+    // See https://www.pjrc.com/teensy/dimensions.html
+    pcb = [17.78, 35.56, 1.57];
+    pins_dim = [2.3, pcb[1], 4-pcb[2]];
+
+    module make_pins()
+    {
+        translate([7.62, 0, -pins_dim[2]/2])
+        {
+            cube(pins_dim, true);
+
+            pins_connectors_dim = [1, pcb[1]-2.54, 10-pcb[2]];
+            translate([0, 0, (pins_dim[2]-pins_connectors_dim[2])/2])
+            {
+                if (holes_only)
+                {
+                    minkowski()
+                    {
+                        cube(pins_connectors_dim, true);
+                        sphere(r=1, $fn = fragments_number);
+                    }
+                }
+                else
+                {
+                    cube(pins_connectors_dim, true);
+                }
+            }
+        }
+    }
+
+    translate([0, -pcb[1]/2, pins_dim[2]])
+    {
+        // Pcb
+        translate([0, 0, pcb[2]/2])
+        {
+            cube(pcb, true);
+        }
+
+        // Reset button
+        translate([0, pcb[1]/2 - 1.27 - 29.97, 0])
+        {
+            reset = [3, 2.2, 2.5];
+            translate([0, 0, reset[2]/2 + pcb[2]])
+            {
+                cube(reset, true);
+            }
+        }
+
+        // Usb
+        usb = [7.5, 5, 2.5];
+        translate([0, pcb[1]/2 - usb[1]/2, 0])
+        {
+            translate([0, 0, usb[2]/2 + pcb[2]])
+            {
+                cube(usb, true);
+            }
+        }
+
+        // Pins
+        make_pins();
+        mirror([1, 0, 0]) make_pins();
     }
 }
 
