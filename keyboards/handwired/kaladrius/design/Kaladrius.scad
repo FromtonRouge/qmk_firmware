@@ -1244,6 +1244,7 @@ module teensy32(holes_only)
 
     translate([0, -pcb[1]/2, pins_dim[2]])
     {
+        usb = [7.5, 5, 2.5];
         if (!holes_only)
         {
             // Pcb
@@ -1263,7 +1264,6 @@ module teensy32(holes_only)
             }
 
             // Usb
-            usb = [7.5, 5, 2.5];
             translate([0, pcb[1]/2 - usb[1]/2, 0])
             {
                 translate([0, 0, usb[2]/2 + pcb[2]])
@@ -1281,6 +1281,20 @@ module teensy32(holes_only)
                 translate([0, 0, reset[2] + pcb[2]])
                 {
                     cylinder(h=20, d=3, $fn = fragments_number);
+                }
+            }
+
+            // Usb hole
+            usb_hole = usb + [6, 8, 3];
+            translate([0, pcb[1]/2 + 2*usb[1], 0])
+            {
+                translate([0, 0, usb[2]/2 + pcb[2]])
+                {
+                    minkowski()
+                    {
+                        cube(usb_hole, true);
+                        sphere(r=3, $fn = fragments_number);
+                    }
                 }
             }
         }
@@ -1396,20 +1410,6 @@ module electronic_case(top = true, bottom = true)
             translate(p)
             {
                 translate([0, 0, -3]) case_hole(40);
-            }
-        }
-
-        // Usb hole
-        roundness = 3;
-        hole_port_width = 17;
-        hole_port_height = 8;
-        hole_ports_dim = [hole_port_width-2*roundness, 20-2*roundness, hole_port_height-2*roundness];
-        translate([0, plate_size[1]/2, 14])
-        {
-            minkowski()
-            {
-                cube(hole_ports_dim, center = true);
-                sphere(r=roundness, $fn = fragments_number);
             }
         }
 
