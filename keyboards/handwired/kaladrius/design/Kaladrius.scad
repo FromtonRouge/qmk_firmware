@@ -1126,7 +1126,7 @@ module electronic_pcb(plate_thickness, holes_only = false)
 {
     // Center the pcb plate on x and y
     x_offset_to_recenter = 1;
-    mount_height = 4;
+    mount_height = 3;
     translate([x_offset_to_recenter, 0, 0])
     {
         translate([-(electronic_hole_to_hole_dim[0]+electronic_screw_mount_diameter)/2, -(electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter)/2, plate_thickness])
@@ -1145,7 +1145,7 @@ module electronic_pcb(plate_thickness, holes_only = false)
                     if (holes_only)
                     {
                         cylinder(h=mount_height*1.5, d=electronic_screws_hole_diameter, $fn = fragments_number);
-                        translate([0, 0, -2.9]) make_pcb_case_screw_hole();
+                        translate([0, 0, -3.9]) make_pcb_case_screw_hole();
                     }
                     else
                     {
@@ -1294,7 +1294,7 @@ module teensy32(holes_only)
 plate_size = [60, 63];
 plate_thickness = 3;
 wall_thickness = 3;
-nut_slot_height = 15;
+nut_slot_height = 14;
 contour_height = 2.99999;
 roundness = 9/2;
 parameters = get_box_parameters(plate_size, roundness, plate_thickness, wall_thickness);
@@ -1420,5 +1420,5 @@ module electronic_case(top = true, bottom = true)
 }
 
 *electronic_case(bottom = false);
-electronic_case(top = false);
-*translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
+*electronic_case(top = false);
+translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
