@@ -18,7 +18,7 @@ use <Boxes.scad>
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 60; // Use 0 for debugging, 60 for final rendering
+fragments_number = 40; // Use 0 for debugging, 60 for final rendering
 switch_hole_width = 14;
 switch_hole_tolerance = -0.1;
 switch_spacing = 4.8;
@@ -51,6 +51,11 @@ electronic_pcb_dim = [40, 60, 1.54]; // Real size of the pcb plate in mm
 electronic_hole_to_hole_dim = [electronic_pcb_dim[0] - 4, electronic_pcb_dim[1] - 4, electronic_pcb_dim[2]];
 electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-10.5;
 teensy_reset_button_y = 35.5; // distance from the front of the plate to the teensy reset button in mm
+teensy_plate_size = [60, 63];
+teensy_plate_thickness = 3;
+teensy_wall_thickness = 3;
+teensy_case_roundness = 9/2;
+teensy_case_parameters = get_box_parameters(teensy_plate_size, teensy_case_roundness, teensy_plate_thickness, teensy_wall_thickness);
 pcb_case_pos = [84, offset_finger_pinky-71];
 tent_size = [46, 66, 2];
 switch_hole_height = screws_mount_height + 5;
@@ -866,89 +871,10 @@ module transform_link_system()
 {
     translate([-95, 0, 0])
     {
-        rotate([0, 0, 0])
+        translate(-get_pcb_case_origin())
         {
-            translate(-get_pcb_case_origin())
-            {
-                children();
-            }
+            children();
         }
-    }
-}
-
-module left_link()
-{
-    transform_link_system() left_tent();
-    *difference()
-    {
-        small_radius = 1;
-        roundness = 5;
-        link_dim = [80, 50, 14];
-        translate([-link_dim[0]/2, -20, link_dim[2]/2])
-        {
-            minkowski()
-            {
-                difference()
-                {
-                    union()
-                    {
-                        top_control_points =  [
-                            [link_dim[0]/2, link_dim[1]/2],
-                            [0, link_dim[1]/2],
-                            [0, link_dim[1]/2 + 20],
-                            [4, link_dim[1]/2+35],
-                        ];
-
-                        cube(link_dim, center=true);
-
-                        difference()
-                        {
-                            union()
-                            {
-                                translate([0, 4, 0]) cube(link_dim, center=true);
-                                translate([0, 40, 0])
-                                {
-                                    cube([45, 30, link_dim[2]], center=true);
-                                }
-                            }
-
-                            translate([0, 0, -link_dim[2]/2])
-                            {
-                                BezWall(top_control_points, width = 15, height = link_dim[2], steps = 64, centered = false, showCtlR = false);
-                            }
-                        }
-                    }
-
-                    bottom_control_points =  [
-                        [link_dim[0]/2, 0],
-                        [10, 0],
-                        [0, -link_dim[1]/40],
-                        [-22, -link_dim[1]/2],
-                    ];
-
-                    translate([0, 0, -link_dim[2]/2])
-                    {
-                        BezWall(bottom_control_points, width = -20, height = link_dim[2], steps = 64, centered = false, showCtlR = false);
-                    }
-
-                    translate([20, 50, 0]) cube([20, 20, 20], center = true);
-                    translate([25, -20, 0]) cube([50, 20, 20], center = true);
-
-                    hull()
-                    {
-                        translate([0, 12.5, 0])
-                        {
-                            translate([10, 0, 0]) cylinder(r=8, h=link_dim[2], center=true, $fn=60);
-                            translate([40, 0, 0]) cylinder(r=8, h=link_dim[2], center=true, $fn=60);
-                        }
-                    }
-                }
-
-                cylinder(r2=small_radius, r1=case_shell_size,  h=1, $fn=30);
-            }
-        }
-
-        transform_link_system() left_tent(holes_only = true);
     }
 }
 
@@ -1081,45 +1007,6 @@ module nut_slot(height = 11, diameter = 9, force_nut_slot_z = -1, smooth_junctio
              */
         }
     }
-}
-
-echo("Tenting Angle", abs(get_tenting_angle()));
-
-// Show helpers
-module show_point(p)
-{
-    %translate(p) cylinder(h=100, r=1, $fn=60);
-}
-
-*union()
-{
-    show_point(get_kaladrius_origin());
-    for (i = [0:6])
-    {
-        show_point(k[i][3]);
-    }
-    show_point(get_pcb_case_origin());
-    show_point(get_thumb_anchor());
-    show_point(get_thumb_origin());
-}
-
-*plate(total_height=1, chamfer=false);
-*holes();
-
-*right_top_plate();
-*%left_keycaps();
-*left_case();
-*left_tent(printable = false);
-*left_tent();
-*left_link();
-*test_nut_holes();
-
-mirror([1, 0, 0])
-{
-    *right_top_plate();
-    *test_right_top_plate();
-    *left_link();
-    *%left_keycaps();
 }
 
 module electronic_pcb(plate_thickness, holes_only = false)
@@ -1305,28 +1192,22 @@ module teensy32(holes_only)
     }
 }
 
-plate_size = [60, 63];
-plate_thickness = 3;
-wall_thickness = 3;
-nut_slot_height = 14;
-contour_height = 2.99999;
-roundness = 9/2;
-parameters = get_box_parameters(plate_size, roundness, plate_thickness, wall_thickness);
-minkowski_height = parameters[4]*tan(45);
-points = get_points_from_rect(parameters[0]);
-
 module electronic_case(top = true, bottom = true)
 {
+    p = teensy_case_parameters;
+    nut_slot_height = 14;
+    points = get_points_from_rect(p[0]);
+    minkowski_height = p[4]*tan(45);
+
     module lateral_hole()
     {
         lateral_hole_dim = [10, 30, 15];
         translate([-30, 0, lateral_hole_dim[2]/2])
         {
-            roundness = 3;
             minkowski()
             {
                 cube(lateral_hole_dim, center = true);
-                sphere(r=roundness, $fn = fragments_number);
+                sphere(r=3, $fn = fragments_number);
             }
         }
     }
@@ -1342,14 +1223,14 @@ module electronic_case(top = true, bottom = true)
             {
                 union()
                 {
-                    electronic_pcb(plate_thickness);
+                    electronic_pcb(teensy_plate_thickness);
 
-                    bottom_plate(parameters, $fn = fragments_number);
+                    bottom_plate(p, $fn = fragments_number);
                     for (p = points)
                     {
                         translate(p)
                         {
-                            translate([0, 0, plate_thickness])
+                            translate([0, 0, teensy_plate_thickness])
                             {
                                 difference()
                                 {
@@ -1369,13 +1250,13 @@ module electronic_case(top = true, bottom = true)
                 {
                     difference()
                     {
-                        cube_size = [parameters[0][0], parameters[0][1], nut_slot_height + plate_thickness - minkowski_height];
+                        cube_size = [p[0][0], p[0][1], nut_slot_height + teensy_plate_thickness - minkowski_height];
                         translate([0, 0, cube_size[2]/2])
                         {
                             minkowski()
                             {
                                 cube(cube_size, true);
-                                cylinder(h=minkowski_height, r1=parameters[3], r2=parameters[3]+parameters[4], $fn = fragments_number);
+                                cylinder(h=minkowski_height, r1=p[3], r2=p[3]+p[4], $fn = fragments_number);
                             }
                         }
 
@@ -1384,17 +1265,17 @@ module electronic_case(top = true, bottom = true)
                             minkowski()
                             {
                                 cube(cube_size + [0, 0, 1], true);
-                                cylinder(h=minkowski_height, r=parameters[3], $fn = fragments_number);
+                                cylinder(h=minkowski_height, r=p[3], $fn = fragments_number);
                             }
                         }
                     }
 
-                    translate([0, 0, parameters[0][2]/2 + nut_slot_height + plate_thickness])
+                    translate([0, 0, p[0][2]/2 + nut_slot_height + teensy_plate_thickness])
                     {
                         minkowski()
                         {
-                            cube(parameters[0], true);
-                            cylinder(h=minkowski_height, r2=parameters[3], r1=parameters[3]+parameters[4], $fn = fragments_number);
+                            cube(p[0], true);
+                            cylinder(h=minkowski_height, r2=p[3], r1=p[3]+p[4], $fn = fragments_number);
                         }
                     }
                 }
@@ -1402,7 +1283,7 @@ module electronic_case(top = true, bottom = true)
         }
 
         // Holes for the pcb mount
-        electronic_pcb(plate_thickness, holes_only = true);
+        electronic_pcb(teensy_plate_thickness, holes_only = true);
 
         // Holes for the link between the top and bottom cases
         for (p = points)
@@ -1419,6 +1300,145 @@ module electronic_case(top = true, bottom = true)
     }
 }
 
+echo("Tenting Angle", abs(get_tenting_angle()));
+
+// Show helpers
+module show_point(p)
+{
+    %translate(p) cylinder(h=100, r=1, $fn=60);
+}
+
+*union()
+{
+    show_point(get_kaladrius_origin());
+    for (i = [0:6])
+    {
+        show_point(k[i][3]);
+    }
+    show_point(get_pcb_case_origin());
+    show_point(get_thumb_anchor());
+    show_point(get_thumb_origin());
+}
+
+*plate(total_height=1, chamfer=false);
+*holes();
+
+*right_top_plate();
+*%left_keycaps();
+*left_case();
+%transform_link_system() left_tent();
+*test_nut_holes();
+
+mirror([1, 0, 0])
+{
+    *right_top_plate();
+    *test_right_top_plate();
+    *transform_link_system() left_tent();
+    *%left_keycaps();
+}
+
 *electronic_case(bottom = false);
 *electronic_case(top = false);
-translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
+
+module link_system()
+{
+    p = teensy_case_parameters;
+    base_cube = p[0];
+
+    module left_wing()
+    {
+        height = base_cube[2];
+        left_arm = [40, 10, height];
+
+        module left_extension()
+        {
+            translate([-left_arm[0], 0, 0])
+            {
+                cube([10, 30, height]);
+
+                translate([10, left_arm[1]/2, 0])
+                {
+                    difference()
+                    {
+                        radius = 10;
+                        cube([radius, radius, height]);
+
+                        translate([radius, radius, 0])
+                        {
+                            cylinder(h=height, r=radius, $fn = fragments_number);
+                        }
+                    }
+                }
+            }
+        }
+
+        union()
+        {
+            translate([-base_cube[0]/2, 0, 0])
+            {
+                translate([0, -base_cube[1]/2, 0])
+                {
+                    cube([base_cube[0]/2, base_cube[1], height], center = false);
+                }
+
+                translate([-left_arm[0]/2, 0, left_arm[2]/2])
+                {
+                    cube(left_arm, center = true);
+                }
+
+                left_extension();
+                mirror([0, 1, 0]) left_extension();
+            }
+        }
+
+        module round_corner()
+        {
+            translate([-base_cube[0]/2, left_arm[1]/2, 0])
+            {
+                difference()
+                {
+                    translate([-10, 0, 0]) cube([10, 10, height]);
+
+                    union()
+                    {
+                        radius = 10;
+                        translate([-radius, radius, 0])
+                        {
+                            cylinder(h=height, r=radius, $fn = fragments_number);
+                        }
+
+                        translate([-left_arm[0], 0, 0])
+                        {
+                            cube([radius, radius, height]);
+                        }
+
+                        radius2 = 20;
+                        translate([-left_arm[0]/2 - radius2/2, left_arm[1], 0])
+                        {
+                            cube([radius2, radius2, height]);
+                        }
+                    }
+                }
+            }
+        }
+
+        round_corner();
+        mirror([0, 1, 0]) round_corner();
+    }
+
+    //translate([0, 35, 0])
+    {
+        minkowski()
+        {
+            union()
+            {
+                left_wing();
+                //mirror([1, 0, 0]) left_wing();
+            }
+            //cylinder(h=p[1], r1=p[3], r2=p[3]);
+        }
+    }
+}
+
+link_system();
+*translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
