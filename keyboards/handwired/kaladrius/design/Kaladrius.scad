@@ -1333,7 +1333,7 @@ mirror([1, 0, 0])
 {
     *right_top_plate();
     *test_right_top_plate();
-    *transform_link_system() left_tent();
+    %transform_link_system() left_tent();
     *%left_keycaps();
 }
 
@@ -1344,11 +1344,41 @@ module link_system()
 {
     p = teensy_case_parameters;
     base_cube = p[0];
+    height = base_cube[2];
+
+    cross_arm_width = 5;
+    cross_width = 60;
+    cross_roundness = 10;
+    module cross_part()
+    {
+        cube([cross_width/2, cross_arm_width/2, height]);
+        cube([cross_arm_width/2, cross_width/2, height]);
+        radius = cross_roundness;
+        difference()
+        {
+            translate([cross_arm_width/2, cross_arm_width/2, 0])
+            {
+                cube([radius, radius, height]);
+            }
+
+            translate([radius + cross_arm_width/2, radius + cross_arm_width/2, -0.01])
+            {
+                cylinder(h=height*2, r=radius, $fn = fragments_number);
+            }
+        }
+    }
+
+    module cross()
+    {
+        cross_part();
+        mirror([1, 0, 0]) cross_part();
+        mirror([1, 1, 0]) cross_part();
+        mirror([0, 1, 0]) cross_part();
+    }
 
     module left_wing()
     {
-        height = base_cube[2];
-        left_arm = [40, 10, height];
+        left_arm = [40, cross_arm_width, height];
 
         module left_extension()
         {
@@ -1381,13 +1411,10 @@ module link_system()
                     cube([base_cube[0]/2, base_cube[1], height], center = false);
                 }
 
-                translate([-left_arm[0]/2, 0, left_arm[2]/2])
+                translate([-cross_width/2, 0, 0])
                 {
-                    cube(left_arm, center = true);
+                    cross();
                 }
-
-                left_extension();
-                mirror([0, 1, 0]) left_extension();
             }
         }
 
@@ -1401,7 +1428,7 @@ module link_system()
 
                     union()
                     {
-                        radius = 10;
+                        radius = cross_roundness;
                         translate([-radius, radius, 0])
                         {
                             cylinder(h=height, r=radius, $fn = fragments_number);
@@ -1426,16 +1453,16 @@ module link_system()
         mirror([0, 1, 0]) round_corner();
     }
 
-    //translate([0, 35, 0])
+    translate([0, 35, 0])
     {
         minkowski()
         {
             union()
             {
                 left_wing();
-                //mirror([1, 0, 0]) left_wing();
+                mirror([1, 0, 0]) left_wing();
             }
-            //cylinder(h=p[1], r1=p[3], r2=p[3]);
+            cylinder(h=p[1], r1=p[3], r2=p[3]);
         }
     }
 }
