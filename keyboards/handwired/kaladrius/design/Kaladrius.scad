@@ -249,21 +249,6 @@ module screw_mounts()
     }
 }
 
-module create_cell(height)
-{
-    linear_extrude(height = height)
-    {
-        points = [
-            [0, 0], // top left
-            [0, -switch_hole_width], // bottom left
-            [switch_hole_width, -switch_hole_width], // bottom right
-            [switch_hole_width, 0] // top right
-        ];
-
-        polygon(points);
-    }
-}
-
 module create_hole(height, offset, has_additional_border = true, vertical = false)
 {
     additional_border_width = 0.5;
@@ -322,25 +307,13 @@ module create_hole(height, offset, has_additional_border = true, vertical = fals
     }
 }
 
+function get_cells(height, rows, columns) = [columns*switch_hole_width + (columns+1)*switch_spacing, rows*switch_hole_width + (rows+1)*switch_spacing, height];
 module create_cells(height, rows, columns, origin)
 {
     translate(origin)
     {
-        for (col = [0:columns-1])
-        {
-            col_offset = col*(switch_hole_width + switch_spacing);
-            for (row = [0:rows-1])
-            {
-                translate([col_offset, -row*(switch_hole_width+switch_spacing), 0])
-                {
-                    color("lightGreen") translate([switch_spacing, -switch_spacing, 0]) cube([switch_hole_width, switch_spacing, height]);
-                    translate([switch_spacing, -switch_spacing, 0]) create_cell(height = height);
-                }
-            }
-            color("lightGreen") translate([switch_spacing + col_offset, -rows*(switch_hole_width+switch_spacing)-switch_spacing, 0]) cube([switch_hole_width, switch_spacing, height]);
-            color("lightGreen") translate([col_offset, -rows*(switch_hole_width+switch_spacing) - switch_spacing, 0]) cube([switch_spacing, rows*(switch_hole_width+switch_spacing) + switch_spacing, height]);
-            color("lightGreen") translate([switch_hole_width + switch_spacing + col_offset, -rows*(switch_hole_width+switch_spacing) - switch_spacing, 0]) cube([switch_spacing, rows*(switch_hole_width+switch_spacing) + switch_spacing, height]);
-        }
+        cells = get_cells(height, rows, columns);
+        translate([0, -cells[1], 0]) cube(cells);
     }
 }
 
@@ -786,9 +759,27 @@ module left_tent(printable = true, holes_only = false)
 
     module profile()
     {
-        translate(get_pcb_case_origin())
+        module mini_thumb(factor)
         {
-            translate([0, 0, -profile_height])
+            original_width = 3*switch_hole_width + 4*switch_spacing;
+            translate([(original_width-factor*original_width)/2, -(original_width-factor*original_width)/2, 0])
+            {
+                translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
+                {
+                    translate([-1.5*(switch_hole_width+ switch_spacing), 0, 0])
+                    {
+                        scale([factor, factor,1])
+                        {
+                            create_cells(1, 3, 3, [0,0]);
+                        }
+                    }
+                }
+            }
+        }
+
+        translate([0, 0, -profile_height/2])
+        {
+            translate(get_pcb_case_origin())
             {
                 difference()
                 {
@@ -803,6 +794,15 @@ module left_tent(printable = true, holes_only = false)
                         cube(base_cube, center = false);
                         cylinder(h=minkowski_height, r=minkowski_radius-3, $fn = fragments_number);
                     }
+                }
+            }
+
+            transform_thumb()
+            {
+                minkowski()
+                {
+                    mini_thumb(0.8);
+                    cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
                 }
             }
         }
@@ -826,6 +826,7 @@ module left_tent(printable = true, holes_only = false)
 
             plane_to_remove = [150, 180, 10];
             rotate([0, abs(get_tenting_angle()), 0]) translate([0, -160, -10]) cube(plane_to_remove);
+            translate([0, -160, 0]) cube(plane_to_remove);
         }
 
         // Holes
