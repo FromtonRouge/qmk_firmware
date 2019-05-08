@@ -18,7 +18,7 @@ use <Boxes.scad>
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 40; // Use 0 for debugging, 60 for final rendering
+fragments_number = 0; // Use 0 for debugging, 60 for final rendering
 switch_hole_width = 14;
 switch_hole_tolerance = -0.1;
 switch_spacing = 4.8;
@@ -50,14 +50,12 @@ electronic_screws_hole_diameter = 2.7;
 electronic_pcb_dim = [40, 60, 1.54]; // Real size of the pcb plate in mm
 electronic_hole_to_hole_dim = [electronic_pcb_dim[0] - 4, electronic_pcb_dim[1] - 4, electronic_pcb_dim[2]];
 electronic_screw_mount_height = 2*(11-electronic_pcb_dim[2])-10.5;
-teensy_reset_button_y = 35.5; // distance from the front of the plate to the teensy reset button in mm
 teensy_plate_size = [60.5, 61.8];
 teensy_plate_thickness = 3;
 teensy_wall_thickness = 3;
 teensy_case_roundness = 9/2;
 teensy_case_parameters = get_box_parameters(teensy_plate_size, teensy_case_roundness, teensy_plate_thickness, teensy_wall_thickness);
-pcb_case_pos = [84, offset_finger_pinky-71];
-tent_size = [46, 66, 2];
+tent_pos = [84.5, offset_finger_pinky-70];
 switch_hole_height = screws_mount_height + 5;
 
 point_pinky_last = [get_kaladrius_origin()[0] + case_outer_border, get_kaladrius_origin()[1]];
@@ -103,8 +101,7 @@ hole_positions = [
 function get_kaladrius_origin() = [0, 0, 0];
 function get_thumb_anchor() = k[6][3] - [0, 3*(switch_hole_width+switch_spacing) + switch_spacing];
 function get_thumb_origin() = get_thumb_anchor() + [thumb_x, -thumb_y];
-function get_tent_bounding_box() = [tent_size[0] + electronic_screw_mount_diameter, tent_size[1] + electronic_screw_mount_diameter, electronic_screw_mount_height];
-function get_pcb_case_origin() = get_kaladrius_origin() + pcb_case_pos;
+function get_tent_origin() = get_kaladrius_origin() + tent_pos;
 function get_tenting_angle() = -9;
 
 module printable_nut_hole(size, tolerance, cone=true)
@@ -141,15 +138,6 @@ module case_hole(height, diameter=screws_diameter)
     translate([0, 0, height-2])
     {
         cylinder(2, d=diameter, $fn = fragments_number);
-    }
-}
-
-module transform_pcb_case_to_center()
-{
-    centered = [-electronic_hole_to_hole_dim[0] - electronic_screw_mount_diameter, -electronic_hole_to_hole_dim[1] - electronic_screw_mount_diameter, 0]/2;
-    translate(centered)
-    {
-        children();
     }
 }
 
@@ -469,84 +457,87 @@ module plate_supports()
     }
 }
 
-module left_case()
+module left_case(printable = true)
 {
-    difference()
+    rotate([0, printable == false ? get_tenting_angle():0, 0])
     {
-        union()
+        difference()
         {
-            difference()
+            union()
             {
-                union()
+                difference()
                 {
-                    small_radius = 1;
-                    // Bottom
-                    minkowski()
+                    union()
                     {
-                        plate();
-                        cylinder(r1=small_radius, r2=case_shell_size,  h=case_shell_size, $fn = fragments_number);
-                    }
-
-                    // Middle
-                    translate([0, 0, case_shell_size])
-                    {
+                        small_radius = 1;
+                        // Bottom
                         minkowski()
                         {
                             plate();
-                            cylinder(r=case_shell_size,  h=case_height-case_shell_size, $fn = fragments_number);
+                            cylinder(r1=small_radius, r2=case_shell_size,  h=case_shell_size, $fn = fragments_number);
+                        }
+
+                        // Middle
+                        translate([0, 0, case_shell_size])
+                        {
+                            minkowski()
+                            {
+                                plate();
+                                cylinder(r=case_shell_size,  h=case_height-case_shell_size, $fn = fragments_number);
+                            }
+                        }
+
+                        // Top
+                        translate([0, 0, case_height])
+                        {
+                            minkowski()
+                            {
+                                plate();
+                                cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size, $fn = fragments_number);
+                            }
                         }
                     }
 
-                    // Top
-                    translate([0, 0, case_height])
-                    {
-                        minkowski()
-                        {
-                            plate();
-                            cylinder(r2=small_radius, r1=case_shell_size,  h=case_shell_size, $fn = fragments_number);
-                        }
-                    }
+                    translate([0, 0, case_shell_size]) scale([1, 1, 8]) plate();
                 }
 
-                translate([0, 0, case_shell_size]) scale([1, 1, 8]) plate();
+                // Add all bolt mounts
+                screw_mounts();
+
+                plate_supports();
             }
 
-            // Add all bolt mounts
-            screw_mounts();
+            // Top plate hole without chamfer
+            translate([0, 0, case_height + case_shell_size - 1]) scale([1, 1, 8]) plate();
 
-            plate_supports();
-        }
+            // Case holes
+            translate([0, 0, -20]) case_holes(height = 200);
 
-        // Top plate hole without chamfer
-        translate([0, 0, case_height + case_shell_size - 1]) scale([1, 1, 8]) plate();
-
-        // Case holes
-        translate([0, 0, -20]) case_holes(height = 200);
-
-        // Nut holes
-        for (index = [0:4])
-        {
-            transform_hole(index) make_case_screw_hole();
-        }
-
-        // Nut holes
-        transform_thumb()
-        {
-            for (index = [5:7])
+            // Nut holes
+            for (index = [0:4])
             {
                 transform_hole(index) make_case_screw_hole();
             }
+
+            // Nut holes
+            transform_thumb()
+            {
+                for (index = [5:7])
+                {
+                    transform_hole(index) make_case_screw_hole();
+                }
+            }
+
+            // Holes to connect the tent system
+            mini_thumb_holes();
+
+            // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
+            left_middle_point = (hole_positions[0] + hole_positions[4])/2;
+            left_middle_up_point = (hole_positions[0] + left_middle_point)/2;
+            left_middle_down_point = (hole_positions[4] + left_middle_point)/2;
+            translate([0, 0, -0.01]) translate(left_middle_up_point) case_hole(20, screws_diameter);
+            translate([0, 0, -0.01]) translate(left_middle_down_point) case_hole(20, screws_diameter);
         }
-
-        // Holes to connect the tent system
-        mini_thumb_holes();
-
-        // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
-        left_middle_point = (hole_positions[0] + hole_positions[4])/2;
-        left_middle_up_point = (hole_positions[0] + left_middle_point)/2;
-        left_middle_down_point = (hole_positions[4] + left_middle_point)/2;
-        translate([0, 0, -0.01]) translate(left_middle_up_point) case_hole(20, screws_diameter);
-        translate([0, 0, -0.01]) translate(left_middle_down_point) case_hole(20, screws_diameter);
     }
 }
 
@@ -565,80 +556,6 @@ module make_pcb_case_screw_hole(height = 2)
     {
         translate([0,0, height]) printable_nut_hole(2, nut_2_tolerance);
         translate([0,0,-height]) printable_nut_hole(2, nut_2_tolerance, false);
-    }
-}
-
-module pcb_case(mount_height = electronic_screw_mount_height, holes_only = false)
-{
-    module mount(h, d1, d2, holes_only)
-    {
-        if (holes_only)
-        {
-            cylinder(h=h*1.5, d=d1, $fn = fragments_number);
-        }
-        else
-        {
-            cylinder(h=h, d=d2, $fn= fragments_number);
-        }
-    }
-
-    pcb_hole_positions = [
-        [electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0],
-        [electronic_hole_to_hole_dim[0] + electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0],
-        [electronic_hole_to_hole_dim[0]+electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0],
-        [electronic_screw_mount_diameter/2, electronic_hole_to_hole_dim[1]+electronic_screw_mount_diameter/2, 0]
-            ];
-
-    for (index = [0:3])
-    {
-        translate(pcb_hole_positions[index])
-        {
-            mount(mount_height-electronic_pcb_dim[2]-0.1, electronic_screws_hole_diameter, electronic_screw_mount_diameter, holes_only);
-
-            if (holes_only)
-            {
-                make_pcb_case_screw_hole();
-            }
-        }
-    }
-
-    if (holes_only)
-    {
-        // Hole for usb port
-        roundness = 3;
-        y_offset = -6;
-        z_offset = 10;
-        hole_port_width = electronic_hole_to_hole_dim[0] - electronic_screw_mount_diameter - 4;
-        hole_ports_dim = [hole_port_width-2*roundness, 20-2*roundness, mount_height-2*roundness+0.01];
-        translate([(electronic_hole_to_hole_dim[0] - hole_port_width + electronic_screw_mount_diameter)/2,  electronic_hole_to_hole_dim[1] + y_offset, z_offset])
-        {
-            translate([roundness, roundness, roundness])
-            {
-                minkowski()
-                {
-                    cube(hole_ports_dim);
-                    sphere(r=roundness, $fn = fragments_number);
-                }
-            }
-        }
-
-        /*
-        // Hole to access the Teensy reset button
-        teensy_hole_rect = [electronic_hole_to_hole_dim[0]/1.5, 1, 4];
-        minkowski()
-        {
-        translate([electronic_pcb_dim[0]/2, electronic_pcb_dim[1]-teensy_reset_button_y, 0]) cube(teensy_hole_rect, center=true);
-        cylinder(h=1, r=1.5, $fn = fragments_number);
-        }
-         */
-    }
-    else
-    {
-        minkowski()
-        {
-            translate([electronic_screw_mount_diameter/2, electronic_screw_mount_diameter/2, 0]) cube([electronic_hole_to_hole_dim[0], electronic_hole_to_hole_dim[1], electronic_hole_to_hole_dim[2]/2]);
-            cylinder(h=electronic_hole_to_hole_dim[2]/2, r=electronic_screw_mount_diameter/2, $fn = fragments_number);
-        }
     }
 }
 
@@ -671,88 +588,9 @@ module mini_thumb_holes()
     }
 }
 
-module old_left_tent(printable = true, holes_only = false)
-{
-    module mini_thumb(factor)
-    {
-        original_width = 3*switch_hole_width + 4*switch_spacing;
-        translate([(original_width-factor*original_width)/2, -(original_width-factor*original_width)/2, 0])
-        {
-            translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
-            {
-                translate([-1.5*(switch_hole_width+ switch_spacing), 0, 0])
-                {
-                    scale([factor, factor,1]) create_cells(0.0001, 3, 3, [0,0]);
-                }
-            }
-        }
-    }
-
-    mini_thumb_scale = 0.8;
-    module tent_holes()
-    {
-        rotate([0, 10, 0]) rotate_hull_around_y(angle=-(get_tenting_angle()+20))
-        {
-            transform_thumb()
-            {
-                minkowski()
-                {
-                    new_scale = 0.65;
-                    mini_thumb(mini_thumb_scale*new_scale);
-                    cylinder(r=5*new_scale,  h=0.001, $fn = fragments_number);
-                }
-            }
-        }
-
-        mini_thumb_holes();
-    }
-
-    rotate([0, printable?get_tenting_angle():0, 0])
-    {
-        if (!holes_only)
-        {
-            difference()
-            {
-                union()
-                {
-                    rotate_hull_around_y(angle=-get_tenting_angle())
-                    {
-                        translate(get_pcb_case_origin())
-                        {
-                            minkowski()
-                            {
-                                cube([get_tent_bounding_box()[0], get_tent_bounding_box()[1], 0.0001]);
-                                cylinder(r=5,  h=0.001, $fn = fragments_number);
-                            }
-                        }
-                    }
-
-                    rotate_hull_around_y(angle=-get_tenting_angle())
-                    {
-                        transform_thumb()
-                        {
-                            minkowski()
-                            {
-                                mini_thumb(mini_thumb_scale);
-                                cylinder(r=5,  h=0.001, $fn = fragments_number);
-                            }
-                        }
-                    }
-                }
-
-                tent_holes();
-            }
-        }
-        else
-        {
-            tent_holes();
-        }
-    }
-}
-
 module left_tent(printable = true, holes_only = false)
 {
-    base_cube = [50, 70, 1];
+    base_cube = [51, 70, 1];
     minkowski_height = 1;
     profile_height = base_cube[2] + minkowski_height;
 
@@ -778,7 +616,7 @@ module left_tent(printable = true, holes_only = false)
 
         translate([0, 0, -profile_height/2])
         {
-            translate(get_pcb_case_origin())
+            translate(get_tent_origin())
             {
                 minkowski()
                 {
@@ -802,9 +640,9 @@ module left_tent(printable = true, holes_only = false)
     module extruded_profile(minkowski_radius, tenting_angle)
     {
         opposite = profile_height;
-        adjacent = get_pcb_case_origin()[0] + base_cube[0] + minkowski_radius;
+        adjacent = get_tent_origin()[0] + base_cube[0] + minkowski_radius;
         step_angle = atan(opposite/adjacent);
-        steps = floor(abs(tenting_angle)/step_angle);
+        steps = floor(abs(tenting_angle)/step_angle) + 1;
         for (i = [0:steps])
         {
             rotate([0, i*step_angle, 0]) profile(minkowski_radius);
@@ -815,14 +653,14 @@ module left_tent(printable = true, holes_only = false)
     {
         rotate([0, -get_tenting_angle(), 0])
         {
-            translate([0, 0, profile_height/2]) profile(teensy_case_roundness + 1.5);
+            translate([0, 0, profile_height/2]) profile(teensy_case_roundness + 0.5);
         }
 
         difference()
         {
-            extruded_profile(teensy_case_roundness + 2, get_tenting_angle());
+            extruded_profile(teensy_case_roundness + 1, get_tenting_angle());
 
-            extruded_profile(teensy_case_roundness - 2, get_tenting_angle()-2);
+            extruded_profile(teensy_case_roundness - 2, get_tenting_angle()-1);
 
             plane_to_remove = [150, 180, 10];
             rotate([0, abs(get_tenting_angle()), 0]) translate([0, -160, -10]) cube(plane_to_remove);
@@ -830,7 +668,7 @@ module left_tent(printable = true, holes_only = false)
         }
 
         // Holes
-        *translate(get_pcb_case_origin())
+        *translate(get_tent_origin())
         {
             hole_height = 30;
             translate([0, 0, -hole_height + plate_height])
@@ -942,7 +780,7 @@ module transform_link_system()
 {
     translate([-95, 0, 0])
     {
-        translate(-get_pcb_case_origin())
+        translate(-get_tent_origin())
         {
             children();
         }
@@ -1491,7 +1329,7 @@ module link_system()
         }
     }
 
-    translate([0, 35, 0])
+    translate([0, 39, 0])
     {
         *link_center_top();
 
@@ -1527,7 +1365,7 @@ module show_point(p)
 *union()
 {
     show_point(get_kaladrius_origin());
-    show_point(get_pcb_case_origin());
+    show_point(get_tent_origin());
     for (i = [0:6])
     {
         show_point(k[i][3]);
@@ -1541,17 +1379,24 @@ module show_point(p)
 
 *right_top_plate();
 *%left_keycaps();
-*left_case();
-*old_left_tent(printable = false);
+*left_case(printable = true);
 left_tent(printable = false);
-*transform_link_system() old_left_tent();
+*transform_link_system()
+{
+    left_case(printable = false);
+    left_tent();
+}
 *test_nut_holes();
 
 mirror([1, 0, 0])
 {
     *right_top_plate();
     *test_right_top_plate();
-    *transform_link_system() old_left_tent();
+    *transform_link_system()
+    {
+        left_case(printable = false);
+        left_tent();
+    }
     *%left_keycaps();
 }
 
