@@ -752,12 +752,11 @@ module old_left_tent(printable = true, holes_only = false)
 
 module left_tent(printable = true, holes_only = false)
 {
-    base_cube = [52, 72, 1];
+    base_cube = [50, 70, 1];
     minkowski_height = 1;
-    minkowski_radius = teensy_case_roundness;
     profile_height = base_cube[2] + minkowski_height;
 
-    module profile()
+    module profile(minkowski_radius)
     {
         module mini_thumb(factor)
         {
@@ -781,48 +780,49 @@ module left_tent(printable = true, holes_only = false)
         {
             translate(get_pcb_case_origin())
             {
-                difference()
+                minkowski()
                 {
-                    minkowski()
-                    {
-                        cube(base_cube, center = false);
-                        cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
-                    }
-
-                    minkowski()
-                    {
-                        cube(base_cube, center = false);
-                        cylinder(h=minkowski_height, r=minkowski_radius-3, $fn = fragments_number);
-                    }
+                    cube(base_cube, center = false);
+                    cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
                 }
             }
 
             transform_thumb()
             {
+                mini_thumb_scale = 0.75;
                 minkowski()
                 {
-                    mini_thumb(0.8);
+                    mini_thumb(mini_thumb_scale);
                     cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
                 }
             }
         }
     }
 
+    module extruded_profile(minkowski_radius, tenting_angle)
+    {
+        opposite = profile_height;
+        adjacent = get_pcb_case_origin()[0] + base_cube[0] + minkowski_radius;
+        step_angle = atan(opposite/adjacent);
+        steps = floor(abs(tenting_angle)/step_angle);
+        for (i = [0:steps])
+        {
+            rotate([0, i*step_angle, 0]) profile(minkowski_radius);
+        }
+    }
+
     rotate([0, printable?get_tenting_angle():0, 0])
     {
+        rotate([0, -get_tenting_angle(), 0])
+        {
+            translate([0, 0, profile_height/2]) profile(teensy_case_roundness + 1.5);
+        }
+
         difference()
         {
-            union()
-            {
-                opposite = profile_height;
-                adjacent = get_pcb_case_origin()[0] + base_cube[0] + minkowski_radius;
-                step_angle = atan(opposite/adjacent);
-                steps = floor(abs(get_tenting_angle())/step_angle);
-                for (i = [0:steps])
-                {
-                    rotate([0, i*step_angle, 0]) profile();
-                }
-            }
+            extruded_profile(teensy_case_roundness + 2, get_tenting_angle());
+
+            extruded_profile(teensy_case_roundness - 2, get_tenting_angle()-2);
 
             plane_to_remove = [150, 180, 10];
             rotate([0, abs(get_tenting_angle()), 0]) translate([0, -160, -10]) cube(plane_to_remove);
