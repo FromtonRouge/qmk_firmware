@@ -18,7 +18,7 @@ use <Boxes.scad>
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 0; // Use 0 for debugging, 60 for final rendering
+fragments_number = 60; // Use 0 for debugging, 60 for final rendering
 switch_hole_width = 14;
 switch_hole_tolerance = -0.1;
 switch_spacing = 4.8;
@@ -577,6 +577,16 @@ module mini_thumb_holes()
     }
 }
 
+module screw_hole(h = 20)
+{
+    cylinder(h, d=screws_diameter, $fn = fragments_number);
+}
+
+module head_screw_hole(h = 20)
+{
+    cylinder(h, d=6, $fn = fragments_number);
+}
+
 module left_tent(printable = true, holes_only = false)
 {
     tent_profile_cube = [51, 70, 1];
@@ -616,10 +626,13 @@ module left_tent(printable = true, holes_only = false)
                 }
             }
 
-            minkowski()
+            transform_thumb_profile()
             {
-                transform_thumb_profile() cube(thumb_profile_cube);
-                cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
+                minkowski()
+                {
+                    cube(thumb_profile_cube);
+                    cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
+                }
             }
         }
     }
@@ -638,48 +651,101 @@ module left_tent(printable = true, holes_only = false)
 
     function get_points_from_cube(c) = [[0, 0], [c[0], 0], [c[0], c[1]], [0, c[1]]];
 
+    module tent_screw_hole(h)
+    {
+        translate([0, 0, 1]) screw_hole(h);
+        hull()
+        {
+            translate([0, 0, h-4]) screw_hole(1);
+            head_screw_hole(h-4);
+        }
+    }
+
     rotate([0, printable?-get_tenting_angle():0, 0])
     {
-        rotate([0, get_tenting_angle(), 0])
-        {
-            translate([0, 0, profile_height/2]) profile(teensy_case_roundness + 0.5);
-        }
+        minkowski_external_radius = teensy_case_roundness + 1;
+        adjacent = get_tent_origin()[0] + tent_profile_cube[0] + minkowski_external_radius;
+        screw_location_height = adjacent*tan(get_tenting_angle()) + 1;
 
         difference()
         {
-            extruded_profile(teensy_case_roundness + 1, -get_tenting_angle());
-
-            extruded_profile(teensy_case_roundness - 2, -get_tenting_angle()-1);
-
-            plane_to_remove = [150, 180, 10];
-            rotate([0, get_tenting_angle(), 0]) translate([0, -160, -10]) cube(plane_to_remove);
-            translate([0, -160, 0]) cube(plane_to_remove);
-        }
-
-        // Holes
-        hole_height = 30;
-        *translate([0, 0, -hole_height + plate_height])
-        {
-            translate(get_tent_origin())
+            union()
             {
-                points = get_points_from_cube(tent_profile_cube);
-                for (p = points)
+                rotate([0, get_tenting_angle(), 0])
                 {
-                    translate(p)
+                    translate([0, 0, profile_height/2]) profile(teensy_case_roundness + 0.5);
+                }
+
+                difference()
+                {
+                    union()
                     {
-                        cylinder(h=hole_height, r=1, $fn = fragments_number);
+                        difference()
+                        {
+                            extruded_profile(minkowski_external_radius, -get_tenting_angle());
+                            extruded_profile(minkowski_external_radius - 2, -get_tenting_angle()-1);
+                        }
+
+                        translate([0, 0, -screw_location_height + 1])
+                        {
+                            screw_location_radius = 4;
+                            translate(get_tent_origin())
+                            {
+                                points = get_points_from_cube(tent_profile_cube);
+                                for (p = [points[1], points[2], points[3]])
+                                {
+                                    translate(p)
+                                    {
+                                        cylinder(h=screw_location_height, r=screw_location_radius, $fn = fragments_number);
+                                    }
+                                }
+                            }
+
+                            transform_thumb_profile()
+                            {
+                                thumb_points = get_points_from_cube(thumb_profile_cube);
+                                for (p = [thumb_points[0], thumb_points[1], thumb_points[2]])
+                                {
+                                    translate(p)
+                                    {
+                                        cylinder(h=screw_location_height, r=screw_location_radius, $fn = fragments_number);
+                                    }
+                                }
+                            }
+                        }
                     }
+
+                    plane_to_remove = [150, 180, 40];
+                    rotate([0, get_tenting_angle(), 0]) translate([0, -160, -plane_to_remove[2]]) cube(plane_to_remove);
+                    translate([0, -160, 0]) cube(plane_to_remove);
                 }
             }
 
-            transform_thumb_profile()
+            // Holes
+            hole_height = screw_location_height;
+            translate([0, 0, -hole_height])
             {
-                thumb_points = get_points_from_cube(thumb_profile_cube);
-                for (p = thumb_points)
+                translate(get_tent_origin())
                 {
-                    translate(p)
+                    points = get_points_from_cube(tent_profile_cube);
+                    for (p = [points[1], points[2], points[3]])
                     {
-                        cylinder(h=hole_height, r=1, $fn = fragments_number);
+                        translate(p)
+                        {
+                            tent_screw_hole(hole_height);
+                        }
+                    }
+                }
+
+                transform_thumb_profile()
+                {
+                    thumb_points = get_points_from_cube(thumb_profile_cube);
+                    for (p = [thumb_points[0], thumb_points[1], thumb_points[2]])
+                    {
+                        translate(p)
+                        {
+                            tent_screw_hole(hole_height);
+                        }
                     }
                 }
             }
@@ -1381,8 +1447,8 @@ module show_point(p)
 *right_top_plate();
 *%left_keycaps();
 *left_case(printable = true);
-*left_tent(printable = false);
-transform_link_system()
+left_tent(printable = false);
+*transform_link_system()
 {
     left_case(printable = false);
     left_tent();
@@ -1393,7 +1459,7 @@ mirror([1, 0, 0])
 {
     *right_top_plate();
     *test_right_top_plate();
-    transform_link_system()
+    *transform_link_system()
     {
         left_case(printable = false);
         left_tent();
@@ -1404,5 +1470,5 @@ mirror([1, 0, 0])
 *electronic_case(bottom = false);
 *electronic_case(top = false);
 *printable_link_center_top();
-link_system();
+*link_system();
 *translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
