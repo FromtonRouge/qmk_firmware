@@ -56,6 +56,7 @@ teensy_wall_thickness = 3;
 teensy_case_roundness = 9/2;
 teensy_case_parameters = get_box_parameters(teensy_plate_size, teensy_case_roundness, teensy_plate_thickness, teensy_wall_thickness);
 tent_pos = [84.5, offset_finger_pinky-70];
+tent_profile_cube = [51, 70, 1];
 switch_hole_height = screws_mount_height + 5;
 
 point_pinky_last = [get_kaladrius_origin()[0] + case_outer_border, get_kaladrius_origin()[1]];
@@ -102,7 +103,7 @@ function get_kaladrius_origin() = [0, 0, 0];
 function get_thumb_anchor() = k[6][3] - [0, 3*(switch_hole_width+switch_spacing) + switch_spacing];
 function get_thumb_origin() = get_thumb_anchor() + [thumb_x, -thumb_y];
 function get_tent_origin() = get_kaladrius_origin() + tent_pos;
-function get_tenting_angle() = -9;
+function get_tenting_angle() = 8.25; // between [8.25, 36]
 
 module printable_nut_hole(size, tolerance, cone=true)
 {
@@ -117,18 +118,6 @@ module printable_nut_hole(size, tolerance, cone=true)
     else
     {
         nutHole(size = size, tolerance = tolerance);
-    }
-}
-
-module rotate_hull_around_y(angle, steps = 30)
-{
-    hull()
-    {
-        angle_step = angle/steps;
-        for (i = [0:steps])
-        {
-            rotate([0, i*angle_step, 0]) children();
-        }
     }
 }
 
@@ -295,7 +284,7 @@ module create_hole(height, offset, has_additional_border = true, vertical = fals
     }
 }
 
-function get_cells(height, rows, columns) = [columns*switch_hole_width + (columns+1)*switch_spacing, rows*switch_hole_width + (rows+1)*switch_spacing, height];
+function get_cells(height, rows, columns, xy_scale = 1) = [xy_scale*(columns*switch_hole_width + (columns+1)*switch_spacing), xy_scale*(rows*switch_hole_width + (rows+1)*switch_spacing), height];
 module create_cells(height, rows, columns, origin)
 {
     translate(origin)
@@ -459,7 +448,7 @@ module plate_supports()
 
 module left_case(printable = true)
 {
-    rotate([0, printable == false ? get_tenting_angle():0, 0])
+    rotate([0, printable == false ? -get_tenting_angle():0, 0])
     {
         difference()
         {
@@ -590,49 +579,47 @@ module mini_thumb_holes()
 
 module left_tent(printable = true, holes_only = false)
 {
-    base_cube = [51, 70, 1];
+    tent_profile_cube = [51, 70, 1];
+    mini_thumb_scale = 0.75;
+    thumb_profile_cube = get_cells(1, 3, 3, mini_thumb_scale);
     minkowski_height = 1;
-    profile_height = base_cube[2] + minkowski_height;
+    profile_height = tent_profile_cube[2] + minkowski_height;
 
-    module profile(minkowski_radius)
+    module transform_thumb_profile()
     {
-        module mini_thumb(factor)
+        transform_thumb()
         {
             original_width = 3*switch_hole_width + 4*switch_spacing;
-            translate([(original_width-factor*original_width)/2, -(original_width-factor*original_width)/2, 0])
+            translate([(original_width-mini_thumb_scale*original_width)/2, -(original_width-mini_thumb_scale*original_width)/2, 0])
             {
                 translate([-(switch_hole_width+switch_spacing)/4, 0, 0])
                 {
                     translate([-1.5*(switch_hole_width+ switch_spacing), 0, 0])
                     {
-                        scale([factor, factor,1])
-                        {
-                            create_cells(1, 3, 3, [0,0]);
-                        }
+                        translate([0, -thumb_profile_cube[1], 0]) children();
                     }
                 }
             }
         }
+    }
 
+    module profile(minkowski_radius)
+    {
         translate([0, 0, -profile_height/2])
         {
             translate(get_tent_origin())
             {
                 minkowski()
                 {
-                    cube(base_cube, center = false);
+                    cube(tent_profile_cube, center = false);
                     cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
                 }
             }
 
-            transform_thumb()
+            minkowski()
             {
-                mini_thumb_scale = 0.75;
-                minkowski()
-                {
-                    mini_thumb(mini_thumb_scale);
-                    cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
-                }
+                transform_thumb_profile() cube(thumb_profile_cube);
+                cylinder(h=minkowski_height, r=minkowski_radius, $fn = fragments_number);
             }
         }
     }
@@ -640,7 +627,7 @@ module left_tent(printable = true, holes_only = false)
     module extruded_profile(minkowski_radius, tenting_angle)
     {
         opposite = profile_height;
-        adjacent = get_tent_origin()[0] + base_cube[0] + minkowski_radius;
+        adjacent = get_tent_origin()[0] + tent_profile_cube[0] + minkowski_radius;
         step_angle = atan(opposite/adjacent);
         steps = floor(abs(tenting_angle)/step_angle) + 1;
         for (i = [0:steps])
@@ -649,32 +636,46 @@ module left_tent(printable = true, holes_only = false)
         }
     }
 
-    rotate([0, printable?get_tenting_angle():0, 0])
+    function get_points_from_cube(c) = [[0, 0], [c[0], 0], [c[0], c[1]], [0, c[1]]];
+
+    rotate([0, printable?-get_tenting_angle():0, 0])
     {
-        rotate([0, -get_tenting_angle(), 0])
+        rotate([0, get_tenting_angle(), 0])
         {
             translate([0, 0, profile_height/2]) profile(teensy_case_roundness + 0.5);
         }
 
         difference()
         {
-            extruded_profile(teensy_case_roundness + 1, get_tenting_angle());
+            extruded_profile(teensy_case_roundness + 1, -get_tenting_angle());
 
-            extruded_profile(teensy_case_roundness - 2, get_tenting_angle()-1);
+            extruded_profile(teensy_case_roundness - 2, -get_tenting_angle()-1);
 
             plane_to_remove = [150, 180, 10];
-            rotate([0, abs(get_tenting_angle()), 0]) translate([0, -160, -10]) cube(plane_to_remove);
+            rotate([0, get_tenting_angle(), 0]) translate([0, -160, -10]) cube(plane_to_remove);
             translate([0, -160, 0]) cube(plane_to_remove);
         }
 
         // Holes
-        *translate(get_tent_origin())
+        hole_height = 30;
+        *translate([0, 0, -hole_height + plate_height])
         {
-            hole_height = 30;
-            translate([0, 0, -hole_height + plate_height])
+            translate(get_tent_origin())
             {
-                points = [[0, 0], [base_cube[0], 0], [base_cube[0], base_cube[1]], [0, base_cube[1]]];
+                points = get_points_from_cube(tent_profile_cube);
                 for (p = points)
+                {
+                    translate(p)
+                    {
+                        cylinder(h=hole_height, r=1, $fn = fragments_number);
+                    }
+                }
+            }
+
+            transform_thumb_profile()
+            {
+                thumb_points = get_points_from_cube(thumb_profile_cube);
+                for (p = thumb_points)
                 {
                     translate(p)
                     {
@@ -1354,7 +1355,7 @@ module link_system()
     }
 }
 
-echo("Tenting Angle", abs(get_tenting_angle()));
+echo("Tenting Angle", get_tenting_angle());
 
 // Show helpers
 module show_point(p)
@@ -1380,8 +1381,8 @@ module show_point(p)
 *right_top_plate();
 *%left_keycaps();
 *left_case(printable = true);
-left_tent(printable = false);
-*transform_link_system()
+*left_tent(printable = false);
+transform_link_system()
 {
     left_case(printable = false);
     left_tent();
@@ -1392,7 +1393,7 @@ mirror([1, 0, 0])
 {
     *right_top_plate();
     *test_right_top_plate();
-    *transform_link_system()
+    transform_link_system()
     {
         left_case(printable = false);
         left_tent();
@@ -1403,5 +1404,5 @@ mirror([1, 0, 0])
 *electronic_case(bottom = false);
 *electronic_case(top = false);
 *printable_link_center_top();
-*link_system();
+link_system();
 *translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
