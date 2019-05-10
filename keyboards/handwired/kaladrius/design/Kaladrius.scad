@@ -18,7 +18,7 @@ use <Boxes.scad>
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 0; // Use 0 for debugging, 60 for final rendering
+fragments_number = 60; // Use 0 for debugging, 60 for final rendering
 switch_hole_width = 14;
 switch_hole_tolerance = -0.1;
 switch_spacing = 4.8;
@@ -223,17 +223,11 @@ module case_holes(offset=0, height=switch_hole_height, diameter=screws_diameter)
 module screw_mounts()
 {
     height = case_shell_size + case_height;
-    for (index = [0:4])
-    {
-        transform_hole(index) 
-        {
-            hull()
-            {
-                case_hole(height-3, screw_mount_diameter);
-                case_hole(height, screw_mount_diameter/2);
-            }
-        }
-    }
+    transform_hole(0) rotate([0, 0, -45]) translate([0, 0, case_shell_size]) nut_slot(height=8);
+    transform_hole(1) rotate([0, 0, 90]) translate([0, 0, case_shell_size]) nut_slot(height=8);
+    transform_hole(2) rotate([0, 0, 90]) translate([0, 0, case_shell_size]) nut_slot(height=8);
+    transform_hole(3) rotate([0, 0, 0]) translate([0, 0, case_shell_size]) nut_slot(height=8);
+    transform_hole(4) rotate([0, 0, 45]) translate([0, 0, case_shell_size]) nut_slot(height=8);
 
     transform_thumb()
     {
@@ -241,11 +235,7 @@ module screw_mounts()
         {
             transform_hole(index)
             {
-                hull()
-                {
-                    case_hole(height-3, screw_mount_diameter);
-                    case_hole(height, screw_mount_diameter/2);
-                }
+                translate([0, 0, case_shell_size]) nut_slot(height=7);
             }
         }
     }
@@ -549,22 +539,7 @@ module left_case(printable = true)
             translate([0, 0, case_height + case_shell_size - 1]) scale([1, 1, 8]) plate();
 
             // Case holes
-            translate([0, 0, -20]) case_holes(height = 200);
-
-            // Nut holes
-            for (index = [0:4])
-            {
-                transform_hole(index) make_case_screw_hole();
-            }
-
-            // Nut holes
-            transform_thumb()
-            {
-                for (index = [5:7])
-                {
-                    transform_hole(index) make_case_screw_hole();
-                }
-            }
+            translate([0, 0, case_shell_size]) case_holes(height = 20);
 
             // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
             left_middle_point = (hole_positions[0] + hole_positions[4])/2;
