@@ -18,7 +18,7 @@ use <Boxes.scad>
 use <BezierScad.scad>
 use <MCAD/nuts_and_bolts.scad>
 
-fragments_number = 60; // Use 0 for debugging, 60 for final rendering
+fragments_number = 0; // Use 0 for debugging, 60 for final rendering
 switch_hole_width = 14;
 switch_hole_tolerance = -0.1;
 switch_spacing = 4.8;
@@ -1293,7 +1293,7 @@ module link_center()
                 minkowski()
                 {
                     cube(cube_size, true);
-                    cylinder(h=minkowski_height, r1=p[2], r2=p[2]+p[4], $fn = fragments_number);
+                    cylinder(h=minkowski_height, r=p[2]+p[4], $fn = fragments_number);
                 }
             }
 
@@ -1378,41 +1378,57 @@ module printable_link_center_top()
 module link_system()
 {
     p = teensy_case_parameters;
+    base_cube = p[0];
 
     module left_wing()
     {
-        base_cube = p[0];
-        translate([-base_cube[0]/2, 0, 0])
-        {
-            translate([0, -base_cube[1]/2, 0])
-            {
-                cube([base_cube[0]/2, base_cube[1], base_cube[2]], center = false);
-            }
-        }
-    }
-
-    translate([0, 39, 0])
-    {
-        *link_center_top();
+        wing_dim = [20, 30, 10];
 
         difference()
         {
-            union()
+            translate([-(wing_dim[0] + base_cube[0])/2 - p[2], 0, wing_dim[2]/2])
             {
                 minkowski()
                 {
-                    union()
-                    {
-                        left_wing();
-                        mirror([1, 0, 0]) left_wing();
-                    }
-                    cylinder(h=p[1], r1=p[2], r2=p[2]);
+                    cube(wing_dim, center = true);
+                    cylinder(h=teensy_plate_thickness, r1=p[4], $fn = fragments_number);
                 }
-                link_center();
             }
 
-            link_center_holes();
+            remove_cube = [20, 30 + 2*p[4], 2*wing_dim[2]];
+            translate([-22, 0, remove_cube[2]/2-1]) cube(remove_cube, center = true);
+            translate([-60, 0, remove_cube[2]/2-1]) cube(remove_cube, center = true);
         }
+    }
+
+    union()
+    {
+        translate([0, 39, 0])
+        {
+            *link_center_top();
+
+            difference()
+            {
+                union()
+                {
+                    minkowski()
+                    {
+                        translate([0, 0, base_cube[2]/2]) cube([base_cube[0], base_cube[1], base_cube[2]], center = true);
+                        cylinder(h=p[1], r=p[2], $fn = fragments_number);
+                    }
+                    link_center();
+                }
+
+                link_center_holes();
+            }
+
+            left_wing();
+            mirror([1, 0, 0]) left_wing();
+        }
+
+        // Left and right tents 
+        transform_link_system() left_tent();
+        mirror([1, 0, 0]) transform_link_system() left_tent();
     }
 }
 
