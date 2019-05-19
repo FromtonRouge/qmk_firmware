@@ -105,7 +105,7 @@ function get_kaladrius_origin() = [0, 0, 0];
 function get_thumb_anchor() = k[6][3] - [0, 3*(switch_hole_width+switch_spacing) + switch_spacing];
 function get_thumb_origin() = get_thumb_anchor() + [thumb_x, -thumb_y];
 function get_tent_origin() = get_kaladrius_origin() + tent_pos;
-function get_tenting_angle() = 6;
+function get_tenting_angle() = 5.4;
 function get_cells(height, rows, columns, xy_scale = 1) = [xy_scale*(columns*switch_hole_width + (columns+1)*switch_spacing), xy_scale*(rows*switch_hole_width + (rows+1)*switch_spacing), height];
 function get_thumb_profile_cube() = get_cells(1, 3, 3, tent_thumb_scale);
 function get_points_from_cube(c) = [[0, 0], [c[0], 0], [c[0], c[1]], [0, c[1]]];
@@ -840,7 +840,7 @@ module left_keycaps()
 // Kaladrius link system
 module transform_link_system()
 {
-    translate([-105, 0, 0])
+    translate([-103.5, 0, 0])
     {
         translate(-get_tent_origin())
         {
@@ -1397,7 +1397,7 @@ module link_system()
 
             remove_cube = [20, 30 + 2*p[4], 2*wing_dim[2]];
             translate([-22, 0, remove_cube[2]/2-1]) cube(remove_cube, center = true);
-            translate([-60, 0, remove_cube[2]/2-1]) cube(remove_cube, center = true);
+            translate([-59, 0, remove_cube[2]/2-1]) cube(remove_cube, center = true);
         }
     }
 
@@ -1503,6 +1503,6 @@ mirror([1, 0, 0])
 
 *electronic_case(bottom = false);
 *electronic_case(top = false);
-link_plate();
-*link_system();
+*link_plate();
+link_system();
 *translate([80, 0, 22]) rotate([0, 180, 0]) electronic_case(bottom = false);
