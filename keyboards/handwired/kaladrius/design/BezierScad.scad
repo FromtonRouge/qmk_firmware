@@ -118,20 +118,20 @@ module BezWall(
     [2,3,6], 
     [2,6,7]
     ];
-  for(step = [steps-1 : 1])
+  for(step = [1 : steps-1])
   {
-    assign(
+    let(
       t1 = step/(steps-1), 
       t0 = (step-1)/(steps-1)
     ) {
-    assign(
+    let(
       hgt0 = len(heightCtls) > 0 ? BezI(t0, heightCtls) : height,
       hgt1 = len(heightCtls) > 0 ? BezI(t1, heightCtls) : height,
       wid0 = len(widthCtls) > 0 ? BezI(t0, widthCtls) : width, 
       wid1 = len(widthCtls) > 0 ? BezI(t1, widthCtls) : width
     ) {
       if (centered) {
-        assign(
+        let(
           p0 = PerpAlongBez(t0, ctlPts, dist = -wid0/2, hodograph = hodoPts),
           p1 = PerpAlongBez(t0, ctlPts, dist = wid0/2, hodograph = hodoPts),
           p4 = PerpAlongBez(t1, ctlPts, dist = wid1/2, hodograph = hodoPts),
@@ -159,7 +159,7 @@ module BezWall(
           }
         }
       } else {
-        assign(
+        let(
           p0 = PointAlongBez(t0, ctlPts),
           p1 = PerpAlongBez(t0, ctlPts, dist = wid0, hodograph = hodoPts),
           p4 = PerpAlongBez(t1, ctlPts, dist = wid1, hodograph = hodoPts),
@@ -210,12 +210,12 @@ module BezArc(ctlPts, focalPoint, steps=12, height = 1, heightCtls = [], showCtl
     ];
   for(step = [1 : steps-1])
   {
-    assign(
+    let(
       t1 = step/(steps-1), 
       t0 = (step-1)/(steps-1),
       fp = [focalPoint[0], focalPoint[1], len(heightCtls) > 0 ? BezI(0, heightCtls) : height]
     ) {
-    assign(
+    let(
       hgt0 = len(heightCtls) > 0 ? BezI(t0, heightCtls) : height,
       hgt1 = len(heightCtls) > 0 ? BezI(t1, heightCtls) : height,
       p0 = PointAlongBez(t0, ctlPts), 
