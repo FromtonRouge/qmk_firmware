@@ -140,6 +140,8 @@ Tent_Thumb_Scale = 0.75;
 // (mm)
 Link_Nut_Slot_Height = 12.2; // [10:0.1:20]
 
+Link_Reinforcement = true;
+
 point_pinky_last = [get_kaladrius_origin()[0] + Case_Outer_Border, get_kaladrius_origin()[1]];
 point_pinky = [point_pinky_last[0] + Switch_Hole_Width + Space_Between_Switches, point_pinky_last[1]];
 point_ring = [point_pinky[0] +  Switch_Hole_Width + Space_Between_Switches, point_pinky[1] + Pinky_Finger_Offset];
@@ -741,11 +743,6 @@ module left_tent(printable = true, holes_only = false, plain = false)
         {
             union()
             {
-                rotate([0, get_tenting_angle(), 0])
-                {
-                    translate([0, 0, profile_height/2]) profile(Teensy_Case_Roundness + 0.5);
-                }
-
                 difference()
                 {
                     union()
@@ -799,6 +796,11 @@ module left_tent(printable = true, holes_only = false, plain = false)
                     plane_to_remove = [150, 180, 40];
                     rotate([0, get_tenting_angle(), 0]) translate([0, -160, -plane_to_remove[2]]) cube(plane_to_remove);
                     translate([0, -160, 0]) cube(plane_to_remove);
+                }
+
+                rotate([0, get_tenting_angle(), 0])
+                {
+                    translate([0, 0, profile_height/2]) profile(Teensy_Case_Roundness + 0.5);
                 }
             }
 
@@ -1464,7 +1466,7 @@ module link_plate()
     rotate([0, 180, 0]) link_center_top();
 }
 
-module link_system()
+module link_system(plain = false)
 {
     p = teensy_case_parameters;
     base_cube = p[0];
@@ -1506,7 +1508,7 @@ module link_system()
 
     link_offset = [0, 39, 0];
 
-    difference()
+    module link_plain()
     {
         union()
         {
@@ -1514,35 +1516,97 @@ module link_system()
             {
                 *link_center_top();
 
-                difference()
+                if (plain)
                 {
-                    union()
+                    hull() link_center();
+                }
+                else
+                {
+                    difference()
                     {
-                        minkowski()
+                        union()
                         {
-                            translate([0, 0, base_cube[2]/2]) cube([base_cube[0], base_cube[1], base_cube[2]], center = true);
-                            cylinder(h=p[1], r=p[2], $fn = fragments_number);
+                            minkowski()
+                            {
+                                translate([0, 0, base_cube[2]/2]) cube([base_cube[0], base_cube[1], base_cube[2]], center = true);
+                                cylinder(h=p[1], r=p[2], $fn = fragments_number);
+                            }
+                            link_center();
                         }
-                        link_center();
-                    }
 
-                    link_center_holes();
+                        link_center_holes();
+                    }
                 }
 
-                left_wing();
-                mirror([1, 0, 0]) left_wing();
+                if (plain)
+                {
+                    hull()
+                    {
+                        left_wing();
+                        mirror([1, 0, 0]) left_wing();
+                    }
+                }
+                else
+                {
+                    left_wing();
+                    mirror([1, 0, 0]) left_wing();
+                }
             }
 
             // Left and right tents 
-            transform_link_system() left_tent();
-            mirror([1, 0, 0]) transform_link_system() left_tent();
+            union()
+            {
+                transform_link_system() left_tent(plain = plain);
+                mirror([1, 0, 0]) transform_link_system() left_tent(plain = plain);
+            }
+        }
+    }
+
+    if (plain)
+    {
+        link_plain();
+    }
+    else
+    {
+        difference()
+        {
+            link_plain();
+
+            translate(link_offset)
+            {
+                left_wing_hole();
+                mirror([1, 0, 0]) left_wing_hole();
+            }
+        }
+    }
+}
+
+module link_reinforcement()
+{
+    difference()
+    {
+        p = teensy_case_parameters;
+        intersection()
+        {
+            hull()
+            {
+                transform_link_system() left_tent(plain = true);
+                mirror([1, 0, 0]) transform_link_system() left_tent(plain = true);
+            }
+
+            minkowski()
+            {
+                difference()
+                {
+                    link_reinforcement_size = [200, 90, 10-Teensy_Plate_Thickness];
+                    translate([0, 0, link_reinforcement_size[2]/2]) cube(link_reinforcement_size, center = true);
+                    translate([0, -110, -1]) cylinder(h=link_reinforcement_size[2]+2, r=100, $fn = 2*fragments_number);
+                }
+                cylinder(h=Teensy_Plate_Thickness, r1=p[4], $fn = fragments_number);
+            }
         }
 
-        translate(link_offset)
-        {
-            left_wing_hole();
-            mirror([1, 0, 0]) left_wing_hole();
-        }
+        link_system(true);
     }
 }
 
@@ -1581,7 +1645,15 @@ else if (Design_Mode == 1)
 }
 else if (Design_Mode == 2)
 {
-    link_system();
+    union()
+    {
+        link_system();
+
+        if (Link_Reinforcement)
+        {
+            link_reinforcement();
+        }
+    }
 }
 else if (Design_Mode == 3)
 {
@@ -1589,7 +1661,16 @@ else if (Design_Mode == 3)
 }
 else if (Design_Mode == 4)
 {
-    link_system();
+    union()
+    {
+        link_system();
+
+        if (Link_Reinforcement)
+        {
+            link_reinforcement();
+        }
+    }
+
     transform_link_system() left_case(printable = false);
     mirror([1, 0, 0]) transform_link_system() left_case(printable = false);
 }
