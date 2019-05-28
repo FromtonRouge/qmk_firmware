@@ -129,6 +129,10 @@ teensy_case_parameters = get_box_parameters(Teensy_Plate_Size, Teensy_Case_Round
 
 // (degree)
 Tenting_Angle = 5.4; // [5.4:0.1:10.5]
+
+// (degree)
+Tilt_Angle = 0; // [0:0.1:20]
+
 tent_pos = [84.5, Pinky_Finger_Offset-70];
 
 Tent_Profile_Cube = [51, 70, 1];
@@ -832,6 +836,26 @@ module left_tent(printable = true, holes_only = false, plain = false)
                                 tent_screw_hole(hole_height);
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+module left_tilted_tent(angle = Tilt_Angle, printable = true, holes_only = false, plain = false)
+{
+    translate(get_tent_origin())
+    {
+        translate([Tent_Profile_Cube[0], Tent_Profile_Cube[1], 0])
+        {
+            rotate([0, 0, -angle])
+            {
+                translate([-Tent_Profile_Cube[0], -Tent_Profile_Cube[1], 0])
+                {
+                    translate(-get_tent_origin())
+                    {
+                        left_tent(printable = printable, holes_only = holes_only, plain = plain);
                     }
                 }
             }
@@ -1556,8 +1580,8 @@ module link_system(plain = false)
             // Left and right tents 
             union()
             {
-                transform_link_system() left_tent(plain = plain);
-                mirror([1, 0, 0]) transform_link_system() left_tent(plain = plain);
+                transform_link_system() left_tilted_tent(plain = plain);
+                mirror([1, 0, 0]) transform_link_system() left_tilted_tent(plain = plain);
             }
         }
     }
@@ -1590,8 +1614,8 @@ module link_reinforcement()
         {
             hull()
             {
-                transform_link_system() left_tent(plain = true);
-                mirror([1, 0, 0]) transform_link_system() left_tent(plain = true);
+                transform_link_system() left_tilted_tent(plain = true);
+                mirror([1, 0, 0]) transform_link_system() left_tilted_tent(plain = true);
             }
 
             minkowski()
