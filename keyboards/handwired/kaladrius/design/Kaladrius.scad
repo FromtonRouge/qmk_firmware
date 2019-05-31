@@ -23,7 +23,7 @@ use <MCAD/nuts_and_bolts.scad>
 fragments_number = $preview ? 0 : 60; // Use 0 for debugging, 60 for final rendering
 
 /* [Keyboard Part To Design] */
-Design_Mode = 0; // [0:Plate, 1:Case, 2:Link, 3:Link Plate, 4:Tenting Adjustment, 5:Test]
+Design_Mode = 0; // [0:Plate, 1:Case, 2:Link -> need fix with service.netfabb.com, 3:Link Plate, 4:Tenting Adjustment, 5:Test]
 
 // Only valid for 'Plate' mode
 Show_Plate_Helpers = false;
@@ -598,7 +598,7 @@ module left_case(printable = true)
         {
             union()
             {
-                transform_tent_holes() translate([0, 0, Plate_Height]) nut_slot(height=5);
+                transform_tent_holes() translate([0, 0, Plate_Height]) nut_slot(height=5, smooth_junction=true);
 
                 difference()
                 {
@@ -663,7 +663,7 @@ module left_case(printable = true)
                 minkowski()
                 {
                     cube(Tent_Profile_Cube + [-12, -12, Case_Shell_Thickness]);
-                    cylinder(h=1, r=4, $fn = fragments_number);
+                    cylinder(h=10, r=4, $fn = fragments_number);
                 }
             }
 
@@ -672,7 +672,7 @@ module left_case(printable = true)
                 minkowski()
                 {
                     cube(get_thumb_profile_cube() + [-12, -12, Case_Shell_Thickness]);
-                    cylinder(h=1, r=4, $fn = fragments_number);
+                    cylinder(h=10, r=4, $fn = fragments_number);
                 }
             }
         }
@@ -1050,7 +1050,7 @@ module nut_slot(height = 11, diameter = 9, force_nut_slot_z = -1, smooth_junctio
             {
                 translate([-10, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
                 translate([10, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
-                translate([0, 0, 3]) cube([20, 0.1, 0.1], true);
+                translate([0, 0, 3.1]) cube([20, 3.1, 0.1], true);
             }
 
             nut_hole_rect();
@@ -1623,7 +1623,7 @@ module link_reinforcement()
                 {
                     link_reinforcement_size = [200, 90, 10-Teensy_Plate_Thickness];
                     translate([0, 0, link_reinforcement_size[2]/2]) cube(link_reinforcement_size, center = true);
-                    translate([0, -110, -1]) cylinder(h=link_reinforcement_size[2]+2, r=Link_Reinforcement_Radius + Tilt_Angle, $fn = 2*fragments_number);
+                    translate([0, -110, -1]) cylinder(h=link_reinforcement_size[2]+2, r=Link_Reinforcement_Radius + Tilt_Angle, $fn = $preview ? 0 : 100);
                 }
                 cylinder(h=Teensy_Plate_Thickness, r1=p[4], $fn = fragments_number);
             }
