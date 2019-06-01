@@ -59,9 +59,10 @@ Pinky_Finger_Offset = 5; // [-10:10]
 /* [Nut Slot] */
 
 // (mm)
-Nut_Slot_Diameter = 10; // [9:0.1:12]
+Nut_Slot_Tolerance = 0.05; // [0:0.01:0.2]
 
-Nut_Slot_Easy = true;
+// (mm)
+Nut_Slot_Diameter = 10; // [9:0.1:12]
 
 // (mm)
 Nut_Hole_3mm_Tolerance = 0.25; // [0:0.05:1]
@@ -1024,7 +1025,7 @@ module test_right_top_plate()
 
 module nut_slot(height = 11, diameter = Nut_Slot_Diameter, force_nut_slot_z = -1, smooth_junction = false, hole_only = false)
 {
-    tolerance = 0.0;
+    tolerance = Nut_Slot_Tolerance;
     module nut_hole_rect()
     {
         translate([-3.5, 0, 0])
@@ -1043,20 +1044,11 @@ module nut_slot(height = 11, diameter = Nut_Slot_Diameter, force_nut_slot_z = -1
         nut_slot_z = force_nut_slot_z >= 0 ? force_nut_slot_z : height - 5;
         translate([0, 0, nut_slot_z])
         {
-            if (Nut_Slot_Easy)
-            {
-                hull()
-                {
-                    case_hole(20);
-                    translate([5, 0, 0]) case_hole(20);
-                }
-            }
-
             hull()
             {
                 translate([-10, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
                 translate([10, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
-                translate([0, 0, 3]) cube([20, 3.1, 0.1], true);
+                translate([0, 0, 3.1]) cube([20, 4, 0.1], true);
             }
 
             nut_hole_rect();
@@ -1403,7 +1395,7 @@ module electronic_case(top = true, bottom = true)
     }
 }
 
-module link_center()
+module link_center_walls()
 {
     p = teensy_case_parameters;
     points = get_points_from_rect(p[0]);
@@ -1471,6 +1463,26 @@ module link_center_holes()
         {
             translate([0, 0, Teensy_Plate_Thickness]) case_hole(40);
         }
+    }
+}
+
+module link_center()
+{
+    difference()
+    {
+        union()
+        {
+            minkowski()
+            {
+                p = teensy_case_parameters;
+                base_cube = p[0];
+                translate([0, 0, base_cube[2]/2]) cube([base_cube[0], base_cube[1], base_cube[2]], center = true);
+                cylinder(h=p[1], r=p[2], $fn = fragments_number);
+            }
+            link_center_walls();
+        }
+
+        link_center_holes();
     }
 }
 
@@ -1544,24 +1556,11 @@ module link_system(plain = false)
         {
             if (plain)
             {
-                hull() link_center();
+                hull() link_center_walls();
             }
             else
             {
-                difference()
-                {
-                    union()
-                    {
-                        minkowski()
-                        {
-                            translate([0, 0, base_cube[2]/2]) cube([base_cube[0], base_cube[1], base_cube[2]], center = true);
-                            cylinder(h=p[1], r=p[2], $fn = fragments_number);
-                        }
-                        link_center();
-                    }
-
-                    link_center_holes();
-                }
+                link_center();
             }
 
             if (plain)
