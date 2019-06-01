@@ -56,7 +56,12 @@ Ring_Finger_Offset = 0; // [-10:10]
 // (3 for ergodox)
 Pinky_Finger_Offset = 5; // [-10:10]
 
-/* [Nut Hole Tolerances] */
+/* [Nut Slot] */
+
+// (mm)
+Nut_Slot_Diameter = 10; // [9:0.1:12]
+
+Nut_Slot_Easy = true;
 
 // (mm)
 Nut_Hole_3mm_Tolerance = 0.25; // [0:0.05:1]
@@ -331,20 +336,16 @@ module screw_mounts()
 {
     height = Case_Shell_Thickness + Case_Height;
     transform_hole(0) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
-    transform_hole(1) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
-    transform_hole(2) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
-    transform_hole(3) rotate([0, 0, 0]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
+    transform_hole(1) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
+    transform_hole(2) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
+    transform_hole(3) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
     transform_hole(4) rotate([0, 0, 45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
 
     transform_thumb()
     {
-        for (index = [5:7])
-        {
-            transform_hole(index)
-            {
-                translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
-            }
-        }
+        transform_hole(5) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
+        transform_hole(6) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
+        transform_hole(7) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
     }
 }
 
@@ -574,21 +575,17 @@ module left_case(printable = true)
         translate(get_tent_origin())
         {
             tent_screws_points = get_tent_screw_locations();
-            translate(tent_screws_points[0]) children();
-            translate(tent_screws_points[1]) rotate([0, 0, 90]) children();
-            translate(tent_screws_points[2]) rotate([0, 0, 90]) children();
+            translate(tent_screws_points[0]) rotate([0, 0, 180]) children();
+            translate(tent_screws_points[1]) rotate([0, 0, -90]) children();
+            translate(tent_screws_points[2]) rotate([0, 0, -90]) children();
         }
 
         transform_thumb_profile()
         {
             thumb_screw_points = get_tent_thumb_screw_locations();
-            for (p = thumb_screw_points)
-            {
-                translate(p)
-                {
-                    children();
-                }
-            }
+            translate(thumb_screw_points[0]) rotate([0, 0, 0]) children();
+            translate(thumb_screw_points[1]) rotate([0, 0, 180]) children();
+            translate(thumb_screw_points[2]) rotate([0, 0, 180]) children();
         }
     }
 
@@ -1025,7 +1022,7 @@ module test_right_top_plate()
     }
 }
 
-module nut_slot(height = 11, diameter = 9, force_nut_slot_z = -1, smooth_junction = false, hole_only = false)
+module nut_slot(height = 11, diameter = Nut_Slot_Diameter, force_nut_slot_z = -1, smooth_junction = false, hole_only = false)
 {
     tolerance = 0.0;
     module nut_hole_rect()
@@ -1034,7 +1031,7 @@ module nut_slot(height = 11, diameter = 9, force_nut_slot_z = -1, smooth_junctio
         {
             intersection()
             {
-                scale([2, 2, 20]) translate([0, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
+                scale([6, 2, 20]) translate([0, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
                 size = [diameter, diameter, 40];
                 translate([-size[0], -size[1]/2, 0]) cube(size);
             }
@@ -1046,11 +1043,20 @@ module nut_slot(height = 11, diameter = 9, force_nut_slot_z = -1, smooth_junctio
         nut_slot_z = force_nut_slot_z >= 0 ? force_nut_slot_z : height - 5;
         translate([0, 0, nut_slot_z])
         {
+            if (Nut_Slot_Easy)
+            {
+                hull()
+                {
+                    case_hole(20);
+                    translate([5, 0, 0]) case_hole(20);
+                }
+            }
+
             hull()
             {
                 translate([-10, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
                 translate([10, 0, 0]) printable_nut_hole(3, tolerance, cone = false);
-                translate([0, 0, 3.1]) cube([20, 3.1, 0.1], true);
+                translate([0, 0, 3]) cube([20, 3.1, 0.1], true);
             }
 
             nut_hole_rect();
@@ -1444,17 +1450,10 @@ module link_center()
     }
 
     // Nut slots
-    for (i = [0:3])
-    {
-        p = points[i];
-        translate(p)
-        {
-            translate([0, 0, Teensy_Plate_Thickness])
-            {
-                rotate([0, 0, i%2?-45:45]) nut_slot(Link_Nut_Slot_Height-1);
-            }
-        }
-    }
+    translate(points[0]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 45]) nut_slot(Link_Nut_Slot_Height-1);
+    translate(points[1]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 135]) nut_slot(Link_Nut_Slot_Height-1);
+    translate(points[2]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 225]) nut_slot(Link_Nut_Slot_Height-1);
+    translate(points[3]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, -45]) nut_slot(Link_Nut_Slot_Height-1);
 }
 
 module link_center_holes()
