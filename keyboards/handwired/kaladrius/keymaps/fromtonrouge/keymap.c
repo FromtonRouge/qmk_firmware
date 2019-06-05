@@ -88,7 +88,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
         KC_TAB,  _A,      _R,    _S,    _T,    _D,   KC_ESC,                 TG(L_FN),       _H,    _N,    _E,       _I,    _O,    _MINS, 
         CKC_SFT, _Z,      _X,    _C,    _V,    _B,                                        _K,    _M,    _COMM,    _DOT,  _APOS, CKC_SFT, 
         KC_LCTL, _AMP, KC_LALT,                                                                                _BSLS, _AT, KC_RCTL,
-                                               MO(L_FN),                               MO(L_FN), 
+                                                     KC_NO,                            KC_NO, 
                                    MO(L_FN), KC_ENT, KC_BSPC,                          KC_DEL, KC_SPC, MO(L_FN),
                                                MO(L_ACCENTS),                          MO(L_ACCENTS)),
     [L_SHIFT_COLEMAK] = LAYOUT(
