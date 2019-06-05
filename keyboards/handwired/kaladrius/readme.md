@@ -1,8 +1,15 @@
 # Kaladrius Steno Keyboard
 
+![Kaladrius](https://i.imgur.com/YgC8tji.jpg)
+
 The Kaladrius is an orthographic steno keyboard inspired by the [Jackdaw steno theory](https://sites.google.com/site/ploverdoc/jackdaw)
 The main goal is to be able to code with a chorded keyboard. It's still a prototype and hope to use it daily this year (2019) at work.
 It's a handwired and printable keyboard and use a Teensy 3.2
+
+The keyboard was designed with OpenSCAD
+![LinkSystem](https://i.imgur.com/hR2zoJJ.png)
+![Case](https://i.imgur.com/a4Rtx1p.png)
+![Plate](https://i.imgur.com/dIb330e.png)
 
 # Hardware
 
