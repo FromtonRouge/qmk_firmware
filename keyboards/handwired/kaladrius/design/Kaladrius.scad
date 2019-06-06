@@ -158,6 +158,8 @@ Link_Reinforcement = true;
 // (mm)
 Link_Reinforcement_Radius = 107; // [100:1:130]
 
+Link_Plate_Screw_Holes = true;
+
 point_pinky_last = [get_kaladrius_origin()[0] + Case_Outer_Border, get_kaladrius_origin()[1]];
 point_pinky = [point_pinky_last[0] + Switch_Hole_Width + Space_Between_Switches, point_pinky_last[1]];
 point_ring = [point_pinky[0] +  Switch_Hole_Width + Space_Between_Switches, point_pinky[1] + Pinky_Finger_Offset];
@@ -1456,12 +1458,15 @@ module link_center_holes()
     electronic_pcb(Teensy_Plate_Thickness, holes_only = true);
 
     // Holes for the link between the top and bottom cases
-    points = get_points_from_rect(p[0]);
-    for (p = points)
+    if (Link_Plate_Screw_Holes)
     {
-        translate(p)
+        points = get_points_from_rect(p[0]);
+        for (p = points)
         {
-            translate([0, 0, Teensy_Plate_Thickness]) case_hole(40);
+            translate(p)
+            {
+                translate([0, 0, Teensy_Plate_Thickness]) case_hole(40);
+            }
         }
     }
 }
