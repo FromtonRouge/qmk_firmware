@@ -576,7 +576,7 @@ module left_case(printable = true)
         translate(get_tent_origin())
         {
             tent_screws_points = get_tent_screw_locations();
-            translate(tent_screws_points[0]) rotate([0, 0, 45]) children();
+            translate(tent_screws_points[0]) rotate([0, 0, 0]) children();
             translate(tent_screws_points[1]) rotate([0, 0, -90]) children();
             translate(tent_screws_points[2]) rotate([0, 0, -90]) children();
         }
