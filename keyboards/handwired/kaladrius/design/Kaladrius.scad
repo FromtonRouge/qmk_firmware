@@ -281,11 +281,11 @@ module transform_thumb_profile()
 }
 
 
-module holes(offset=0, height = Switch_Hole_Height, has_additional_border = true)
+module holes(height = Switch_Hole_Height, has_additional_border = true)
 {
     module make_keyboard_hole(i)
     {
-        color(k[i][0]) create_holes(height, k[i][1], k[i][2], k[i][3], offset, has_additional_border, k[i][4]);
+        color(k[i][0]) create_holes(height, k[i][1], k[i][2], k[i][3], has_additional_border, k[i][4]);
     }
 
     // Fingers
@@ -352,13 +352,13 @@ module screw_mounts()
     }
 }
 
-module create_hole(height, offset, has_additional_border = true, vertical = false)
+module create_hole(height, has_additional_border = true, vertical = false)
 {
     additional_border_width = 0.5;
     clip_width = 6;
     roundness = 0.5;
-    x = Switch_Hole_Width + 2*offset - 2*roundness + 2*additional_border_width + Switch_Hole_Tolerance;
-    y = Switch_Hole_Width + 2*offset - 2*roundness + Switch_Hole_Tolerance;
+    x = Switch_Hole_Width - 2*roundness + 2*additional_border_width + Switch_Hole_Tolerance;
+    y = Switch_Hole_Width - 2*roundness + Switch_Hole_Tolerance;
     translate([Space_Between_Switches + (Switch_Hole_Width-((vertical?y:x)+2*roundness))/2, -Space_Between_Switches - (Switch_Hole_Width-((vertical?x:y)+2*roundness))/2, 0])
     {
         translate([roundness, -roundness, 0]) // minkowski compensation
@@ -368,7 +368,7 @@ module create_hole(height, offset, has_additional_border = true, vertical = fals
                 rotate([0, 0, vertical?90:0])
                 {
                     // External hole
-                    ext_hole = offset+1;
+                    ext_hole = 1;
                     translate([0, 0, height/2 + (has_additional_border?Plate_Additional_Border_Height:0)]) // The cube is centered, we want to move up the bottom of the cube
                     {
                         minkowski()
@@ -419,7 +419,7 @@ module create_cells(height, rows, columns, origin)
     }
 }
 
-module create_holes(height, rows, columns, origin, offset, has_additional_border = true, vertical = false)
+module create_holes(height, rows, columns, origin, has_additional_border = true, vertical = false)
 {
     translate(origin)
     {
@@ -430,7 +430,7 @@ module create_holes(height, rows, columns, origin, offset, has_additional_border
             {
                 translate([col_offset, -row*(Switch_Hole_Width+Space_Between_Switches), 0])
                 {
-                    create_hole(height, offset, has_additional_border, vertical);
+                    create_hole(height, has_additional_border, vertical);
                 }
             }
         }
@@ -997,24 +997,23 @@ module test_right_top_plate()
         {
             hull()
             {
-                offset = 0;
                 height = 20;
                 translate([0, -2*(Space_Between_Switches+Switch_Hole_Width)]) 
                 {
                     for (i = [1:5])
                     {
-                        create_holes(height, 2, k[i][2], k[i][3], offset, true);
+                        create_holes(height, 2, k[i][2], k[i][3], true);
                     }
                 }
 
                 transform_thumb()
                 {
-                    create_holes(height, 1, 1, [0, 0], offset, true);
+                    create_holes(height, 1, 1, [0, 0], true);
                     translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
                     {
-                        create_holes(height, 1, 1, [-(Switch_Hole_Width + Space_Between_Switches)/2 - (Switch_Hole_Width + Space_Between_Switches), -(Switch_Hole_Width + Space_Between_Switches) - (Switch_Hole_Width + Space_Between_Switches)/2], offset, has_additional_border = true, vertical = true);
-                        create_holes(height, 1, 2, [-(Switch_Hole_Width + Space_Between_Switches)/2, -(Switch_Hole_Width + Space_Between_Switches)], offset, has_additional_border = true);
-                        create_holes(height, 1, 1, [0, -2*(Switch_Hole_Width + Space_Between_Switches)], offset, has_additional_border=true);
+                        create_holes(height, 1, 1, [-(Switch_Hole_Width + Space_Between_Switches)/2 - (Switch_Hole_Width + Space_Between_Switches), -(Switch_Hole_Width + Space_Between_Switches) - (Switch_Hole_Width + Space_Between_Switches)/2], has_additional_border = true, vertical = true);
+                        create_holes(height, 1, 2, [-(Switch_Hole_Width + Space_Between_Switches)/2, -(Switch_Hole_Width + Space_Between_Switches)], has_additional_border = true);
+                        create_holes(height, 1, 1, [0, -2*(Switch_Hole_Width + Space_Between_Switches)], has_additional_border=true);
                     }
                 }
             }
