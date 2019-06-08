@@ -59,7 +59,7 @@ Pinky_Finger_Offset = 5; // [-10:10]
 /* [Nut Slot] */
 
 // (mm)
-Nut_Slot_Tolerance = 0.05; // [0:0.01:0.2]
+Nut_Slot_Tolerance = 0.04; // [0:0.01:0.2]
 
 // (mm)
 Nut_Slot_Diameter = 10; // [9:0.1:12]
@@ -73,13 +73,13 @@ Nut_Hole_2mm_Tolerance = 0.3; // [0:0.05:1]
 /* [Thumb Zone Position] */
 
 // (mm)
-Thumb_Zone_Origin_X = -14;
+Thumb_Zone_Origin_X = 7.2; // [-20:0.1:20]
 
 // (mm)
-Thumb_Zone_Origin_Y = 14.5;
+Thumb_Zone_Origin_Y = 5.1; // [0:0.1:20]
 
 // (degree)
-Thumb_Zone_Angle = -21; // [-45:0]
+Thumb_Zone_Angle = -10; // [-45:0]
 
 /* [Case] */
 
@@ -177,7 +177,7 @@ k = [
     switches("green", 5, 1, point_ring),
     switches("lightGreen", 4, 1, point_middle),
     switches("blue", 4, 1, point_index3),
-    switches("lightBlue", 4, 1, point_index2),
+    switches("lightBlue", 3, 1, point_index2),
     switches("cyan", 3, 1, point_index1),
 
     // Thumbs
@@ -195,13 +195,12 @@ hole_positions = [
     k[0][3] - [0, k[0][1]*Switch_Hole_Width + (k[0][1]+1)*Space_Between_Switches],
 
     // Thumb
-    [-1.75*(Switch_Hole_Width + Space_Between_Switches) + 3*Switch_Hole_Width + 4*Space_Between_Switches, 0],
     [-1.75*(Switch_Hole_Width + Space_Between_Switches) + 3*Switch_Hole_Width + 4*Space_Between_Switches,  -3*Switch_Hole_Width - 4*Space_Between_Switches],
     [-1.75*(Switch_Hole_Width + Space_Between_Switches), -3*Switch_Hole_Width - 4*Space_Between_Switches],
 ];
 
 function get_kaladrius_origin() = [0, 0, 0];
-function get_thumb_anchor() = k[6][3] - [0, 3*(Switch_Hole_Width+Space_Between_Switches) + Space_Between_Switches];
+function get_thumb_anchor() = k[5][3] - [0, 3*(Switch_Hole_Width+Space_Between_Switches)];
 function get_thumb_origin() = get_thumb_anchor() + [Thumb_Zone_Origin_X, -Thumb_Zone_Origin_Y];
 function get_tent_origin() = get_kaladrius_origin() + tent_pos;
 function get_tenting_angle() = Tenting_Angle;
@@ -209,7 +208,7 @@ function get_cells(height, rows, columns, xy_scale = 1) = [xy_scale*(columns*Swi
 function get_thumb_profile_cube() = get_cells(1, 3, 3, Tent_Thumb_Scale);
 function get_points_from_cube(c) = [[0, 0], [c[0], 0], [c[0], c[1]], [0, c[1]]];
 function get_tent_screw_locations() = [[Tent_Profile_Cube[0], 0], [Tent_Profile_Cube[0], Tent_Profile_Cube[1]], [0, Tent_Profile_Cube[1]]];
-function get_tent_thumb_screw_locations() = [[0, 0], [get_thumb_profile_cube()[0], 0], [get_thumb_profile_cube()[0], get_thumb_profile_cube()[1]]];
+function get_tent_thumb_screw_locations() = [[0, 0], [get_thumb_profile_cube()[0], 0]];
 function get_tilt_origin() = hole_positions[2] + [Case_Outer_Border + Case_Shell_Thickness, Case_Outer_Border + Case_Shell_Thickness];
 
 module printable_nut_hole(size, tolerance, cone=true)
@@ -326,7 +325,7 @@ module case_holes(offset=0, height=Switch_Hole_Height, diameter=Screws_Diameter)
 
             transform_thumb()
             {
-                for (index = [5:7])
+                for (index = [5:6])
                 {
                     transform_hole(index) case_hole(height, diameter);
                 }
@@ -341,14 +340,13 @@ module screw_mounts()
     transform_hole(0) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
     transform_hole(1) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
     transform_hole(2) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
-    transform_hole(3) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
+    transform_hole(3) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
     transform_hole(4) rotate([0, 0, 45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
 
     transform_thumb()
     {
-        transform_hole(5) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
+        transform_hole(5) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
         transform_hole(6) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
-        transform_hole(7) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
     }
 }
 
@@ -578,7 +576,7 @@ module left_case(printable = true)
         translate(get_tent_origin())
         {
             tent_screws_points = get_tent_screw_locations();
-            translate(tent_screws_points[0]) rotate([0, 0, 180]) children();
+            translate(tent_screws_points[0]) rotate([0, 0, 45]) children();
             translate(tent_screws_points[1]) rotate([0, 0, -90]) children();
             translate(tent_screws_points[2]) rotate([0, 0, -90]) children();
         }
@@ -588,7 +586,6 @@ module left_case(printable = true)
             thumb_screw_points = get_tent_thumb_screw_locations();
             translate(thumb_screw_points[0]) rotate([0, 0, 0]) children();
             translate(thumb_screw_points[1]) rotate([0, 0, 180]) children();
-            translate(thumb_screw_points[2]) rotate([0, 0, 180]) children();
         }
     }
 
@@ -806,7 +803,7 @@ module left_tent(angle, printable = true, holes_only = false, plain = false)
                                 transform_thumb_profile()
                                 {
                                     thumb_points = get_points_from_cube(get_thumb_profile_cube());
-                                    for (p = [thumb_points[0], thumb_points[1], thumb_points[2]])
+                                    for (p = [thumb_points[0], thumb_points[1]])
                                     {
                                         translate(p)
                                         {
@@ -950,7 +947,7 @@ module left_keycaps()
 
         transform_thumb()
         {
-            create_keycaps(1, 1, [0, 0], horizontal_stretch=1.5);
+            create_keycaps(k[7][1], k[7][2], k[7][3], k[7][4], horizontal_stretch=1.5);
             translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
             {
                 create_keycaps(1, 1, [-(Switch_Hole_Width + Space_Between_Switches)/2 - (Switch_Hole_Width + Space_Between_Switches), -(Switch_Hole_Width + Space_Between_Switches) - (Switch_Hole_Width + Space_Between_Switches)/2], vertical = true, horizontal_stretch = 2);
@@ -1457,9 +1454,9 @@ module link_center_holes()
     electronic_pcb(Teensy_Plate_Thickness, holes_only = true);
 
     // Holes for the link between the top and bottom cases
+    points = get_points_from_rect(p[0]);
     if (Link_Plate_Screw_Holes)
     {
-        points = get_points_from_rect(p[0]);
         for (p = points)
         {
             translate(p)
@@ -1467,6 +1464,13 @@ module link_center_holes()
                 translate([0, 0, Teensy_Plate_Thickness]) case_hole(40);
             }
         }
+    }
+
+    // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
+    translate([0, 0, -0.01])
+    {
+        translate(points[0] + [0, 8]) case_hole(20, Screws_Diameter);
+        translate(points[1] + [0, 8]) case_hole(20, Screws_Diameter);
     }
 }
 
@@ -1625,7 +1629,7 @@ module link_reinforcement()
                 {
                     link_reinforcement_size = [200, 90, 10-Teensy_Plate_Thickness];
                     translate([0, 0, link_reinforcement_size[2]/2]) cube(link_reinforcement_size, center = true);
-                    translate([0, -110, -1]) cylinder(h=link_reinforcement_size[2]+2, r=Link_Reinforcement_Radius + Tilt_Angle, $fn = $preview ? 0 : 100);
+                    translate([0, -110, -1]) cylinder(h=link_reinforcement_size[2]+2, r=Link_Reinforcement_Radius + Tilt_Angle, $fn = $preview ? 0 : 400);
                 }
                 cylinder(h=Teensy_Plate_Thickness, r1=p[4], $fn = fragments_number);
             }
