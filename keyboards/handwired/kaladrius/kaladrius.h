@@ -47,3 +47,4 @@ typedef const uint32_t steno_layout_t[MATRIX_COLS];
 
 extern void set_leds(bool red, bool green, bool blue);
 extern void blink_leds(void);
+extern void set_matrix_scan_wait(bool state);

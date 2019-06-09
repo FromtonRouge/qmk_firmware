@@ -26,7 +26,7 @@
 #include "kaladrius.h"
 
 // Set 0 if debouncing isn't needed
-#ifndef DEBOUNCING_DELAY
+#ifndef DEBOUNCING_DELAY // Should be defined in kaladruis/config_common.h
 #define DEBOUNCING_DELAY 5
 #endif
 
@@ -40,6 +40,7 @@ static bool debouncing = false;
 
 static matrix_row_t matrix[MATRIX_ROWS];
 static uint8_t matrix_debouncing[MATRIX_COLS];
+static bool matrix_scan_wait_enabled = true;
 
 __attribute__ ((weak)) void matrix_init_user(void) {}
 __attribute__ ((weak)) void matrix_scan_user(void) {}
@@ -47,6 +48,11 @@ __attribute__ ((weak)) void matrix_init_kb(void) { matrix_init_user(); }
 __attribute__ ((weak)) void matrix_scan_kb(void) { matrix_scan_user(); }
 uint8_t matrix_rows(void) { return MATRIX_ROWS; }
 uint8_t matrix_cols(void) { return MATRIX_COLS; }
+
+void set_matrix_scan_wait(bool state)
+{
+    matrix_scan_wait_enabled = state;
+}
 
 void set_leds(bool red, bool green, bool blue)
 {
@@ -169,8 +175,12 @@ uint8_t matrix_scan(void)
         case 13: palSetPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
         }
         
-        // Need wait to settle pin state
-        wait_us(20);
+        // When steno is enabled we have to remove the wait for better strokes performances
+        if (matrix_scan_wait_enabled)
+        {
+            // Need wait to settle pin state
+            wait_us(20);
+        }
 
         // Read row data
         data = (

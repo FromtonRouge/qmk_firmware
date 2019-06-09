@@ -73,11 +73,11 @@ const uint32_t PROGMEM g_steno_layout[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 {
     [L_STENO] = LAYOUT(
-        KC_F1,     KC_F2,     KC_F3,     KC_F4,     KC_F5,     KC_F6,     KC_LGUI,      KC_TRNS, KC_F7,     KC_F8,     KC_F9,     KC_F10,     KC_F11,     KC_F12, 
-        KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_ENT,       KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_ENT,       KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,   KC_TRNS, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,       KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,       KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
         CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        KC_LSFT,   KC_LCTL,   KC_LALT,                                                                                          KC_RALT,   KC_RCTL,   KC_RSFT, 
+        KC_NO,   KC_NO,   KC_NO,                                                                                          KC_NO,   KC_NO,   KC_NO, 
                                                                CKC_STENO,                      CKC_STENO, 
                                          CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, 
                                                                CKC_STENO,                      CKC_STENO ),
@@ -180,9 +180,12 @@ void matrix_scan_user(void)
 {
     uint8_t layer = biton32(layer_state);
 
+    set_matrix_scan_wait(true);
+
     switch (layer)
     {
     case L_STENO:
+        set_matrix_scan_wait(false);
         set_leds(true, false, false);
         break;
     case L_FN:
