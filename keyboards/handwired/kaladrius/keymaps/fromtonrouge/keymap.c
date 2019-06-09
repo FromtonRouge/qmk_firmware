@@ -73,11 +73,11 @@ const uint32_t PROGMEM g_steno_layout[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 {
     [L_STENO] = LAYOUT(
-        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,   KC_TRNS, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,       KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, KC_NO,       KC_NO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        KC_NO,   KC_NO,   KC_NO,                                                                                          KC_NO,   KC_NO,   KC_NO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,       KC_TRNS,   CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,       CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,       CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                             CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO,                                                                                               CKC_STENO, CKC_STENO, CKC_STENO, 
                                                                CKC_STENO,                      CKC_STENO, 
                                          CKC_STENO, CKC_STENO, CKC_STENO,                      CKC_STENO, CKC_STENO, CKC_STENO, 
                                                                CKC_STENO,                      CKC_STENO ),
