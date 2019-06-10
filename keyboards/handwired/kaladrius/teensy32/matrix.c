@@ -199,7 +199,8 @@ uint8_t matrix_scan(void)
         }
         
         // Need wait to settle pin state
-        wait_us(20);
+        // IMPORTANT NOTE: To use wait_us() be sure to define properly CH_CFG_ST_FREQUENCY with a high value in chconf.h
+        wait_us(10);
 
         // Read row data
         data = (
