@@ -25,6 +25,10 @@
 #include QMK_KEYBOARD_H
 #include "kaladrius.h"
 
+#ifdef DEBUG_MATRIX_SCAN_RATE
+#include  "timer.h"
+#endif
+
 // Set 0 if debouncing isn't needed
 #ifndef DEBOUNCING_DELAY
 #define DEBOUNCING_DELAY 5
@@ -40,6 +44,11 @@ static bool debouncing = false;
 
 static matrix_row_t matrix[MATRIX_ROWS];
 static uint8_t matrix_debouncing[MATRIX_COLS];
+
+#ifdef DEBUG_MATRIX_SCAN_RATE
+uint32_t matrix_timer;
+uint32_t matrix_scan_count;
+#endif
 
 __attribute__ ((weak)) void matrix_init_user(void) {}
 __attribute__ ((weak)) void matrix_scan_user(void) {}
@@ -141,11 +150,31 @@ void matrix_init(void)
         matrix_debouncing[i] = 0;
     }
 
+#ifdef DEBUG_MATRIX_SCAN_RATE
+    matrix_timer = timer_read32();
+    matrix_scan_count = 0;
+#endif
+
     matrix_init_quantum();
 }
 
 uint8_t matrix_scan(void)
 {
+#ifdef DEBUG_MATRIX_SCAN_RATE
+    matrix_scan_count++;
+
+    uint32_t timer_now = timer_read32();
+    if (TIMER_DIFF_32(timer_now, matrix_timer) > 1000)
+    {
+        print("matrix scan frequency: ");
+        pdec(matrix_scan_count);
+        print("\n");
+
+        matrix_timer = timer_now;
+        matrix_scan_count = 0;
+    }
+#endif
+
     for (uint8_t col = 0; col < MATRIX_COLS; ++col)
     {
         uint8_t data = 0;
