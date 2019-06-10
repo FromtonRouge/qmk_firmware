@@ -100,6 +100,26 @@ Plate_Height = 3; // [2:4]
 // (mm)
 Plate_Additional_Border_Height = 1; // [0:0.1:2]
 
+Plate_Bezier_Controls_Mode = false;
+
+Plate_Show_Bezier_Controls = false;
+
+Plate_Control_Top_0 = 0; // [-20:0.1:20]
+Plate_Control_Top_1 = 0.4; // [-20:0.1:20]
+Plate_Control_Top_2 = 0; // [-20:0.1:20]
+Plate_Control_Top_3 = -1; // [-20:0.1:20]
+Plate_Control_Top_4 = -2.2; // [-20:0.1:20]
+Plate_Control_Top_5 = -2.1; // [-20:0.1:20]
+Plate_Control_Top_6 = 0; // [-20:0.1:20]
+
+Plate_Control_Bottom_0 = 0; // [-20:0.1:20]
+Plate_Control_Bottom_1 = 5.6; // [-20:0.1:20]
+Plate_Control_Bottom_2 = 1.8; // [-20:0.1:20]
+Plate_Control_Bottom_3 = -15; // [-20:0.1:20]
+Plate_Control_Bottom_4 = 0; // [-20:0.1:20]
+Plate_Control_Bottom_5 = 0; // [-20:0.1:20]
+Plate_Control_Bottom_6 = 0; // [-20:0.1:20]
+
 /* [Screws] */
 
 // (mm)
@@ -469,23 +489,23 @@ module plate(total_height = Plate_Height, chamfer = false)
             {
                 top_point_offset = [(Switch_Hole_Width+2*Space_Between_Switches)/2, Space_Between_Switches];
                 top_control_points =  [
-                    k[0][3],
-                    k[1][3] + top_point_offset,
-                    k[2][3] + top_point_offset,
-                    k[3][3] + top_point_offset,
-                    k[4][3] + top_point_offset,
-                    k[5][3] + top_point_offset,
-                    k[6][3] + [Switch_Hole_Width + 2*Space_Between_Switches, 0],
+                    k[0][3] + [0, Plate_Control_Top_0],
+                    k[1][3] + top_point_offset + [0, Plate_Control_Top_1],
+                    k[2][3] + top_point_offset + [0, Plate_Control_Top_2],
+                    k[3][3] + top_point_offset + [0, Plate_Control_Top_3],
+                    k[4][3] + top_point_offset + [0, Plate_Control_Top_4],
+                    k[5][3] + top_point_offset + [0, Plate_Control_Top_5],
+                    k[6][3] + [Switch_Hole_Width + 2*Space_Between_Switches, Plate_Control_Top_6],
                 ];
 
                 bottom_control_points =  [
-                    k[0][3] + [0, -k[0][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches],
-                    k[1][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[1][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches],
-                    k[2][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[2][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches],
-                    k[3][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[3][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches],
-                    k[4][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[4][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches],
-                    k[5][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[5][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches],
-                    k[7][3]  + [2*Space_Between_Switches + Switch_Hole_Width, -k[7][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches],
+                    k[0][3] + [0, -k[0][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches + Plate_Control_Bottom_0],
+                    k[1][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[1][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_1],
+                    k[2][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[2][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_2],
+                    k[3][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[3][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_3],
+                    k[4][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[4][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_4],
+                    k[5][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[5][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_5],
+                    k[7][3]  + [2*Space_Between_Switches + Switch_Hole_Width, -k[7][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches + Plate_Control_Bottom_6],
                 ];
 
                 difference()
@@ -498,26 +518,33 @@ module plate(total_height = Plate_Height, chamfer = false)
                         }
                     }
 
-                    BezWall(top_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = false);
-                    BezWall(bottom_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = false);
+                    BezWall(top_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
+                    BezWall(bottom_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
                 }
 
-                BezWall(top_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = false);
-                BezWall(bottom_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = false);
+                BezWall(top_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
+                BezWall(bottom_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
             }
 
             // Thumb plate
-            transform_thumb()
+            if (!Plate_Bezier_Controls_Mode)
             {
-                translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
+                transform_thumb()
                 {
-                    translate([-1.5*(Switch_Hole_Width+ Space_Between_Switches), 0, 0]) create_cells(basic_height, 3, 3, [0,0]);
+                    translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
+                    {
+                        translate([-1.5*(Switch_Hole_Width+ Space_Between_Switches), 0, 0]) create_cells(basic_height, 3, 3, [0,0]);
+                    }
                 }
             }
         }
         r1 = Case_Outer_Border;
         r2 = chamfer? r1 - minkowski_height : r1;
-        cylinder(r1=r1, r2=r2, h=minkowski_height, $fn = fragments_number);
+
+        if (!Plate_Bezier_Controls_Mode)
+        {
+            cylinder(r1=r1, r2=r2, h=minkowski_height, $fn = fragments_number);
+        }
     }
 }
 
@@ -538,6 +565,7 @@ module right_top_plate()
                     translate(get_thumb_anchor() + [0, -Thumb_Zone_Origin_Y]) cube([2, Thumb_Zone_Origin_Y, mark_height]);
                 }
             }
+
             holes();
             case_holes();
         }
