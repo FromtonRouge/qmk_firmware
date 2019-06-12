@@ -73,13 +73,13 @@ Nut_Hole_2mm_Tolerance = 0.3; // [0:0.05:1]
 /* [Thumb Zone Position] */
 
 // (mm)
-Thumb_Zone_Origin_X = 7.5; // [-20:0.1:20]
+Thumb_Zone_Origin_X = 8; // [-20:0.1:20]
 
 // (mm)
-Thumb_Zone_Origin_Y = 13; // [0:0.1:20]
+Thumb_Zone_Origin_Y = 10.3; // [0:0.1:20]
 
 // (degree)
-Thumb_Zone_Angle = -21; // [-45:0]
+Thumb_Zone_Angle = -18; // [-45:0]
 
 /* [Case] */
 
