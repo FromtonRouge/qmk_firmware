@@ -94,6 +94,9 @@ Case_Outer_Border = 8; // [8:12]
 
 /* [Plate] */
 
+// Generate a small plate to test finger positions
+Plate_Test_Finger_Positions = false;
+
 // (mm)
 Plate_Height = 3; // [2:4]
 
@@ -1052,7 +1055,7 @@ module test_right_top_plate()
                 height = 20;
                 translate([0, -2*(Space_Between_Switches+Switch_Hole_Width)]) 
                 {
-                    for (i = [1:5])
+                    for (i = [1:6])
                     {
                         create_holes(height, 2, k[i][2], k[i][3], true);
                     }
@@ -1721,7 +1724,14 @@ if (Design_Mode == 0)
         %left_keycaps();
     }
 
-    right_top_plate();
+    if (Plate_Test_Finger_Positions)
+    {
+        test_right_top_plate();
+    }
+    else
+    {
+        right_top_plate();
+    }
 }
 else if (Design_Mode == 1)
 {
