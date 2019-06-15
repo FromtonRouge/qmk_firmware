@@ -288,7 +288,7 @@ const uint8_t PROGMEM g_thumbs_table[64][MAX_VOWELS] =
     _V1(_A),                                // [4]
     _V2(_E, _A),                            // [5]
     _V2(_O, _A),                            // [6]
-    _V2(_O, _E),                            // [7]      OE instead of EOA
+    _V2(_E, _O),                            // [7]      EO instead of EOA
     _V1(_Y),                                // [8]
     _V2(_E, _Y),                            // [9]
     _V2(_O, _Y),                            // [10]
