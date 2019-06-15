@@ -77,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
         KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,    CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
         CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,    CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
         CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                          CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
-        KC_LSFT,   KC_LCTL,   KC_LALT,                                                                                              KC_RALT,   KC_RCTL,   KC_RSFT, 
+        CKC_STENO, CKC_STENO, CKC_STENO,                                                                                            CKC_STENO, CKC_STENO, CKC_STENO,
                                                                CKC_STENO,                          CKC_STENO, 
                                          CKC_STENO, CKC_STENO, CKC_STENO,                          CKC_STENO, CKC_STENO, CKC_STENO, 
                                                                CKC_STENO,                          CKC_STENO ),
