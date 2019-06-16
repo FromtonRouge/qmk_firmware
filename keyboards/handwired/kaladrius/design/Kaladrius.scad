@@ -1619,10 +1619,13 @@ module link_center_holes()
     }
 
     // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
-    translate([0, 0, -0.01])
+    if (Design_Mode != 3)
     {
-        translate(points[0] + [0, 8]) case_hole(20, Screws_Diameter);
-        translate(points[1] + [0, 8]) case_hole(20, Screws_Diameter);
+        translate([0, 0, -0.01])
+        {
+            translate(points[0] + [0, 8]) case_hole(20, Screws_Diameter);
+            translate(points[1] + [0, 8]) case_hole(20, Screws_Diameter);
+        }
     }
 }
 
