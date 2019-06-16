@@ -787,8 +787,15 @@ module left_tent(angle, printable = true, holes_only = false, plain = false)
     module extruded_profile(minkowski_radius, extrude_angle)
     {
         opposite = profile_height;
-        adjacent = get_tent_origin()[0] + Tent_Profile_Cube[0] + minkowski_radius;
-        step_angle = atan(opposite/adjacent)/2;
+
+        adjacent_main_tent = get_tent_origin()[0] + Tent_Profile_Cube[0] + minkowski_radius;
+
+        additional_length = Tent_Thumb_Scale*(-1.75*(Switch_Hole_Width + Space_Between_Switches) + 3*Switch_Hole_Width + 4*Space_Between_Switches);
+        adjacent_thumb_tent = get_thumb_origin()[0] + additional_length + minkowski_radius;
+
+        adjacent = max(adjacent_main_tent, adjacent_thumb_tent);
+
+        step_angle = atan(opposite/adjacent);
         steps = floor(abs(extrude_angle)/step_angle) + 1;
         for (i = [0:steps])
         {
@@ -1704,25 +1711,25 @@ module show_point(p)
     %translate(p) cylinder(h=100, r=1, $fn=60);
 }
 
+if (Show_Plate_Helpers)
+{
+    show_point(get_kaladrius_origin());
+    show_point(get_tent_origin());
+    for (i = [0:7])
+    {
+        show_point(k[i][3]);
+    }
+    show_point(get_thumb_anchor());
+    show_point(get_thumb_origin());
+}
+
+if (Show_Plate_Keycaps)
+{
+    %left_keycaps();
+}
+
 if (Design_Mode == 0)
 {
-    if (Show_Plate_Helpers)
-    {
-        show_point(get_kaladrius_origin());
-        show_point(get_tent_origin());
-        for (i = [0:7])
-        {
-            show_point(k[i][3]);
-        }
-        show_point(get_thumb_anchor());
-        show_point(get_thumb_origin());
-    }
-
-    if (Show_Plate_Keycaps)
-    {
-        %left_keycaps();
-    }
-
     if (Plate_Test_Finger_Positions)
     {
         test_right_top_plate();
