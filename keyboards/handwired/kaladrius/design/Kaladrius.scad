@@ -59,7 +59,7 @@ Pinky_Finger_Offset = 0; // [-10:10]
 /* [Nut Slot] */
 
 // (mm)
-Nut_Slot_Tolerance = 0.04; // [0:0.01:0.2]
+Nut_Slot_Tolerance = 0.02; // [0:0.01:0.2]
 
 // (mm)
 Nut_Slot_Diameter = 10; // [9:0.1:12]
