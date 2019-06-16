@@ -236,7 +236,7 @@ function get_tenting_angle() = Tenting_Angle;
 function get_cells(height, rows, columns, xy_scale = 1) = [xy_scale*(columns*Switch_Hole_Width + (columns+1)*Space_Between_Switches), xy_scale*(rows*Switch_Hole_Width + (rows+1)*Space_Between_Switches), height];
 function get_thumb_profile_cube() = get_cells(1, 3, 3, Tent_Thumb_Scale);
 function get_points_from_cube(c) = [[0, 0], [c[0], 0], [c[0], c[1]], [0, c[1]]];
-function get_tent_screw_locations() = [[Tent_Profile_Cube[0], 0], [Tent_Profile_Cube[0], Tent_Profile_Cube[1]], [0, Tent_Profile_Cube[1]]];
+function get_tent_screw_locations() = [[Tent_Profile_Cube[0], Tent_Profile_Cube[1]], [0, Tent_Profile_Cube[1]]];
 function get_tent_thumb_screw_locations() = [[0, 0], [get_thumb_profile_cube()[0], 0]];
 function get_tilt_origin() = hole_positions[2] + [Case_Outer_Border + Case_Shell_Thickness, Case_Outer_Border + Case_Shell_Thickness];
 
@@ -379,18 +379,18 @@ module case_holes(offset=0, height=Switch_Hole_Height, diameter=Screws_Diameter)
 
 module screw_mounts()
 {
-    height = Case_Shell_Thickness + Case_Height;
-    transform_hole(0) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
-    transform_hole(1) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
-    transform_hole(2) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
-    transform_hole(3) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
-    transform_hole(4) rotate([0, 0, 45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=8);
+    height = 8;
+    transform_hole(0) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
+    transform_hole(1) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
+    transform_hole(2) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
+    transform_hole(3) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
+    transform_hole(4) rotate([0, 0, 45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
 
     transform_thumb()
     {
-        transform_hole(5) rotate([0, 0, 70]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
-        transform_hole(6) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
-        transform_hole(7) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=7);
+        transform_hole(5) rotate([0, 0, 70]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
+        transform_hole(6) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
+        transform_hole(7) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
     }
 }
 
@@ -628,8 +628,8 @@ module left_case(printable = true)
         translate(get_tent_origin())
         {
             tent_screws_points = get_tent_screw_locations();
+            translate(tent_screws_points[0]) rotate([0, 0, -90]) children();
             translate(tent_screws_points[1]) rotate([0, 0, -90]) children();
-            translate(tent_screws_points[2]) rotate([0, 0, -90]) children();
         }
 
         transform_thumb_profile()
@@ -842,7 +842,7 @@ module left_tent(angle, printable = true, holes_only = false, plain = false)
                                 translate(get_tent_origin())
                                 {
                                     points = get_points_from_cube(Tent_Profile_Cube);
-                                    for (p = [points[1], points[2], points[3]])
+                                    for (p = [points[2], points[3]])
                                     {
                                         translate(p)
                                         {
