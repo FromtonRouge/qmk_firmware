@@ -706,11 +706,11 @@ module left_case(printable = true)
             // Holes to connect the tent system
             transform_tent_holes() translate([0, 0, -1]) screw_hole();
 
-            translate(get_tent_origin()) translate([6, 6, -1])
+            translate(get_tent_origin()) translate([0, 6, -1])
             {
                 minkowski()
                 {
-                    cube(Tent_Profile_Cube + [-16, -16, Case_Shell_Thickness]);
+                    cube(Tent_Profile_Cube + [0, -16, Case_Shell_Thickness]);
                     cylinder(h=10, r=4, $fn = fragments_number);
                 }
             }
