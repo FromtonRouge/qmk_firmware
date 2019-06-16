@@ -83,6 +83,9 @@ Thumb_Zone_Angle = -18; // [-45:0]
 
 /* [Case] */
 
+// Usefull for debugging
+Case_Render_Shell = true;
+
 // (mm)
 Case_Shell_Thickness = 3; // [2:4]
 
@@ -91,6 +94,8 @@ Case_Height = 9; // [9:12]
 
 // (mm)
 Case_Outer_Border = 8; // [8:12]
+
+Case_Screw_Mounts_Type = 2; // [0: Simple, 1: Slot, 2: Both]
 
 /* [Plate] */
 
@@ -182,6 +187,8 @@ Link_Reinforcement = true;
 Link_Reinforcement_Radius = 107; // [100:1:130]
 
 Link_Plate_Screw_Holes = true;
+
+Link_Screw_Mounts_Type = 2; // [0: Simple, 1: Slot, 2: Both]
 
 point_pinky_last = [get_kaladrius_origin()[0] + Case_Outer_Border, get_kaladrius_origin()[1]];
 point_pinky = [point_pinky_last[0] + Switch_Hole_Width + Space_Between_Switches, point_pinky_last[1]];
@@ -357,41 +364,71 @@ module transform_hole(index)
 
 module case_holes(offset=0, height=Switch_Hole_Height, diameter=Screws_Diameter)
 {
+    module make_hole()
+    {
+        case_hole(height, diameter);
+
+        if (Case_Screw_Mounts_Type == 0 || Case_Screw_Mounts_Type == 2)
+        {
+            make_case_screw_hole();
+        }
+    }
+
+    module transform_for_each_hole()
+    {
+        transform_hole(0) children();
+        transform_hole(1) children();
+        transform_hole(2) children();
+        transform_hole(4) children();
+
+        transform_thumb()
+        {
+            transform_hole(5) children();
+            transform_hole(6) children();
+            transform_hole(7) children();
+        }
+    }
+
     color("red")
     {
         translate([0, 0, -1])
         {
-            transform_hole(0) case_hole(height, diameter);
-            transform_hole(1) case_hole(height, diameter);
-            transform_hole(2) case_hole(height, diameter);
-            //transform_hole(3) case_hole(height, diameter);
-            transform_hole(4) case_hole(height, diameter);
-
-            transform_thumb()
-            {
-                transform_hole(5) case_hole(height, diameter);
-                transform_hole(6) case_hole(height, diameter);
-                transform_hole(7) case_hole(height, diameter);
-            }
+            transform_for_each_hole() make_hole();
         }
     }
 }
 
 module screw_mounts()
 {
-    height = 8;
-    transform_hole(0) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
-    transform_hole(1) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
-    transform_hole(2) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
-    transform_hole(3) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
-    transform_hole(4) rotate([0, 0, 45]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
-
-    transform_thumb()
+    module make_mount()
     {
-        transform_hole(5) rotate([0, 0, 70]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
-        transform_hole(6) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
-        transform_hole(7) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) nut_slot(height=height);
+        height = 8;
+        if (Case_Screw_Mounts_Type == 0)
+        {
+            cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
+        }
+        else if (Case_Screw_Mounts_Type >= 1)
+        {
+            nut_slot(height=height);
+        }
     }
+
+    module transform_for_each_mount()
+    {
+        transform_hole(0) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) children();
+        transform_hole(1) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) children();
+        transform_hole(2) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) children();
+        transform_hole(4) rotate([0, 0, 45]) translate([0, 0, Case_Shell_Thickness]) children();
+
+        transform_thumb()
+        {
+            transform_hole(5) rotate([0, 0, 70]) translate([0, 0, Case_Shell_Thickness]) children();
+            transform_hole(6) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) children();
+            transform_hole(7) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) children();
+        }
+    }
+
+    transform_for_each_mount() make_mount();
 }
 
 module create_hole(height, has_additional_border = true, vertical = false)
@@ -598,6 +635,18 @@ module plate_supports()
         }
     }
 
+    wide_support_size = 6;
+    module create_wide_support()
+    {
+        hull()
+        {
+            translate([0, -wide_support_size]) cylinder(h=support_height-3, d=3.5, $fn=30);
+            translate([0, -wide_support_size]) cylinder(h=support_height, d=1, $fn=30);
+            translate([0, wide_support_size]) cylinder(h=support_height-3, d=3.5, $fn=30);
+            translate([0, wide_support_size]) cylinder(h=support_height, d=1, $fn=30);
+        }
+    }
+
     translate(k[2][3] + [3*Space_Between_Switches/2 + Switch_Hole_Width, 0])
     {
         for (row = [1:4])
@@ -610,13 +659,19 @@ module plate_supports()
     left_middle_point = (hole_positions[0] + hole_positions[4])/2;
     translate(left_middle_point)
     {
-        hull()
+        create_wide_support();
+    }
+
+    // Right plate support
+    translate(hole_positions[3] + [0, wide_support_size]) create_wide_support();
+    translate((hole_positions[2] + hole_positions[3])/2 + [0, wide_support_size]) create_wide_support();
+
+    transform_thumb()
+    {
+        right_middle_point = (hole_positions[5] + hole_positions[6])/2;
+        translate (right_middle_point)
         {
-            size = 6;
-            translate([0, -size]) cylinder(h=support_height-3, d=3.5, $fn=30);
-            translate([0, -size]) cylinder(h=support_height, d=1, $fn=30);
-            translate([0, size]) cylinder(h=support_height-3, d=3.5, $fn=30);
-            translate([0, size]) cylinder(h=support_height, d=1, $fn=30);
+            create_wide_support();
         }
     }
 }
@@ -648,40 +703,43 @@ module left_case(printable = true)
             {
                 transform_tent_holes() translate([0, 0, Plate_Height]) nut_slot(height=5, smooth_junction=true);
 
-                difference()
+                if (Case_Render_Shell)
                 {
-                    union()
+                    difference()
                     {
-                        small_radius = 1;
-                        // Bottom
-                        minkowski()
+                        union()
                         {
-                            plate();
-                            cylinder(r1=small_radius, r2=Case_Shell_Thickness,  h=Case_Shell_Thickness, $fn = fragments_number);
-                        }
-
-                        // Middle
-                        translate([0, 0, Case_Shell_Thickness])
-                        {
+                            small_radius = 1;
+                            // Bottom
                             minkowski()
                             {
                                 plate();
-                                cylinder(r=Case_Shell_Thickness,  h=Case_Height-Case_Shell_Thickness, $fn = fragments_number);
+                                cylinder(r1=small_radius, r2=Case_Shell_Thickness,  h=Case_Shell_Thickness, $fn = fragments_number);
+                            }
+
+                            // Middle
+                            translate([0, 0, Case_Shell_Thickness])
+                            {
+                                minkowski()
+                                {
+                                    plate();
+                                    cylinder(r=Case_Shell_Thickness,  h=Case_Height-Case_Shell_Thickness, $fn = fragments_number);
+                                }
+                            }
+
+                            // Top
+                            translate([0, 0, Case_Height])
+                            {
+                                minkowski()
+                                {
+                                    plate();
+                                    cylinder(r2=small_radius, r1=Case_Shell_Thickness,  h=Case_Shell_Thickness, $fn = fragments_number);
+                                }
                             }
                         }
 
-                        // Top
-                        translate([0, 0, Case_Height])
-                        {
-                            minkowski()
-                            {
-                                plate();
-                                cylinder(r2=small_radius, r1=Case_Shell_Thickness,  h=Case_Shell_Thickness, $fn = fragments_number);
-                            }
-                        }
+                        translate([0, 0, Case_Shell_Thickness]) scale([1, 1, 8]) plate();
                     }
-
-                    translate([0, 0, Case_Shell_Thickness]) scale([1, 1, 8]) plate();
                 }
 
                 // Add all bolt mounts
@@ -694,7 +752,14 @@ module left_case(printable = true)
             translate([0, 0, Case_Height + Case_Shell_Thickness - 1]) scale([1, 1, 8]) plate();
 
             // Case holes
-            translate([0, 0, Case_Shell_Thickness]) case_holes(height = 20);
+            if (Case_Screw_Mounts_Type == 0 || Case_Screw_Mounts_Type == 2)
+            {
+                case_holes(height = 20);
+            }
+            else
+            {
+                translate([0, 0, Case_Shell_Thickness]) case_holes(height = 20);
+            }
 
             // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
             left_middle_point = (hole_positions[0] + hole_positions[4])/2;
@@ -1503,11 +1568,24 @@ module link_center_walls()
         }
     }
 
+    module make_mount()
+    {
+        height = Link_Nut_Slot_Height-1;
+        if (Link_Screw_Mounts_Type == 0 || !Link_Plate_Screw_Holes)
+        {
+            cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
+        }
+        else
+        {
+            nut_slot(height=height);
+        }
+    }
+
     // Nut slots
-    translate(points[0]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 45]) nut_slot(Link_Nut_Slot_Height-1);
-    translate(points[1]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 135]) nut_slot(Link_Nut_Slot_Height-1);
-    translate(points[2]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 225]) nut_slot(Link_Nut_Slot_Height-1);
-    translate(points[3]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, -45]) nut_slot(Link_Nut_Slot_Height-1);
+    translate(points[0]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 45]) make_mount();
+    translate(points[1]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 135]) make_mount();
+    translate(points[2]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 225]) make_mount();
+    translate(points[3]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, -45]) make_mount();
 }
 
 module link_center_holes()
@@ -1517,6 +1595,16 @@ module link_center_holes()
     // Holes for the pcb mount
     electronic_pcb(Teensy_Plate_Thickness, holes_only = true);
 
+    module make_hole()
+    {
+        case_hole(40);
+
+        if (Link_Screw_Mounts_Type == 0 || Link_Screw_Mounts_Type == 2)
+        {
+            make_case_screw_hole();
+        }
+    }
+
     // Holes for the link between the top and bottom cases
     points = get_points_from_rect(p[0]);
     if (Link_Plate_Screw_Holes)
@@ -1525,7 +1613,7 @@ module link_center_holes()
         {
             translate(p)
             {
-                translate([0, 0, Teensy_Plate_Thickness]) case_hole(40);
+                translate([0, 0, Teensy_Plate_Thickness]) make_hole();
             }
         }
     }
