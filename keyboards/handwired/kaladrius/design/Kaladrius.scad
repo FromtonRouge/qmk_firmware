@@ -64,8 +64,9 @@ Nut_Slot_Tolerance = 0.0; // [0:0.01:0.2]
 // (mm)
 Nut_Slot_Diameter = 10; // [9:0.1:12]
 
+// Note: 0.15 is tight fit, 0.25 is loose running fit
 // (mm)
-Nut_Hole_3mm_Tolerance = 0.15; // [0:0.05:1]
+Nut_Hole_3mm_Tolerance = 0.18; // [0:0.05:1]
 
 // (mm)
 Nut_Hole_2mm_Tolerance = 0.3; // [0:0.05:1]
@@ -90,12 +91,15 @@ Case_Render_Shell = true;
 Case_Shell_Thickness = 3; // [2:4]
 
 // (mm)
-Case_Height = 9; // [9:12]
+Case_Height = 8.5; // [7:0.1:12]
 
 // (mm)
 Case_Outer_Border = 8; // [8:12]
 
 Case_Screw_Mounts_Type = 2; // [0: Simple, 1: Slot, 2: Both]
+
+// (mm)
+Case_Top_Plate_Offset = -1; // [-2:0.1:0]
 
 /* [Plate] */
 
@@ -253,7 +257,7 @@ module printable_nut_hole(size, tolerance, cone=true)
     {
         hull()
         {
-            scale([0.2,0.2,2]) nutHole(size = size, tolerance = tolerance);
+            scale([0.2,0.2,1.6]) nutHole(size = size, tolerance = tolerance);
             nutHole(size = size, tolerance = tolerance);
         }
     }
@@ -400,9 +404,9 @@ module case_holes(offset=0, height=Switch_Hole_Height, diameter=Screws_Diameter)
 
 module screw_mounts()
 {
+    height = 8;
     module make_mount()
     {
-        height = 8;
         if (Case_Screw_Mounts_Type == 0)
         {
             cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
@@ -415,16 +419,19 @@ module screw_mounts()
 
     module transform_for_each_mount()
     {
-        transform_hole(0) rotate([0, 0, -45]) translate([0, 0, Case_Shell_Thickness]) children();
-        transform_hole(1) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) children();
-        transform_hole(2) rotate([0, 0, -90]) translate([0, 0, Case_Shell_Thickness]) children();
-        transform_hole(4) rotate([0, 0, 45]) translate([0, 0, Case_Shell_Thickness]) children();
-
-        transform_thumb()
+        translate([0, 0, Case_Height + Case_Shell_Thickness + Case_Top_Plate_Offset - height])
         {
-            transform_hole(5) rotate([0, 0, 70]) translate([0, 0, Case_Shell_Thickness]) children();
-            transform_hole(6) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) children();
-            transform_hole(7) rotate([0, 0, 90]) translate([0, 0, Case_Shell_Thickness]) children();
+            transform_hole(0) rotate([0, 0, -45]) children();
+            transform_hole(1) rotate([0, 0, -90]) children();
+            transform_hole(2) rotate([0, 0, -90]) children();
+            transform_hole(4) rotate([0, 0, 45]) children();
+
+            transform_thumb()
+            {
+                transform_hole(5) rotate([0, 0, 70]) children();
+                transform_hole(6) rotate([0, 0, 90]) children();
+                transform_hole(7) rotate([0, 0, 90]) children();
+            }
         }
     }
 
@@ -749,7 +756,7 @@ module left_case(printable = true)
             }
 
             // Top plate hole without chamfer
-            translate([0, 0, Case_Height + Case_Shell_Thickness - 1]) scale([1, 1, 8]) plate();
+            translate([0, 0, Case_Height + Case_Shell_Thickness + Case_Top_Plate_Offset]) scale([1, 1, 8]) plate();
 
             // Case holes
             if (Case_Screw_Mounts_Type == 0 || Case_Screw_Mounts_Type == 2)
@@ -796,7 +803,7 @@ module make_case_screw_hole()
 {
     hull()
     {
-        translate([0,0, 2]) printable_nut_hole(3, Nut_Hole_3mm_Tolerance);
+        translate([0,0, 3]) printable_nut_hole(3, Nut_Hole_3mm_Tolerance);
         translate([0,0,-30]) printable_nut_hole(3, Nut_Hole_3mm_Tolerance, false);
     }
 }
