@@ -66,7 +66,7 @@ Nut_Slot_Diameter = 10; // [9:0.1:12]
 
 // Note: 0.15 is tight fit, 0.25 is loose running fit
 // (mm)
-Nut_Hole_3mm_Tolerance = 0.18; // [0:0.05:1]
+Nut_Hole_3mm_Tolerance = 0.17; // [0:0.05:1]
 
 // (mm)
 Nut_Hole_2mm_Tolerance = 0.3; // [0:0.05:1]
