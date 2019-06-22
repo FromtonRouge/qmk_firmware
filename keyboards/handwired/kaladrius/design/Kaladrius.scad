@@ -366,6 +366,21 @@ module transform_hole(index)
     translate(hole_positions[index]) children();
 }
 
+module transform_for_each_hole()
+{
+    transform_hole(0) children();
+    transform_hole(1) children();
+    transform_hole(2) children();
+    transform_hole(4) children();
+
+    transform_thumb()
+    {
+        transform_hole(5) children();
+        transform_hole(6) children();
+        transform_hole(7) children();
+    }
+}
+
 module case_holes(offset=0, height=Switch_Hole_Height, diameter=Screws_Diameter)
 {
     module make_hole()
@@ -375,21 +390,6 @@ module case_holes(offset=0, height=Switch_Hole_Height, diameter=Screws_Diameter)
         if (Case_Screw_Mounts_Type == 0 || Case_Screw_Mounts_Type == 2)
         {
             make_case_screw_hole();
-        }
-    }
-
-    module transform_for_each_hole()
-    {
-        transform_hole(0) children();
-        transform_hole(1) children();
-        transform_hole(2) children();
-        transform_hole(4) children();
-
-        transform_thumb()
-        {
-            transform_hole(5) children();
-            transform_hole(6) children();
-            transform_hole(7) children();
         }
     }
 
@@ -614,7 +614,7 @@ module right_top_plate()
             }
 
             holes();
-            case_holes();
+            transform_for_each_hole() translate([0,0,-10]) case_hole(20);
         }
     }
 }
