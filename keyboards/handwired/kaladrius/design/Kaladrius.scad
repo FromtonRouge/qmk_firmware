@@ -23,7 +23,7 @@ use <MCAD/nuts_and_bolts.scad>
 fragments_number = $preview ? 0 : 60; // Use 0 for debugging, 60 for final rendering
 
 /* [Keyboard Part To Design] */
-Design_Mode = 0; // [0:Plate, 1:Case, 2:Link -> need fix with service.netfabb.com, 3:Link Plate, 4:Tenting Adjustment, 5:Test]
+Design_Mode = 0; // [0:Plate, 1:Case, 2:Link -> need fix with service.netfabb.com, 3:Link Plate, 4:Tenting Adjustment, 5:Case & Plate & Tent]
 
 // Only valid for 'Plate' mode
 Show_Plate_Helpers = false;
@@ -176,7 +176,7 @@ Tent_Distance = 103.5; // [95:0.1:110]
 
 tent_pos = [84.5, Pinky_Finger_Offset-70];
 
-Tent_Profile_Cube = [51, 70, 1];
+Tent_Profile_Cube = [51, 78, 1];
 
 Tent_Thumb_Scale = 0.75;
 
@@ -1874,4 +1874,10 @@ else if (Design_Mode == 4)
 }
 else if (Design_Mode == 5)
 {
+    translate([0, 0, 2*(Case_Height + Case_Shell_Thickness) + Plate_Height + Case_Top_Plate_Offset])
+    {
+        mirror([0,0,1]) right_top_plate();
+    }
+    left_case(printable = true);
+    left_tent(get_tenting_angle(), printable = false);
 }
