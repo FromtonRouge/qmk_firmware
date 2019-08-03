@@ -51,7 +51,7 @@ Switch_Hole_Height = 22;
 Middle_Finger_Offset = 0; // [-10:10]
 
 // (2 for ergodox)
-Ring_Finger_Offset = 7; // [-5:14]
+Ring_Finger_Offset = 0; // [-5:14]
 
 // (3 for ergodox)
 Pinky_Finger_Offset = 0; // [-10:10]
@@ -176,7 +176,7 @@ Tent_Distance = 103.5; // [95:0.1:110]
 
 tent_pos = [84.5, Pinky_Finger_Offset-70];
 
-Tent_Profile_Cube = [51, 78, 1];
+Tent_Profile_Cube = [51, 70, 1];
 
 Tent_Thumb_Scale = 0.75;
 
@@ -211,7 +211,7 @@ k = [
     switches("red", 5, 1, point_pinky_last),
     switches("magenta", 5, 1, point_pinky),
     switches("green", 5, 1, point_ring),
-    switches("lightGreen", 4, 1, point_middle),
+    switches("lightGreen", 5, 1, point_middle),
     switches("blue", 4, 1, point_index3),
     switches("lightBlue", 4, 1, point_index2),
     switches("cyan", 2, 1, point_index1),
@@ -525,52 +525,64 @@ module create_holes(height, rows, columns, origin, has_additional_border = true,
 
 module plate(total_height = Plate_Height, chamfer = false)
 {
+    is_rect_plate = Middle_Finger_Offset == 0 && Ring_Finger_Offset == 0 && Pinky_Finger_Offset == 0;
+
     minkowski()
     { 
         basic_height = total_height/3;
         minkowski_height = 2*basic_height;
         union()
         {
-            // Fingers plate
-            hull()
+            if (!is_rect_plate)
             {
-                top_point_offset = [(Switch_Hole_Width+2*Space_Between_Switches)/2, Space_Between_Switches];
-                top_control_points =  [
-                    k[0][3] + [0, Plate_Control_Top_0],
-                    k[1][3] + top_point_offset + [0, Plate_Control_Top_1],
-                    k[2][3] + top_point_offset + [0, Plate_Control_Top_2],
-                    k[3][3] + top_point_offset + [0, Plate_Control_Top_3],
-                    k[4][3] + top_point_offset + [0, Plate_Control_Top_4],
-                    k[5][3] + top_point_offset + [0, Plate_Control_Top_5],
-                    k[6][3] + [Switch_Hole_Width + 2*Space_Between_Switches, Plate_Control_Top_6],
-                ];
-
-                bottom_control_points =  [
-                    k[0][3] + [0, -k[0][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches + Plate_Control_Bottom_0],
-                    k[1][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[1][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_1],
-                    k[2][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[2][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_2],
-                    k[3][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[3][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_3],
-                    k[4][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[4][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_4],
-                    k[5][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[5][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_5],
-                    k[7][3]  + [2*Space_Between_Switches + Switch_Hole_Width, -k[7][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches + Plate_Control_Bottom_6],
-                ];
-
-                difference()
+                // Fingers plate
+                hull()
                 {
-                    union()
+                    top_point_offset = [(Switch_Hole_Width+2*Space_Between_Switches)/2, Space_Between_Switches];
+                    top_control_points =  [
+                        k[0][3] + [0, Plate_Control_Top_0],
+                        k[1][3] + top_point_offset + [0, Plate_Control_Top_1],
+                        k[2][3] + top_point_offset + [0, Plate_Control_Top_2],
+                        k[3][3] + top_point_offset + [0, Plate_Control_Top_3],
+                        k[4][3] + top_point_offset + [0, Plate_Control_Top_4],
+                        k[5][3] + top_point_offset + [0, Plate_Control_Top_5],
+                        k[6][3] + [Switch_Hole_Width + 2*Space_Between_Switches, Plate_Control_Top_6],
+                    ];
+
+                        bottom_control_points =  [
+                            k[0][3] + [0, -k[0][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches + Plate_Control_Bottom_0],
+                            k[1][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[1][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_1],
+                            k[2][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[2][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_2],
+                            k[3][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[3][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_3],
+                            k[4][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[4][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_4],
+                            k[5][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[5][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_5],
+                            k[7][3]  + [2*Space_Between_Switches + Switch_Hole_Width, -k[7][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches + Plate_Control_Bottom_6],
+                        ];
+
+                    difference()
                     {
-                        for (i = [0:7])
+                        union()
                         {
-                            create_cells(basic_height, k[i][1], k[i][2], k[i][3]);
+                            for (i = [0:7])
+                            {
+                                create_cells(basic_height, k[i][1], k[i][2], k[i][3]);
+                            }
                         }
+
+                        BezWall(top_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
+                        BezWall(bottom_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
                     }
 
-                    BezWall(top_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
-                    BezWall(bottom_control_points, width = 20, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
+                    BezWall(top_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
+                    BezWall(bottom_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
                 }
-
-                BezWall(top_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
-                BezWall(bottom_control_points, width = 1, height = basic_height, steps = 64, centered = true, showCtlR = Plate_Show_Bezier_Controls);
+            }
+            else
+            {
+                for (i = [0:7])
+                {
+                    create_cells(basic_height, k[i][1], k[i][2], k[i][3]);
+                }
             }
 
             // Thumb plate
