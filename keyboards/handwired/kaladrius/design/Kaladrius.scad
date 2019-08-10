@@ -23,7 +23,7 @@ use <MCAD/nuts_and_bolts.scad>
 fragments_number = $preview ? 0 : 60; // Use 0 for debugging, 60 for final rendering
 
 /* [Keyboard Part To Design] */
-Design_Mode = 0; // [0:Plate, 1:Case, 2:Link -> need fix with service.netfabb.com, 3:Link Plate, 4:Tenting Adjustment, 5:Case & Plate & Tent]
+Design_Mode = 0; // [0:Plate, 1:Case, 2:Link -> need fix with service.netfabb.com, 3:Link Plate, 4:Tenting Adjustment, 5:Case & Plate & Tent, 6:Test Nut Holes]
 
 // Only valid for 'Plate' mode
 Show_Plate_Helpers = false;
@@ -64,12 +64,13 @@ Nut_Slot_Tolerance = 0.0; // [0:0.01:0.2]
 // (mm)
 Nut_Slot_Diameter = 10; // [9:0.1:12]
 
-// Note: 0.15 is tight fit, 0.25 is loose running fit
+// Note: 0.06 press fit
 // (mm)
-Nut_Hole_3mm_Tolerance = 0.17; // [0:0.05:1]
+Nut_Hole_3mm_Tolerance = 0.07; // [0:0.05:1]
 
+// Note: 0.16 press fit
 // (mm)
-Nut_Hole_2mm_Tolerance = 0.3; // [0:0.05:1]
+Nut_Hole_2mm_Tolerance = 0.18; // [0:0.05:1]
 
 /* [Thumb Zone Position] */
 
@@ -799,7 +800,7 @@ module left_case(printable = true)
                 }
             }
 
-            transform_thumb_profile() translate([6, 6, -1])
+            transform_thumb_profile() translate([9, 9, -1])
             {
                 minkowski()
                 {
@@ -1124,8 +1125,13 @@ module test_nut_holes()
     {
         difference()
         {
-            translate([0, 0, 2.5]) {cylinder(h=5, d=15, center=true, $fn = fragments_number);}
-            translate([0, 0, -0.001]) printable_nut_hole(size, tolerance);
+            height = 7;
+            translate([0, 0, height/2]) {cylinder(h=height, d=15, center=true, $fn = fragments_number);}
+            hull()
+            {
+                translate([0, 0, 3]) printable_nut_hole(size, tolerance);
+                translate([0, 0, -0.1]) printable_nut_hole(size, tolerance);
+            }
             cylinder(h=20, d=hole, $fn = fragments_number);
         }
     }
@@ -1892,4 +1898,8 @@ else if (Design_Mode == 5)
     }
     left_case(printable = true);
     left_tent(get_tenting_angle(), printable = false);
+}
+else if (Design_Mode == 6)
+{
+    test_nut_holes();
 }
