@@ -1,6 +1,6 @@
 # Kaladrius Steno Keyboard
 
-![Kaladrius](https://i.imgur.com/5vwdRKf.jpg)
+![Kaladrius](https://i.imgur.com/UF7BSkB.jpg)
 
 The Kaladrius is an orthographic steno keyboard inspired by the [Jackdaw steno theory](https://sites.google.com/site/ploverdoc/jackdaw)
 The main goal is to be able to code with a chorded keyboard. It's still a prototype and hope to use it daily this year (2019) at work.
