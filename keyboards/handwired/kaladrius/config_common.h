@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DESCRIPTION     An orthographic steno keyboard
 
 /* key matrix size */
-#define MATRIX_COLS 14 
+#define MATRIX_COLS 16 
 #define MATRIX_ROWS 5
 
 /*

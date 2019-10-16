@@ -110,13 +110,14 @@ void matrix_init(void)
     blink_leds();
 
     // Left Columns (strobe)
-    palSetPadMode(TEENSY_PIN6_IOPORT, TEENSY_PIN6, PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(TEENSY_PIN5_IOPORT, TEENSY_PIN5, PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(TEENSY_PIN4_IOPORT, TEENSY_PIN4, PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(TEENSY_PIN3_IOPORT, TEENSY_PIN3, PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(TEENSY_PIN2_IOPORT, TEENSY_PIN2, PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(TEENSY_PIN1_IOPORT, TEENSY_PIN1, PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(TEENSY_PIN0_IOPORT, TEENSY_PIN0, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN1_IOPORT, TEENSY_PIN1, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN2_IOPORT, TEENSY_PIN2, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN3_IOPORT, TEENSY_PIN3, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN4_IOPORT, TEENSY_PIN4, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN5_IOPORT, TEENSY_PIN5, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN6_IOPORT, TEENSY_PIN6, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN7_IOPORT, TEENSY_PIN7, PAL_MODE_OUTPUT_PUSHPULL);
 
     // Right Columns (strobe)
     palSetPadMode(TEENSY_PIN23_IOPORT, TEENSY_PIN23, PAL_MODE_OUTPUT_PUSHPULL);
@@ -126,6 +127,7 @@ void matrix_init(void)
     palSetPadMode(TEENSY_PIN19_IOPORT, TEENSY_PIN19, PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(TEENSY_PIN18_IOPORT, TEENSY_PIN18, PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(TEENSY_PIN17_IOPORT, TEENSY_PIN17, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(TEENSY_PIN16_IOPORT, TEENSY_PIN16, PAL_MODE_OUTPUT_PUSHPULL);
 
     // RGB leds : Red = 13 Green = 14 Blue = 15
     palSetPadMode(TEENSY_PIN13_IOPORT, TEENSY_PIN13, PAL_MODE_OUTPUT_PUSHPULL);
@@ -182,20 +184,22 @@ uint8_t matrix_scan(void)
         // Strobe col
         switch (col)
         {
-        case 0: palSetPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
-        case 1: palSetPad(TEENSY_PIN5_IOPORT, TEENSY_PIN5); break;
-        case 2: palSetPad(TEENSY_PIN4_IOPORT, TEENSY_PIN4); break;
+        case 0: palSetPad(TEENSY_PIN0_IOPORT, TEENSY_PIN0); break;
+        case 1: palSetPad(TEENSY_PIN1_IOPORT, TEENSY_PIN1); break;
+        case 2: palSetPad(TEENSY_PIN2_IOPORT, TEENSY_PIN2); break;
         case 3: palSetPad(TEENSY_PIN3_IOPORT, TEENSY_PIN3); break;
-        case 4: palSetPad(TEENSY_PIN2_IOPORT, TEENSY_PIN2); break;
-        case 5: palSetPad(TEENSY_PIN1_IOPORT, TEENSY_PIN1); break;
-        case 6: palSetPad(TEENSY_PIN0_IOPORT, TEENSY_PIN0); break;
-        case 7: palSetPad(TEENSY_PIN23_IOPORT, TEENSY_PIN23); break;
-        case 8: palSetPad(TEENSY_PIN22_IOPORT, TEENSY_PIN22); break;
-        case 9: palSetPad(TEENSY_PIN21_IOPORT, TEENSY_PIN21); break;
-        case 10: palSetPad(TEENSY_PIN20_IOPORT, TEENSY_PIN20); break;
-        case 11: palSetPad(TEENSY_PIN19_IOPORT, TEENSY_PIN19); break;
-        case 12: palSetPad(TEENSY_PIN18_IOPORT, TEENSY_PIN18); break;
-        case 13: palSetPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
+        case 4: palSetPad(TEENSY_PIN4_IOPORT, TEENSY_PIN4); break;
+        case 5: palSetPad(TEENSY_PIN5_IOPORT, TEENSY_PIN5); break;
+        case 6: palSetPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
+        case 7: palSetPad(TEENSY_PIN7_IOPORT, TEENSY_PIN7); break;
+        case 8: palSetPad(TEENSY_PIN23_IOPORT, TEENSY_PIN23); break;
+        case 9: palSetPad(TEENSY_PIN22_IOPORT, TEENSY_PIN22); break;
+        case 10: palSetPad(TEENSY_PIN21_IOPORT, TEENSY_PIN21); break;
+        case 11: palSetPad(TEENSY_PIN20_IOPORT, TEENSY_PIN20); break;
+        case 12: palSetPad(TEENSY_PIN19_IOPORT, TEENSY_PIN19); break;
+        case 13: palSetPad(TEENSY_PIN18_IOPORT, TEENSY_PIN18); break;
+        case 14: palSetPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
+        case 15: palSetPad(TEENSY_PIN16_IOPORT, TEENSY_PIN16); break;
         }
         
         // Need wait to settle pin state
@@ -214,20 +218,22 @@ uint8_t matrix_scan(void)
         // Unstrobe col
         switch (col)
         {
-        case 0: palClearPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
-        case 1: palClearPad(TEENSY_PIN5_IOPORT, TEENSY_PIN5); break;
-        case 2: palClearPad(TEENSY_PIN4_IOPORT, TEENSY_PIN4); break;
+        case 0: palClearPad(TEENSY_PIN0_IOPORT, TEENSY_PIN0); break;
+        case 1: palClearPad(TEENSY_PIN1_IOPORT, TEENSY_PIN1); break;
+        case 2: palClearPad(TEENSY_PIN2_IOPORT, TEENSY_PIN2); break;
         case 3: palClearPad(TEENSY_PIN3_IOPORT, TEENSY_PIN3); break;
-        case 4: palClearPad(TEENSY_PIN2_IOPORT, TEENSY_PIN2); break;
-        case 5: palClearPad(TEENSY_PIN1_IOPORT, TEENSY_PIN1); break;
-        case 6: palClearPad(TEENSY_PIN0_IOPORT, TEENSY_PIN0); break;
-        case 7: palClearPad(TEENSY_PIN23_IOPORT, TEENSY_PIN23); break;
-        case 8: palClearPad(TEENSY_PIN22_IOPORT, TEENSY_PIN22); break;
-        case 9: palClearPad(TEENSY_PIN21_IOPORT, TEENSY_PIN21); break;
-        case 10: palClearPad(TEENSY_PIN20_IOPORT, TEENSY_PIN20); break;
-        case 11: palClearPad(TEENSY_PIN19_IOPORT, TEENSY_PIN19); break;
-        case 12: palClearPad(TEENSY_PIN18_IOPORT, TEENSY_PIN18); break;
-        case 13: palClearPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
+        case 4: palClearPad(TEENSY_PIN4_IOPORT, TEENSY_PIN4); break;
+        case 5: palClearPad(TEENSY_PIN5_IOPORT, TEENSY_PIN5); break;
+        case 6: palClearPad(TEENSY_PIN6_IOPORT, TEENSY_PIN6); break;
+        case 7: palClearPad(TEENSY_PIN7_IOPORT, TEENSY_PIN7); break;
+        case 8: palClearPad(TEENSY_PIN23_IOPORT, TEENSY_PIN23); break;
+        case 9: palClearPad(TEENSY_PIN22_IOPORT, TEENSY_PIN22); break;
+        case 10: palClearPad(TEENSY_PIN21_IOPORT, TEENSY_PIN21); break;
+        case 11: palClearPad(TEENSY_PIN20_IOPORT, TEENSY_PIN20); break;
+        case 12: palClearPad(TEENSY_PIN19_IOPORT, TEENSY_PIN19); break;
+        case 13: palClearPad(TEENSY_PIN18_IOPORT, TEENSY_PIN18); break;
+        case 14: palClearPad(TEENSY_PIN17_IOPORT, TEENSY_PIN17); break;
+        case 15: palClearPad(TEENSY_PIN16_IOPORT, TEENSY_PIN16); break;
         }
 
 #if (DEBOUNCING_DELAY > 0)
