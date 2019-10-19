@@ -205,6 +205,7 @@ point_index1 = [point_index2[0] + Switch_Hole_Width + Space_Between_Switches, po
 point_star_key = [point_index1[0], point_index1[1] - 2*(Switch_Hole_Width + Space_Between_Switches)];
 
 function switches(color, rows, cols, origin, vertical=false) = [color, rows, cols, origin, vertical];
+function is_rect_plate() = Middle_Finger_Offset == 0 && Ring_Finger_Offset == 0 && Pinky_Finger_Offset == 0;
 
 k = [
 
@@ -526,15 +527,13 @@ module create_holes(height, rows, columns, origin, has_additional_border = true,
 
 module plate(total_height = Plate_Height, chamfer = false)
 {
-    is_rect_plate = Middle_Finger_Offset == 0 && Ring_Finger_Offset == 0 && Pinky_Finger_Offset == 0;
-
     minkowski()
     { 
         basic_height = total_height/3;
         minkowski_height = 2*basic_height;
         union()
         {
-            if (!is_rect_plate)
+            if (!is_rect_plate())
             {
                 // Fingers plate
                 hull()
@@ -667,7 +666,8 @@ module plate_supports()
         }
     }
 
-    translate(k[2][3] + [3*Space_Between_Switches/2 + Switch_Hole_Width, 0])
+    supports_pos = k[2][3] + [3*Space_Between_Switches/2 + Switch_Hole_Width, 0];
+    translate(supports_pos)
     {
         for (row = [1:4])
         {
@@ -682,6 +682,25 @@ module plate_supports()
         create_wide_support();
     }
 
+    // Specific supports when the plate is a rectangle
+    if (is_rect_plate())
+    {
+        translate([left_middle_point[0] + (hole_positions[1][0]-left_middle_point[0])/2, hole_positions[0][1]])
+        {
+            rotate([0,0,90]) create_wide_support();
+        }
+
+        translate([left_middle_point[0] + (supports_pos[0]-left_middle_point[0])/2, hole_positions[4][1]])
+        {
+            rotate([0,0,90]) create_wide_support();
+        }
+
+        translate([supports_pos[0], hole_positions[4][1]])
+        {
+            rotate([0,0,90]) create_wide_support();
+        }
+    }
+
     // Right plate support
     translate(hole_positions[3] + [0, wide_support_size]) create_wide_support();
     translate((hole_positions[2] + hole_positions[3])/2 + [0, wide_support_size]) create_wide_support();
@@ -692,6 +711,13 @@ module plate_supports()
         translate (right_middle_point)
         {
             create_wide_support();
+        }
+
+        x = hole_positions[7][0] + (hole_positions[6][0]-hole_positions[7][0])/2;
+        y = hole_positions[7][1];
+        translate ([x, y])
+        {
+            rotate([0,0,90]) create_wide_support();
         }
     }
 }
