@@ -470,10 +470,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                         unregister_code16(KC_E);
                         return false;
                     }
-                    else if (has_alt_gr)
-                    {
-                        return false;
-                    }
                     break;
                 }
             case FR_CIRC:
@@ -576,6 +572,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     }
                     break;
                 }
+            case KC_I:
+                {
+                    if (has_shift && has_alt_gr)
+                    {
+                        return false;
+                    }
+                    else if (has_alt_gr)
+                    {
+                        clear_mods();
+                        register_code16(FR_UMLT);
+                        unregister_code16(FR_UMLT);
+                        set_mods(mods);
+                        return false;
+                    }
+                    break;
+                }
             case KC_E:
                 {
                     if (has_shift && has_alt_gr)
@@ -612,6 +624,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     }
                     break;
                 }
+            case KC_N:
+                {
+                    if (has_shift && has_alt_gr)
+                    {
+                        return false;
+                    }
+                    else if (has_alt_gr)
+                    {
+                        register_code(FR_EACU);
+                        unregister_code(FR_EACU);
+                        return false;
+                    }
+                    break;
+                }
             case CKC_E_CIRC:
                 {
                     if (has_shift && has_alt_gr)
@@ -624,8 +650,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     }
                     else if (has_shift)
                     {
+                        clear_mods();
+                        register_code(FR_CIRC);
+                        unregister_code(FR_CIRC);
+                        add_mods(MOD_LSFT);
                         register_code(KC_E);
                         unregister_code(KC_E);
+                        set_mods(mods);
                         return false;
                     }
                     else if (has_alt_gr)
