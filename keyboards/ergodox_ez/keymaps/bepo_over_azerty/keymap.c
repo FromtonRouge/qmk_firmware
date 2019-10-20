@@ -12,20 +12,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 [L_BEPO_AZERTY] = LAYOUT_ergodox(
   // Main gauche
   KC_EQL,          KC_1,        KC_2,          KC_3,    KC_4,    KC_5,    KC_LGUI,
-  KC_TAB,          KC_B,        FR_EACU,       KC_P,    KC_O,    FR_EGRV, KC_NO,
-  KC_NO,           FR_A,        KC_U,          KC_I,    KC_E,    FR_COMM,
-  KC_LSFT,         KC_E,        FR_A,          KC_Y,    KC_X,    FR_DOT,  KC_NO,
-  KC_LCTL,         KC_QUOT,     KC_LALT,       MO(L_FUNCTION),   KC_ENT,
+  FR_W,            KC_B,        FR_EACU,       KC_P,    KC_O,    FR_EGRV, KC_NO,
+  KC_C,            FR_A,        KC_U,          KC_I,    KC_E,    FR_COMM,
+  KC_LSFT,         FR_A,        KC_Y,          KC_X,    FR_DOT,  KC_K,  KC_NO,
+  KC_LCTL,         KC_E,        KC_LALT,       MO(L_FUNCTION),   KC_ENT,
 
                                                                  MO(L_FUNCTION),  TG(L_FUNCTION),
                                                                                   KC_NO,
                                                        KC_BSPC,  KC_NO,           KC_NO,
   // Main droite
-  KC_NO,              KC_6,    KC_7,    KC_8,    KC_9,      KC_0,           KC_MINS,
-  TG(L_BEPO_DRIVER),  KC_Y,    KC_U,    KC_I,    KC_O,      KC_P,           KC_BSLS,
-                      KC_H,    KC_J,    KC_K,    KC_L,      KC_SCLN,        KC_QUOT,
-  KC_NO,              KC_N,    KC_M,    KC_COMM, KC_DOT,    KC_SLSH,        KC_RSFT,
-             KC_SPC,  MO(L_FUNCTION), KC_LBRC, KC_RBRC, KC_RCTL,
+  FR_PERC,            FR_AT,   FR_PLUS, FR_MINS,        FR_SLSH,   FR_ASTR, FR_EQL,
+  TG(L_BEPO_DRIVER),  FR_CIRC, KC_V,    KC_D,           KC_L,      KC_J,    FR_Z,
+                      KC_C,    KC_T,    KC_S,           KC_R,      KC_N,    FR_M,
+  KC_NO,              FR_APOS, FR_Q,    KC_G,           KC_H,      KC_F,    KC_RSFT,
+                               KC_SPC,  MO(L_FUNCTION), KC_LBRC,   KC_RBRC, KC_RCTL,
 
   TG(L_FUNCTION), MO(L_FUNCTION),
   KC_NO,
@@ -58,24 +58,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 
 // F1-F12 Layer
 [L_FUNCTION] = LAYOUT_ergodox(
-       // left hand
-        KC_F1,          KC_F2,      KC_F3,      KC_F4,      KC_F5,          KC_F6,          RESET,
-        KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
-        KC_TRNS,        KC_HOME,    KC_PGUP,    KC_PGDN,    KC_END,         KC_TRNS,
-        KC_LSFT,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
-        KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
-                                                                                        KC_TRNS,    KC_TRNS,
-                                                                                                    KC_TRNS,
-                                                                            KC_TRNS,    KC_TRNS,    KC_TRNS,
-        // right hand
-                    KC_NO,          KC_F7,      KC_F8,      KC_F9,      KC_F10,         KC_F11,     KC_F12,
-                    KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_ESC,     KC_TRNS,        KC_TRNS,    KC_TRNS,
-                                    KC_TRNS,    KC_LEFT,    KC_DOWN,    KC_UP,          KC_RIGHT,   KC_TRNS,
-                    KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_RSFT,
-                                                KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_TRNS,
-        KC_TRNS,    KC_TRNS,
-        KC_TRNS,
-        KC_TRNS,    KC_TRNS,    KC_TRNS
+  // Main gauche
+  KC_F1,          KC_F2,      KC_F3,      KC_F4,      KC_F5,          KC_F6,          RESET,
+  KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
+  KC_TRNS,        KC_HOME,    KC_PGUP,    KC_PGDN,    KC_END,         KC_TRNS,
+  KC_LSFT,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,        KC_TRNS,
+  KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,
+                                                                                  KC_TRNS,    KC_TRNS,
+                                                                                              KC_TRNS,
+                                                                      KC_TRNS,    KC_TRNS,    KC_TRNS,
+  // Main droite
+              KC_NO,          KC_F7,      KC_F8,      KC_F9,      KC_F10,         KC_F11,     KC_F12,
+              KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_ESC,     KC_TRNS,        KC_TRNS,    KC_TRNS,
+                              KC_TRNS,    KC_LEFT,    KC_DOWN,    KC_UP,          KC_RIGHT,   KC_TRNS,
+              KC_TRNS,        KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_RSFT,
+                                          KC_TRNS,    KC_TRNS,    KC_TRNS,        KC_TRNS,    KC_TRNS,
+  KC_TRNS,    KC_TRNS,
+  KC_TRNS,
+  KC_TRNS,    KC_TRNS,    KC_TRNS
 ),
 };
 
