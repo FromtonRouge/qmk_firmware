@@ -66,11 +66,11 @@ Nut_Slot_Diameter = 10; // [9:0.1:12]
 
 // Note: 0.06 press fit
 // (mm)
-Nut_Hole_3mm_Tolerance = 0.07; // [0:0.05:1]
+Nut_Hole_3mm_Tolerance = 0.065; // [0:0.05:1]
 
 // Note: 0.16 press fit
 // (mm)
-Nut_Hole_2mm_Tolerance = 0.18; // [0:0.05:1]
+Nut_Hole_2mm_Tolerance = 0.175; // [0:0.05:1]
 
 /* [Thumb Zone Position] */
 
@@ -685,16 +685,25 @@ module plate_supports()
     // Specific supports when the plate is a rectangle
     if (is_rect_plate())
     {
+        // Support on top left
         translate([left_middle_point[0] + (hole_positions[1][0]-left_middle_point[0])/2, hole_positions[0][1]])
         {
             rotate([0,0,90]) create_wide_support();
         }
 
+        // Support on top right
+        translate([hole_positions[1][0] + (hole_positions[2][0]-hole_positions[1][0])/2, hole_positions[2][1]])
+        {
+            rotate([0,0,90]) create_wide_support();
+        }
+
+        // Support on the bottom left 1
         translate([left_middle_point[0] + (supports_pos[0]-left_middle_point[0])/2, hole_positions[4][1]])
         {
             rotate([0,0,90]) create_wide_support();
         }
 
+        // Support on the bottom left 2
         translate([supports_pos[0], hole_positions[4][1]])
         {
             rotate([0,0,90]) create_wide_support();
