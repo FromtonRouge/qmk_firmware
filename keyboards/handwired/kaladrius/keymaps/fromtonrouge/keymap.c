@@ -22,6 +22,8 @@
 // For the Programmer Colemak layout
 #define SPECIAL_SHIFT_TABLE_SIZE 18
 
+int g_custom_space_count = 0;
+
 // This table was computed externally
 const uint16_t g_special_shift_table[SPECIAL_SHIFT_TABLE_SIZE] =
 {
@@ -58,6 +60,7 @@ enum custom_keycodes
     CKC_SFT = CKC_KALADRIUS_SAFE_RANGE, // Custom shift
     CKC_SFUN,   // Shift function
     CKC_CIRC,
+    CKC_SPC,
 };
 
 // Steno keymap
@@ -121,14 +124,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
                                                       KC_TRNS,                          KC_TRNS ),
 
     [L_CUBE_TIMER] = LAYOUT(
-        KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, TG(L_CUBE_TIMER),   KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, 
-        KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC,             KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, 
-        KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC,             KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, 
-        KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC,                             KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, KC_SPC, 
-        KC_SPC, KC_SPC, KC_SPC, KC_SPC,                                                             KC_SPC, KC_SPC, KC_SPC, KC_SPC, 
-                                                      KC_SPC,                         KC_SPC, 
-                                      KC_SPC, KC_SPC, KC_SPC,                         KC_SPC, KC_SPC, KC_SPC, 
-                                                      KC_SPC,                         KC_SPC ),
+        CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, TG(L_CUBE_TIMER),   CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, 
+        CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC,            CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, 
+        CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC,            CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, 
+        CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC,                              CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, 
+        CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC,                                                                  CKC_SPC, CKC_SPC, CKC_SPC, CKC_SPC, 
+                                                        CKC_SPC,                      CKC_SPC, 
+                                      CKC_SPC, CKC_SPC, CKC_SPC,                      CKC_SPC, CKC_SPC, CKC_SPC, 
+                                                        CKC_SPC,                      CKC_SPC ),
 };
 
 steno_layout_t* get_steno_layout(void) { return g_steno_layout; }
@@ -179,12 +182,47 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
             }
             return false;
         }
+    case CKC_SPC:
+        {
+            if (record->event.pressed)
+            {
+                if (g_custom_space_count++ == 0)
+                {
+                    register_code(KC_SPC);
+                }
+            }
+            else
+            {
+                if (--g_custom_space_count ==0)
+                {
+                    unregister_code(KC_SPC);
+                }
+            }
+            return false;
+        }
     default:
         {
             break;
         }
     }
     return true;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state)
+{
+    switch (get_highest_layer(state))
+    {
+    case L_CUBE_TIMER:
+        {
+            g_custom_space_count = 0;
+            break;
+        }
+    default:
+        {
+            break;
+        }
+    }
+    return state;
 }
 
 void matrix_scan_user(void)
