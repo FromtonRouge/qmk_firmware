@@ -35,15 +35,15 @@ const uint16_t g_special_shift_table[SPECIAL_SHIFT_TABLE_SIZE] =
     0,          // [5]
     0,          // [6]
     0,          // [7]
-    FR_GRTR,    // [8] FR_DOT
+    FR_RABK,    // [8] FR_DOT
     FR_PIPE,    // [9] FR_BSLS
     0,          // [10]
     FR_CIRC,    // [11] FR_AT
     FR_TILD,    // [12] FR_DLR
     0,          // [13]
     0,          // [14]
-    FR_QUOT,    // [15] FR_APOS
-    FR_LESS,    // [16] FR_COMM
+    FR_DQUO,    // [15] FR_QUOT
+    FR_LABK,    // [16] FR_COMM
     FR_UNDS     // [17] FR_MINS
 };
 
