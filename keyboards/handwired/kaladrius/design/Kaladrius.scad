@@ -40,7 +40,7 @@ Switch_Hole_Width = 14;
 Switch_Hole_Tolerance = -0.1;
 
 // (mm)
-Space_Between_Switches = 4.8; // [4.8:0.1:6]
+Space_Between_Switches = 5.00; // [4.8:0.05:6]
 
 // (mm)
 Switch_Hole_Height = 22;
@@ -1166,7 +1166,7 @@ module test_right_top_plate()
                 {
                     for (i = [1:6])
                     {
-                        create_holes(height, 2, k[i][2], k[i][3], true);
+                        create_holes(height, 3, k[i][2], k[i][3], true);
                     }
                 }
 
