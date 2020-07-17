@@ -97,8 +97,6 @@ Case_Height = 8.5; // [7:0.1:12]
 // (mm)
 Case_Outer_Border = 8; // [8:12]
 
-Case_Screw_Mounts_Type = 2; // [0: Simple, 1: Slot, 2: Both]
-
 // (mm)
 Case_Top_Plate_Offset = -1; // [-2:0.1:0]
 
@@ -192,8 +190,6 @@ Link_Reinforcement = true;
 Link_Reinforcement_Radius = 107; // [100:1:130]
 
 Link_Plate_Screw_Holes = true;
-
-Link_Screw_Mounts_Type = 2; // [0: Simple, 1: Slot, 2: Both]
 
 point_pinky_last = [get_kaladrius_origin()[0] + Case_Outer_Border, get_kaladrius_origin()[1]];
 point_pinky = [point_pinky_last[0] + Switch_Hole_Width + Space_Between_Switches, point_pinky_last[1]];
@@ -388,11 +384,7 @@ module case_holes(offset=0, height=Switch_Hole_Height, diameter=Screws_Diameter)
     module make_hole()
     {
         case_hole(height, diameter);
-
-        if (Case_Screw_Mounts_Type == 0 || Case_Screw_Mounts_Type == 2)
-        {
-            make_case_screw_hole();
-        }
+        make_case_screw_hole();
     }
 
     color("red")
@@ -409,14 +401,7 @@ module screw_mounts()
     height = 8;
     module make_mount()
     {
-        if (Case_Screw_Mounts_Type == 0)
-        {
-            cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
-        }
-        else if (Case_Screw_Mounts_Type >= 1)
-        {
-            nut_slot(height=height);
-        }
+        cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
     }
 
     module transform_for_each_mount()
@@ -807,14 +792,7 @@ module left_case(printable = true)
             translate([0, 0, Case_Height + Case_Shell_Thickness + Case_Top_Plate_Offset]) scale([1, 1, 8]) plate();
 
             // Case holes
-            if (Case_Screw_Mounts_Type == 0 || Case_Screw_Mounts_Type == 2)
-            {
-                case_holes(height = 20);
-            }
-            else
-            {
-                translate([0, 0, Case_Shell_Thickness]) case_holes(height = 20);
-            }
+            case_holes(height = 20);
 
             // Special holes that allows the user to remove the top plate by pushing it from bottom to top with a small screw driver
             left_middle_point = (hole_positions[0] + hole_positions[4])/2;
@@ -851,7 +829,7 @@ module make_case_screw_hole()
 {
     hull()
     {
-        translate([0,0, 3]) printable_nut_hole(3, Nut_Hole_3mm_Tolerance);
+        translate([0,0, 6.5]) printable_nut_hole(3, Nut_Hole_3mm_Tolerance);
         translate([0,0,-30]) printable_nut_hole(3, Nut_Hole_3mm_Tolerance, false);
     }
 }
@@ -1631,14 +1609,7 @@ module link_center_walls()
     module make_mount()
     {
         height = Link_Nut_Slot_Height-1;
-        if (Link_Screw_Mounts_Type == 0 || !Link_Plate_Screw_Holes)
-        {
-            cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
-        }
-        else
-        {
-            nut_slot(height=height);
-        }
+        cylinder(h=height, d=Nut_Slot_Diameter, $fn = fragments_number);
     }
 
     // Nut slots
@@ -1658,11 +1629,7 @@ module link_center_holes()
     module make_hole()
     {
         case_hole(40);
-
-        if (Link_Screw_Mounts_Type == 0 || Link_Screw_Mounts_Type == 2)
-        {
-            make_case_screw_hole();
-        }
+        make_case_screw_hole();
     }
 
     // Holes for the link between the top and bottom cases
