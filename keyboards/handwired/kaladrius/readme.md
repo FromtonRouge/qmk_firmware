@@ -23,8 +23,9 @@ Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb po
 And I had a surgery in October 2018...
 ![Surgery](https://i.imgur.com/xZ3XdZM.jpg)
 
-After the surgery I decided to build a specific keyboard for Jackdaw to avoid the pain. I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone...
+So I highly don't recommend an ErgoDox like keyboard for Jackdaw.
 
+After the surgery I decided to build a specific keyboard for Jackdaw to avoid the pain. I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone...
 
 # 3D Printed parts
 
