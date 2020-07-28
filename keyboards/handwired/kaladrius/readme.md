@@ -17,13 +17,13 @@ I discovered Plover and Steno the same year and was blown away by this [presenta
 I decided to learn Plover but found that it might not suitable for C++ because of the phonetic/mnemonic approach.
 That's why I got interested in Orthographic Steno Systems and found the "Jackdaw steno theory" on the [Learn Plover site](https://sites.google.com/site/learnplover/jackdaw)
 
-I first implemented an ErgoDox Layout for Jackdaw and learned to type basics words on 10fastfingers.com. After a lot of iterations on the firmware I started to practice more but on April 2018 I got a severe injurie on the left hand.
-I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions (too far!). Note: at this time my top speed on the 100 words test was 140 wpm.
+I first implemented an ErgoDox Layout for Jackdaw and learned to type basics words on 10fastfingers.com. After a lot of iterations on the firmware I started to practice more but on April 2018 I injured my left hand after a too long training session.
+Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions (too far!). Note: at this time my top speed on the 100 words test was 140 wpm.
 
-I had a surgery in October 2018
+And I had a surgery in October 2018...
 ![Surgery](https://i.imgur.com/xZ3XdZM.jpg)
 
-After the surgery I decided to build a specific keyboard for Jackdaw to avoid the pain. I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone :D
+After the surgery I decided to build a specific keyboard for Jackdaw to avoid the pain. I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone...
 
 
 # 3D Printed parts
