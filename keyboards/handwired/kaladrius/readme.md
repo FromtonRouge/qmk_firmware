@@ -9,8 +9,11 @@ It's a handwired and printable keyboard and use a Teensy 3.2
 # Why this keyboard ?
 
 I'm a C++ Tools programmer in the video game industry and I changed several times my keyboard layout in my career.
+
 My first layout was Azerty (with a top speed at 86 wpm on 10fastfingers), in 2014 I changed to Dvorak (with a top speed at 98 wpm) and in 2016 I finally changed to Colemak (top speed at 103 wpm).
+
 I discovered Plover and Steno the same year and was blown away by this [presentation](https://www.youtube.com/watch?v=Wpv-Qb-dB6g)
+
 I decided to learn Plover but found that it might not suitable for C++ because of the phonetic/mnemonic approach.
 That's why I got interested in Orthographic Steno Systems and found the "Jackdaw steno theory" on the [Learn Plover site](https://sites.google.com/site/learnplover/jackdaw)
 
@@ -18,11 +21,9 @@ I first implemented an ErgoDox Layout for Jackdaw and learned to type basics wor
 I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions (too far!). Note: at this time my top speed on the 100 words test was 140 wpm.
 
 I had a surgery in October 2018
-![Surgery](https://photos.google.com/share/AF1QipPt-c5Y7qMSv_zQ-_LJV8rm6kJ9OSU4TSBbU2JUNNVW1be8bX53Igr6izPweGMGnQ/photo/AF1QipP60jy0aZQ4pIS2sJnVX_9ydRzBIb99NYLA7_OK?key=Tml0alhHWmgxNk9zZDZ6R2NOR3ZfRmkyYkVNRjJR)
+![Surgery](https://i.imgur.com/xZ3XdZM.jpg)
 
 After the surgery I decided to build a specific keyboard for Jackdaw to avoid the pain. I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone :D
-
-![Kaladrius](https://i.imgur.com/UF7BSkB.jpg)
 
 
 # 3D Printed parts
