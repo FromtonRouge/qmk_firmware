@@ -8,8 +8,7 @@ It's a handwired and printable keyboard and use a Teensy 3.2
 
 # Why this keyboard ?
 
-I'm a C++ Tools programmer in the video game industry and I always wanted to improve my typing speed. I changed several times my keyboard layout in my career.
-
+I'm a C++ Tools programmer in the video game industry and I always wanted to improve my typing speed. I changed several times my keyboard layout in my career :
 My original layout was Azerty (with a top speed at 86 wpm on 10fastfingers), in 2014 I changed to Dvorak (with a top speed at 98 wpm) and in 2016 I finally changed to Colemak (top speed at 103 wpm).
 
 I discovered Plover and Steno the same year and was blown away by this [presentation](https://www.youtube.com/watch?v=Wpv-Qb-dB6g)
@@ -22,6 +21,10 @@ Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb po
 
 I had a surgery in October 2018...
 ![Surgery](https://i.imgur.com/xZ3XdZM.jpg)
+(just after the surgery)
+
+![Scar](https://i.imgur.com/OIYHb7z.jpg)
+(I won a beautiful scar)
 
 So I highly don't recommend the ErgoDox or similar keyboards for Jackdaw.
 
@@ -29,9 +32,10 @@ After the surgery I decided to build a specific keyboard for Jackdaw so I can pr
 
 - Thumbs keys must be closer to the index column to avoid bad wrists movements
 - Thumbs layout must be optimized for Jackdaw
+- Because of the 2 previous points the keyboard must 3D Printed and the design must be parametric (that's why I chose OpenSCAD)
 - It's possible to switch to a "normal" keyboard layout (for me Colemak)
-- The keyboard is easy to build even if it takes time
-- The development board must have enough memory for several dictionaries (that's why I have chosen the Teensy 3.2)
+- The keyboard is easy to build even if it takes time. That's why it's not really splitted
+- The development board must have enough memory for several dictionaries (that's why I chose the Teensy 3.2)
 
 I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone...
 
