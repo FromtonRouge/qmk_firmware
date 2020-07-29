@@ -58,21 +58,23 @@ If you are interested by using Jackdaw and the Kaladrius here are some things to
 
 To build the Kaladrius you have to :
 
-- 3D print 6 different parts
-- Do the electronic by yourself
+- 3D print 6 different parts. If you don't have a 3D printer you can print them via an online 3D print service (like https://www.3dhubs.com for example) but it's very expensive.
+- Do the electronic by yourself. (I'll try to design later a small pcb)
 
 ## 3D Printed parts
 
-There are 6 different parts to print :
+You can find the stl files to print [here](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls).
 
-- The Left Plate ![Left Plate](https://i.imgur.com/Ox2XMaf.png)
-- The Right Plate ![Right Plate](https://i.imgur.com/UyMaJsa.png)
-- The Left Case ![Left Case](https://i.imgur.com/a9cc1EJ.png)
-- The Right Case ![Right Case](https://i.imgur.com/XqH4etj.png)
-- The Link ![Link](https://i.imgur.com/Eu8Dibu.png)
-- The Link Plate ![LinkPlate](https://i.imgur.com/xW3Xmqc.png)
+There are 4 files but you'll need to print 6 objects :
 
-You can find the stl files to print [here](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design)
+1) Left Case : use the file [LeftCase.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/LeftCase.stl)
+2) Right Case : use the file [LeftCase.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/LeftCase.stl) but in your slicer mirror the object along the X-Axis
+3) Link Case : use the file [Link.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/Link.stl)
+4) Link Plate : use the file [LinkPlate.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/LinkPlate.stl)
+5) Left Plate : use the file [RightPlate.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/RightPlate.stl) but in your slicer mirror the object along the X-Axis. Print this object with 2 perimeters
+6) Right Plate : use the file [RightPlate.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/RightPlate.stl) Print this object with 2 perimeters
+
+Except for 5) and 6) print all objects with 3 perimeters
 
 ## Hardware
 
