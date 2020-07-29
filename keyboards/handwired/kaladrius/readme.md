@@ -12,20 +12,20 @@ It's a handwired and printable keyboard and use a Teensy 3.2
 I'm a C++ Tools programmer in the video game industry and I always wanted to improve my typing speed. I changed several times my keyboard layout in my career :
 My original layout was Azerty (with a top speed at 86 wpm on 10fastfingers), in 2014 I changed to Dvorak (with a top speed at 98 wpm) and in 2016 I finally changed to Colemak (top speed at 103 wpm).
 
-I discovered Plover and Steno the same year and was blown away by this [presentation](https://www.youtube.com/watch?v=Wpv-Qb-dB6g)
+I discovered Plover and Steno in 2016 too and was blown away by this [presentation](https://www.youtube.com/watch?v=Wpv-Qb-dB6g)
 
 I decided to learn Plover but found that it might not suitable for C++ because of the phonetic/mnemonic approach.
 That's why I got interested in Orthographic Steno Systems and found the "Jackdaw steno theory" on the [Learn Plover site](https://sites.google.com/site/learnplover/jackdaw)
 
 I first implemented an ErgoDox Layout for Jackdaw and learned to type basics words on 10fastfingers.com. After a lot of iterations on the firmware I started to practice more but on April 2018 I injured my left hand after a too long training session.
-Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions (too far!). Note: at this time my top speed on the 100 words test was 140 wpm with Jackdaw.
+Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions. Note: at this time my top speed on the 100 words test was 140 wpm with Jackdaw.
 
 I had a surgery in October 2018...
 ![Surgery](https://i.imgur.com/xZ3XdZM.jpg)
 (just after the surgery)
 
 ![Scar](https://i.imgur.com/OIYHb7z.jpg)
-(I won a beautiful scar)
+(I won a scar)
 
 So I highly don't recommend the ErgoDox or similar keyboards for Jackdaw.
 
@@ -33,9 +33,9 @@ After the surgery I decided to build a specific keyboard for Jackdaw so I can pr
 
 - Thumbs keys must be closer to the index column to avoid bad wrists movements
 - Thumbs layout must be optimized for Jackdaw
-- Because of the 2 previous points the keyboard must 3D Printed and the design must be parametric (that's why I chose OpenSCAD)
-- It's possible to switch to a "normal" keyboard layout (for me Colemak)
-- The keyboard is easy to build even if it takes time. That's why it's not really splitted
+- Because of the 2 previous points the keyboard must be 3D Printed and the design must be parametric (that's why I chose OpenSCAD)
+- It's possible to switch to a "normal" keyboard layout
+- The keyboard is easy to build even if it takes time. That's why it's not really a splitted keyboard
 - The development board must have enough memory for several dictionaries (that's why I chose the Teensy 3.2)
 
 I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone...
@@ -44,23 +44,22 @@ I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman
 
 If you are interested by using Jackdaw and the Kaladrius here are some things to know before continuing :
 
-- First it's an orthographic system so it's slower than steno
-- It appears that by learning Jackdaw you won't loose your typing speed in normal layout
+- First it's an orthographic system, it's slower than steno
+- It appears that by learning Jackdaw you won't loose your touch typing speed
 - It's only for the english language but...
-- ... english is not my first language...
-- At the moment there is no real proof that Jackdaw will allow me to code faster. I have some intuitions but I need to really practice to find the limits or find other problems. My last typing test was 145 wpm but it was on a 100 common words test and I need to do measurements on real text and C++ code.
+- ... english is not my first language I may not be the right person to validate the system...
 - I may add/remove features, change dictionaries and/or change the fingers layout and the keyboard design to improve the keyboard.
 - If I change the dictionary or the design you may need to relearn some things (maybe a lots of things for major dictionary changes)
 - The build of the keyboard is easy but very very long
-- To learn Jackdaw I'm currently working on an application [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)
+- At the moment there is no real proof that Jackdaw will allow me to code faster. I have some intuitions but I need to really practice to find the limits or other problems. My last typing test was 145 wpm but it was on a 100 common words test and I need to do measurements on real text and C++ code, I can't do that now because I still don't know to type properly with this...
+- So to really learn Jackdaw I'm working on an application called [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)
 
 # How to build this keyboard ?
 
-To build the Kaladrius you'll need :
+To build the Kaladrius you have to :
 
-- To 3D print 6 different parts
-- To do the electronic by yourself
-- To be patient
+- 3D print 6 different parts
+- Do the electronic by yourself
 
 ## 3D Printed parts
 
