@@ -8,9 +8,9 @@ It's a handwired and printable keyboard and use a Teensy 3.2
 
 # Why this keyboard ?
 
-I'm a C++ Tools programmer in the video game industry and I changed several times my keyboard layout in my career.
+I'm a C++ Tools programmer in the video game industry and I always wanted to improve my typing speed. I changed several times my keyboard layout in my career.
 
-My first layout was Azerty (with a top speed at 86 wpm on 10fastfingers), in 2014 I changed to Dvorak (with a top speed at 98 wpm) and in 2016 I finally changed to Colemak (top speed at 103 wpm).
+My original layout was Azerty (with a top speed at 86 wpm on 10fastfingers), in 2014 I changed to Dvorak (with a top speed at 98 wpm) and in 2016 I finally changed to Colemak (top speed at 103 wpm).
 
 I discovered Plover and Steno the same year and was blown away by this [presentation](https://www.youtube.com/watch?v=Wpv-Qb-dB6g)
 
@@ -18,14 +18,22 @@ I decided to learn Plover but found that it might not suitable for C++ because o
 That's why I got interested in Orthographic Steno Systems and found the "Jackdaw steno theory" on the [Learn Plover site](https://sites.google.com/site/learnplover/jackdaw)
 
 I first implemented an ErgoDox Layout for Jackdaw and learned to type basics words on 10fastfingers.com. After a lot of iterations on the firmware I started to practice more but on April 2018 I injured my left hand after a too long training session.
-Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions (too far!). Note: at this time my top speed on the 100 words test was 140 wpm.
+Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions (too far!). Note: at this time my top speed on the 100 words test was 140 wpm with Jackdaw.
 
-And I had a surgery in October 2018...
+I had a surgery in October 2018...
 ![Surgery](https://i.imgur.com/xZ3XdZM.jpg)
 
-So I highly don't recommend an ErgoDox like keyboard for Jackdaw.
+So I highly don't recommend the ErgoDox or similar keyboards for Jackdaw.
 
-After the surgery I decided to build a specific keyboard for Jackdaw to avoid the pain. I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone...
+After the surgery I decided to build a specific keyboard for Jackdaw so I can practice safely. The keyboard needs the following :
+
+- Thumbs keys must be closer to the index column to avoid bad wrists movements
+- Thumbs layout must be optimized for Jackdaw
+- It's possible to switch to a "normal" keyboard layout (for me Colemak)
+- The keyboard is easy to build even if it takes time
+- The development board must have enough memory for several dictionaries (that's why I have chosen the Teensy 3.2)
+
+I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone...
 
 # 3D Printed parts
 
