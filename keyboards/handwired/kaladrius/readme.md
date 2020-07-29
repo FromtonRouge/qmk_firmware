@@ -54,14 +54,28 @@ If you are interested by using Jackdaw and the Kaladrius here are some things to
 - The build of the keyboard is easy but very very long
 - To learn Jackdaw I'm currently working on an application [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)
 
-# 3D Printed parts
+# How to build this keyboard ?
 
-The keyboard was designed with OpenSCAD
-![LinkSystem](https://i.imgur.com/hR2zoJJ.png)
-![Case](https://i.imgur.com/a4Rtx1p.png)
-![Plate](https://i.imgur.com/dIb330e.png)
+To build the Kaladrius you'll need :
 
-# Hardware
+- To 3D print 6 different parts
+- To do the electronic by yourself
+- To be patient
+
+## 3D Printed parts
+
+There are 6 different parts to print :
+
+- The Left Plate ![Left Plate](https://i.imgur.com/Ox2XMaf.png)
+- The Right Plate ![Right Plate](https://i.imgur.com/UyMaJsa.png)
+- The Left Case ![Left Case](https://i.imgur.com/a9cc1EJ.png)
+- The Right Case ![Right Case](https://i.imgur.com/XqH4etj.png)
+- The Link ![Link](https://i.imgur.com/Eu8Dibu.png)
+- The Link Plate ![LinkPlate](https://i.imgur.com/xW3Xmqc.png)
+
+You can find the stl files to print [here](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design)
+
+## Hardware
 
 You'll need : 
 
