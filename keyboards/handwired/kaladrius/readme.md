@@ -39,6 +39,20 @@ After the surgery I decided to build a specific keyboard for Jackdaw so I can pr
 
 I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman mythology the Caladrius is a white bird that can heal someone...
 
+# Before continuing...
+
+If you are interested by using Jackdaw and the Kaladrius here are some things to know before continuing :
+
+- First it's an orthographic system so it's slower than steno
+- It appears that by learning Jackdaw you won't loose your typing speed in normal layout
+- It's only for the english language but...
+- ... english is not my first language...
+- At the moment there is no real proof that Jackdaw will allow me to code faster. I have some intuitions but I need to really practice to find the limits or find other problems. My last typing test was 145 wpm but it was on a 100 common words test and I need to do measurements on real text and C++ code.
+- I may add/remove features, change dictionaries and/or change the fingers layout and the keyboard design to improve the keyboard.
+- If I change the dictionary or the design you may need to relearn some things (maybe a lots of things for major dictionary changes)
+- The build of the keyboard is easy but very very long
+- To learn Jackdaw I'm currently working on an application [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)
+
 # 3D Printed parts
 
 The keyboard was designed with OpenSCAD
