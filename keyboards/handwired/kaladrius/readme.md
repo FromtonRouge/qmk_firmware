@@ -104,6 +104,7 @@ Solder the Teensy and cut the legs :
 ![Legs](https://i.imgur.com/1XaKx59.jpg)
 
 Here is the schematic of a RGB Led (Common Cathod) :
+
 ![RGB](https://i.imgur.com/EY7nPWp.png)
 
 Put the led on the 7th column like this :
@@ -131,6 +132,7 @@ Solder the RGB led on the pcb after that it's time to put the 220 Ohm resistors 
 - 1 resistor is soldered between the Pin 15 of the Teensy and the blue leg of the led
 
 As a memo here is the Teensy 3.2 pinout :
+
 ![Teensy 3.2 pinout](https://i.imgur.com/R1SdE5f.png)
 
 Now link the Teensy GND pin and the Led cathod with a wire like this :
