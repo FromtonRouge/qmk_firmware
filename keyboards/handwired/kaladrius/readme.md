@@ -139,6 +139,11 @@ Now link the Teensy GND pin and the Led cathod with a wire like this :
 
 ![GND to Led](https://i.imgur.com/daBkKMe.png)
 
+Now you can do a basic test :
+
+- Compile and flash the Kaladrius firmware on the Teensy
+- After the reboot you should see the RGB led blinking like in this video : [Kaladrius boot blinking test](https://youtu.be/ky0wmrFHCOY)
+
 ### Switches soldering
 
 TODO
