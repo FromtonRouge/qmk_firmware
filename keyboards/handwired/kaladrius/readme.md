@@ -74,25 +74,31 @@ There are 4 files but you'll need to print 6 objects :
 5) Left Plate : use the file [RightPlate.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/RightPlate.stl) but in your slicer mirror the object along the X-Axis. Print this object with 2 perimeters
 6) Right Plate : use the file [RightPlate.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/RightPlate.stl) Print this object with 2 perimeters
 
-Except for 5) and 6) print all objects with 3 perimeters
+For all files an infill of 20% is enough. About perimeters, except for 5) and 6), print all objects with 3 perimeters
 
-## Hardware
+## Electronic
 
 You'll need : 
 
 - [1x Teensy 3.2 with pins](https://www.pjrc.com/store/teensy32_pins.html)
 - [1x (4cm x 6cm) prototype pcb](https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F)
 - 1x 5mm Common Cathode RGB led
+- 3x 220 Ohms resistors (for the RGB led)
 - 70x 1N4148 Commutation diodes
 - 70x Gateron Clear Keyswitch - Plate Mount (35g)
-- 3x 220 Ohms resistors (for the RGB led)
-- Wires
-- TODO
+- Electrical Wires 28 AWG
 
 Tools :
 
 - 1 Hot Glue gun + Glue Sticks
-- TODO
+
+### Teensy 3.2 soldering
+
+TODO
+
+### Switches soldering
+
+TODO
 
 # Firmware
 
