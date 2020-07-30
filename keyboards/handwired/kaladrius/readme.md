@@ -94,7 +94,33 @@ Tools :
 
 ### Teensy 3.2 soldering
 
-TODO
+Put the Teensy on the 4cm x 6cm pcb like the image below :
+![Teensy](https://i.imgur.com/ModAFe9.jpg)
+
+Here the left side of the Teensy is on the 4th column of the pcb
+
+Solder the Teensy and cut the legs :
+
+![Legs](https://i.imgur.com/1XaKx59.jpg)
+
+Now for the RGB Led (Common Cathod)
+![RGB](https://i.imgur.com/EY7nPWp.png)
+
+Put the led on the 7th column like this :
+
+![RGB on pcb](https://i.imgur.com/W5KEs76.png)
+
+Another view : 
+
+![RGB lateral view](https://i.imgur.com/HGEKV9w.png)
+
+Now insert the cathod like this :
+
+![Cathod](https://i.imgur.com/CYTEYB8.png)
+
+and push the led down until the top of the led is under 12mm. If the led is too high you won't be able to put the Link Plate on the Link part :
+
+![RGB height](https://i.imgur.com/yHM8WzK.png)
 
 ### Switches soldering
 
