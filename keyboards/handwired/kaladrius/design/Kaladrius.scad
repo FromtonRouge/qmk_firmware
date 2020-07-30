@@ -741,7 +741,10 @@ module left_case(printable = true)
         {
             union()
             {
-                transform_tent_holes() translate([0, 0, Plate_Height]) nut_slot(height=5, smooth_junction=true);
+                transform_tent_holes() translate([0, 0, Plate_Height])
+                {
+                    cylinder(h=5, d=Nut_Slot_Diameter, $fn = fragments_number);
+                }
 
                 if (Case_Render_Shell)
                 {
@@ -801,8 +804,16 @@ module left_case(printable = true)
             translate([0, 0, -0.01]) translate(left_middle_up_point) case_hole(20, Screws_Diameter);
             translate([0, 0, -0.01]) translate(left_middle_down_point) case_hole(20, Screws_Diameter);
 
-            // Holes to connect the tent system
-            transform_tent_holes() translate([0, 0, -1]) screw_hole();
+            // Nut holes to connect the tent system
+            transform_tent_holes()
+            {
+                translate([0, 0, -1]) screw_hole();
+                hull()
+                {
+                    translate([0,0, Case_Shell_Thickness + 8]) printable_nut_hole(3, Nut_Hole_3mm_Tolerance);
+                    translate([0,0,Case_Shell_Thickness-1]) printable_nut_hole(3, Nut_Hole_3mm_Tolerance);
+                }
+            }
 
             translate(get_tent_origin()) translate([0, 10, -1])
             {
