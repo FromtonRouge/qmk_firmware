@@ -103,7 +103,7 @@ Solder the Teensy and cut the legs :
 
 ![Legs](https://i.imgur.com/1XaKx59.jpg)
 
-Now for the RGB Led (Common Cathod)
+Here is the schematic of a RGB Led (Common Cathod) :
 ![RGB](https://i.imgur.com/EY7nPWp.png)
 
 Put the led on the 7th column like this :
@@ -114,13 +114,28 @@ Another view :
 
 ![RGB lateral view](https://i.imgur.com/HGEKV9w.png)
 
-Now insert the cathod like this :
+Now insert the cathod in the 4th column of the pcb like this :
 
 ![Cathod](https://i.imgur.com/CYTEYB8.png)
 
 and push the led down until the top of the led is under 12mm. If the led is too high you won't be able to put the Link Plate on the Link part :
 
 ![RGB height](https://i.imgur.com/yHM8WzK.png)
+
+Solder the RGB led on the pcb after that it's time to put the 220 Ohm resistors like this :
+
+![RGB led soldered to Teensy](https://i.imgur.com/u2v6jMu.png)
+
+- 1 resistor is soldered between the Pin 13 of the Teensy and the red leg of the led
+- 1 resistor is soldered between the Pin 14 of the Teensy and the green leg of the led
+- 1 resistor is soldered between the Pin 15 of the Teensy and the blue leg of the led
+
+As a memo here is the Teensy 3.2 pinout :
+![Teensy 3.2 pinout](https://i.imgur.com/R1SdE5f.png)
+
+Now link the Teensy GND pin and the Led cathod with a wire like this :
+
+![GND to Led](https://i.imgur.com/daBkKMe.png)
 
 ### Switches soldering
 
