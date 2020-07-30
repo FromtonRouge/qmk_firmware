@@ -146,7 +146,17 @@ Now you can do a basic test :
 
 ### Switches soldering
 
-TODO
+Puth the switches on the plate :
+
+![Switches on plate](https://i.imgur.com/NElYlAD.png)
+
+To be sure that they won't pop out glues them with a Hot Glue Gun :
+
+![Switches glued](https://i.imgur.com/B73Cg57.png)
+
+Note: If you have to remove them you can use a Heat Gun
+
+... to be continued
 
 # Firmware
 
