@@ -2,9 +2,9 @@
 
 ![Kaladrius](https://i.imgur.com/UF7BSkB.jpg)
 
-The Kaladrius is an orthographic steno keyboard inspired by the [Jackdaw steno theory](https://sites.google.com/site/learnplover/jackdaw).
+The Kaladrius is an orthographic steno keyboard that use a modified [Jackdaw steno theory](https://sites.google.com/site/learnplover/jackdaw) created by **Jennifer Brien**.
 Dictionaries are stored in the firmware and Plover is not needed.
-The main goal is to be able to code with a chorded keyboard. It's still a prototype and hope to use it daily this year (2020) at work.
+The main goal for me is to be able to code with a chorded keyboard. It's still a prototype and hope to use it daily this year (2020) at work.
 It's a handwired and printable keyboard and use a Teensy 3.2
 
 # Why this keyboard ?
@@ -18,7 +18,7 @@ I decided to learn Plover but found that it might not suitable for C++ because o
 That's why I got interested in Orthographic Steno Systems and found the "Jackdaw steno theory" on the [Learn Plover site](https://sites.google.com/site/learnplover/jackdaw)
 
 I first implemented an ErgoDox Layout for Jackdaw and learned to type basics words on 10fastfingers.com. After a lot of iterations on the firmware I started to practice more but on April 2018 I injured my left hand after a too long training session.
-Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions. Note: at this time my top speed on the 100 words test was 140 wpm with Jackdaw.
+Actually I got a De Quervain tendinitis because of the very bad ErgoDox thumb positions. Note: at this time my top speed on the 200 words test was 140 wpm with Jackdaw.
 
 I had a surgery in October 2018...
 ![Surgery](https://i.imgur.com/xZ3XdZM.jpg)
@@ -27,13 +27,13 @@ I had a surgery in October 2018...
 ![Scar](https://i.imgur.com/OIYHb7z.jpg)
 (I won a scar)
 
-So I highly don't recommend the ErgoDox or similar keyboards for Jackdaw.
+**So I highly don't recommend the ErgoDox or similar keyboards for Jackdaw. I'll delete the ErgoDox firmware soon!**
 
-After the surgery I decided to build a specific keyboard for Jackdaw so I can practice safely. The keyboard needs the following :
+After the surgery I decided to build a specific keyboard for Jackdaw so I can practice safely (I DON'T GIVE UP!). The keyboard needs the following :
 
 - Thumbs keys must be closer to the index column to avoid bad wrists movements
 - Thumbs layout must be optimized for Jackdaw
-- Because of the 2 previous points the keyboard must be 3D Printed and the design must be parametric (that's why I chose OpenSCAD)
+- Because of the 2 previous points the keyboard must be 3D Printed and the design must be parametric (that's why I chose OpenSCAD for the conception)
 - It's possible to switch to a "normal" keyboard layout
 - The keyboard is easy to build even if it takes time. That's why it's not really a splitted keyboard
 - The development board must have enough memory for several dictionaries (that's why I chose the Teensy 3.2)
@@ -44,15 +44,16 @@ I named it "Kaladrius" because the Keyboard looks like a white bird and in Roman
 
 If you are interested by using Jackdaw and the Kaladrius here are some things to know before continuing :
 
-- First it's an orthographic system, it's slower than steno
+- First it's an orthographic system, it's slower than steno (but faster than touch typing)
 - It appears that by learning Jackdaw you won't loose your touch typing speed
 - It's only for the english language but...
-- ... english is not my first language I may not be the right person to validate the system...
+- ... english is not my native language I may not be the right person to validate the system...
+- I made some modifications to the Jackdaw theory and added/removed some features. I'll list them later
 - I may add/remove features, change dictionaries and/or change the fingers layout and the keyboard design to improve the keyboard.
 - If I change the dictionary or the design you may need to relearn some things (maybe a lots of things for major dictionary changes)
 - The build of the keyboard is easy but very very long
-- At the moment there is no real proof that Jackdaw will allow me to code faster. I have some intuitions but I need to really practice to find the limits or other problems. My last typing test was 145 wpm but it was on a 100 common words test and I need to do measurements on real text and C++ code, I can't do that now because I still don't know to type properly with this...
-- So to really learn Jackdaw I'm working on an application called [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)
+- At the moment there is no real proof that Jackdaw will allow me to code faster. I have some intuitions but I need to really practice to find the limits or other problems. My last typing test was 145 wpm but it was on a 200 common words test and I need to do measurements on real text and C++ code, I can't do that now because I still don't know to type properly with this...
+- **So to really learn to type with this keyboard I'm working on an application called [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)**
 
 # How to build this keyboard ?
 
@@ -123,7 +124,7 @@ and push the led down until the top of the led is under 12mm. If the led is too 
 
 ![RGB height](https://i.imgur.com/yHM8WzK.png)
 
-Solder the RGB led on the pcb after that it's time to put the 220 Ohm resistors like this :
+Solder the RGB led on the pcb, after that it's time to put the 220 Ohm resistors like this :
 
 ![RGB led soldered to Teensy](https://i.imgur.com/u2v6jMu.png)
 
@@ -150,7 +151,7 @@ Puth the switches on the plate :
 
 ![Switches on plate](https://i.imgur.com/NElYlAD.png)
 
-To be sure that they won't pop out glues them with a Hot Glue Gun :
+To be sure that they won't pop out glue them with a Hot Glue Gun :
 
 ![Switches glued](https://i.imgur.com/B73Cg57.png)
 
