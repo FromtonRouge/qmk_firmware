@@ -55,6 +55,8 @@ If you are interested by using Jackdaw and the Kaladrius here are some things to
 - At the moment there is no real proof that Jackdaw will allow me to code faster. I have some intuitions but I need to really practice to find the limits or other problems. My last typing test was 145 wpm but it was on a 200 common words test and I need to do measurements on real text and C++ code, I can't do that now because I still don't know to type properly with this...
 - **So to really learn to type with this keyboard I'm working on an application called [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)**
 
+![KaladriusTrainer](https://i.imgur.com/1JgIwcH.png)
+
 # How to build this keyboard ?
 
 To build the Kaladrius you have to :
