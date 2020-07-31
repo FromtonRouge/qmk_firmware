@@ -95,7 +95,7 @@ Tools :
 ### Teensy 3.2 soldering
 
 Put the Teensy on the 4cm x 6cm pcb like the image below :
-![Teensy](https://i.imgur.com/ModAFe9.jpg)
+![Teensy](https://i.imgur.com/ybeFHPk.png)
 
 Here the left side of the Teensy is on the 4th column of the pcb
 
