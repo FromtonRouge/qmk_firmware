@@ -149,6 +149,9 @@ Electronic_Pcb_Dimensions = [40, 60, 1.54]; // Real size of the pcb plate in mm
 electronic_hole_to_hole_dim = [Electronic_Pcb_Dimensions[0] - 4, Electronic_Pcb_Dimensions[1] - 4, Electronic_Pcb_Dimensions[2]];
 
 // (mm)
+Electronic_Pcb_Mount_Height = 1;
+
+// (mm)
 Teensy_Plate_Size = [60.5, 61.8];
 
 // (mm)
@@ -1268,14 +1271,28 @@ module nut_slot(height = 11, diameter = Nut_Slot_Diameter, force_nut_slot_z = -1
     }
 }
 
-module electronic_pcb(plate_thickness, holes_only = false)
+module transform_recenter_pcb()
+{
+    translate([1, 0, 0])
+    {
+        children();
+    }
+}
+
+module transform_place_pcb_on_mount()
+{
+    translate([0, 0, Teensy_Plate_Thickness + Electronic_Pcb_Mount_Height])
+    {
+        children();
+    }
+}
+
+module electronic_pcb(holes_only = false)
 {
     // Center the pcb plate on x and y
-    x_offset_to_recenter = 1;
-    mount_height = 1;
-    translate([x_offset_to_recenter, 0, 0])
+    transform_recenter_pcb()
     {
-        translate([-(electronic_hole_to_hole_dim[0]+Electronic_Screw_Mount_Diameter)/2, -(electronic_hole_to_hole_dim[1]+Electronic_Screw_Mount_Diameter)/2, plate_thickness])
+        translate([-(electronic_hole_to_hole_dim[0]+Electronic_Screw_Mount_Diameter)/2, -(electronic_hole_to_hole_dim[1]+Electronic_Screw_Mount_Diameter)/2, Teensy_Plate_Thickness])
         {
             pcb_hole_positions = [
                 [Electronic_Screw_Mount_Diameter/2, Electronic_Screw_Mount_Diameter/2, 0],
@@ -1290,18 +1307,18 @@ module electronic_pcb(plate_thickness, holes_only = false)
                 {
                     if (holes_only)
                     {
-                        cylinder(h=mount_height*1.5, d=Electronic_Screws_Hole_Diameter, $fn = fragments_number);
+                        cylinder(h=Electronic_Pcb_Mount_Height*1.5, d=Electronic_Screws_Hole_Diameter, $fn = fragments_number);
                         translate([0, 0, -3.9]) make_pcb_case_screw_hole();
                     }
                     else
                     {
-                        cylinder(h=mount_height, d=Electronic_Screw_Mount_Diameter, $fn= fragments_number);
+                        cylinder(h=Electronic_Pcb_Mount_Height, d=Electronic_Screw_Mount_Diameter, $fn= fragments_number);
                     }
                 }
             }
         }
 
-        translate([0, 0, plate_thickness + mount_height])
+        transform_place_pcb_on_mount()
         {
             pcb_prototype_board_and_teensy(holes_only);
         }
@@ -1310,15 +1327,13 @@ module electronic_pcb(plate_thickness, holes_only = false)
 
 module pcb_prototype_board_and_teensy(holes_only)
 {
-    // Mine is an Elegoo (40 x 60 mm)
-    board_dim = [40, 60, 1.5];
     x_offset = -1;
     led_diameter = 5;
     led_height = 12;
 
     if (holes_only)
     {
-        translate([x_offset, board_dim[1]/2 - 4.66, board_dim[2]])
+        translate([x_offset, Electronic_Pcb_Dimensions[1]/2 - 4.66, Electronic_Pcb_Dimensions[2]-0.04])
         {
             teensy32(holes_only);
 
@@ -1332,7 +1347,7 @@ module pcb_prototype_board_and_teensy(holes_only)
         }
 
         // Board
-        board_hole_dim = [board_dim[0]-1, board_dim[1]-Electronic_Screw_Mount_Diameter - 6, 1];
+        board_hole_dim = [Electronic_Pcb_Dimensions[0]-1, Electronic_Pcb_Dimensions[1]-Electronic_Screw_Mount_Diameter - 6, 1];
         minkowski_height = 1;
         translate([0, 0, -board_hole_dim[2]/2 - minkowski_height])
         {
@@ -1348,12 +1363,12 @@ module pcb_prototype_board_and_teensy(holes_only)
         %union()
         {
             // Board
-            translate([0, 0, board_dim[2]/2])
+            translate([0, 0, Electronic_Pcb_Dimensions[2]/2])
             {
-                cube(board_dim, true);
+                cube(Electronic_Pcb_Dimensions, true);
             }
 
-            translate([x_offset, board_dim[1]/2 - 4.66, board_dim[2]])
+            translate([x_offset, Electronic_Pcb_Dimensions[1]/2 - 4.66, Electronic_Pcb_Dimensions[2]])
             {
                 // Teensy
                 teensy32();
@@ -1494,7 +1509,7 @@ module electronic_case(top = true, bottom = true)
             {
                 union()
                 {
-                    electronic_pcb(Teensy_Plate_Thickness);
+                    electronic_pcb();
 
                     bottom_plate(p, $fn = fragments_number);
                     for (p = points)
@@ -1554,7 +1569,7 @@ module electronic_case(top = true, bottom = true)
         }
 
         // Holes for the pcb mount
-        electronic_pcb(Teensy_Plate_Thickness, holes_only = true);
+        electronic_pcb(holes_only = true);
 
         // Holes for the link between the top and bottom cases
         for (p = points)
@@ -1578,7 +1593,7 @@ module link_center_walls()
     minkowski_height = p[4]*tan(45);
 
     // Create holes
-    electronic_pcb(Teensy_Plate_Thickness);
+    electronic_pcb();
 
     difference()
     {
@@ -1624,10 +1639,29 @@ module link_center_walls()
     }
 
     // Nut slots
-    translate(points[0]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 45]) make_mount();
-    translate(points[1]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 135]) make_mount();
-    translate(points[2]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 225]) make_mount();
-    translate(points[3]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, -45]) make_mount();
+    difference()
+    {
+        union()
+        {
+            translate(points[0]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 45]) make_mount();
+            translate(points[1]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 135]) make_mount();
+            translate(points[2]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, 225]) make_mount();
+            translate(points[3]) translate([0, 0, Teensy_Plate_Thickness]) rotate([0, 0, -45]) make_mount();
+        }
+
+        // Board clearance
+        transform_recenter_pcb()
+        {
+            transform_place_pcb_on_mount()
+            {
+                clearance = [Electronic_Pcb_Dimensions[0]+2, Electronic_Pcb_Dimensions[1], 20];
+                translate([0, 0, clearance[2]/2])
+                {
+                    cube(clearance, true);
+                }
+            }
+        }
+    }
 }
 
 module link_center_holes()
@@ -1635,7 +1669,7 @@ module link_center_holes()
     p = teensy_case_parameters;
 
     // Holes for the pcb mount
-    electronic_pcb(Teensy_Plate_Thickness, holes_only = true);
+    electronic_pcb(holes_only = true);
 
     module make_hole()
     {
