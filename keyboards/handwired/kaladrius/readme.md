@@ -77,7 +77,17 @@ There are 4 files but you'll need to print 6 objects :
 5) Left Plate : use the file [RightPlate.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/RightPlate.stl) but in your slicer mirror the object along the X-Axis. Print this object with 2 perimeters
 6) Right Plate : use the file [RightPlate.stl](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius/design/Stls/RightPlate.stl) Print this object with 2 perimeters
 
-For all files an infill of 20% is enough. About perimeters, except for 5) and 6), print all objects with 3 perimeters
+For all files an infill of 20% is enough. About perimeters, except for 5) and 6), print all objects with 3 perimeters.
+For the right and left plates I personally print them on a glass surface.
+
+About print times, it depends on your printer and print settings. For my settings I have the following :
+
+- Left Plate : 2h59
+- Right Plate : 2h59
+- Left Case : 7h01
+- Right Case : 7h01
+- Link : 7h25
+- Link Plate : 58 minutes
 
 ## Electronic
 
