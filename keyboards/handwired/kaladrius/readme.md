@@ -147,17 +147,58 @@ Now you can do a basic test :
 - Compile and flash the Kaladrius firmware on the Teensy
 - After the reboot you should see the RGB led blinking like in this video : [Kaladrius boot blinking test](https://youtu.be/ky0wmrFHCOY)
 
-### Switches soldering
+### Switches
 
 Puth the switches on the plate :
 
-![Switches on plate](https://i.imgur.com/NElYlAD.png)
+![Switches on plate](https://i.imgur.com/NWSrIQq.jpg)
 
 To be sure that they won't pop out glue them with a Hot Glue Gun :
 
-![Switches glued](https://i.imgur.com/B73Cg57.png)
+![Hot glue gun](https://i.imgur.com/BxH20qP.jpg)
 
-Note: If you have to remove them you can use a Heat Gun
+![Switches glued](https://i.imgur.com/KcKHWaS.jpg)
+
+As you can see on the photo you can glue just one side, it's enough.
+**If you have to remove the switches from the plate you can use a Heat Gun**
+
+Here is the result when it's done :
+
+![All switches](https://i.imgur.com/s6p6Aqh.jpg)
+
+### Soldering diodes
+
+For the diodes notice the black line on them :
+
+![Diode](https://i.imgur.com/znROXWL.png)
+
+Put the diode on the switch with the black line oriented like this :
+
+![Diode on Switch](https://i.imgur.com/LW8NQsJ.jpg)
+
+Solder it then bend the leg at 90 degrees, do the same steps with another diode and solder them together like this :
+
+![Diodes](https://i.imgur.com/0SJblpn.jpg)
+
+Pay attention to the switch that is oriented at 90 degrees :
+
+![Switch at 90](https://i.imgur.com/2HXYQFO.png)
+
+Continue until you reach the thumb cluster, I solder them like the following photos (always pay attention to the diode's black line):
+
+![Thumb 1](https://i.imgur.com/HtfrcPo.jpg)
+![Thumb 2](https://i.imgur.com/qMZVlOw.jpg)
+![Thumb 3](https://i.imgur.com/mmnyIIg.jpg)
+
+And finally cut the legs :
+
+![Thumb 4](https://i.imgur.com/Matmlyz.jpg)
+
+The result :
+
+![Result](https://i.imgur.com/M9vMjZZ.jpg)
+
+### Soldering column wires
 
 ... to be continued
 
