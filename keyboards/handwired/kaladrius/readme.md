@@ -2,7 +2,7 @@
 
 ![Kaladrius](https://i.imgur.com/UF7BSkB.jpg)
 
-The Kaladrius is an orthographic steno keyboard that use a modified [Jackdaw steno theory](https://sites.google.com/site/learnplover/jackdaw) created by **Jennifer Brien**.
+The Kaladrius is an orthographic steno keyboard that uses a modified [Jackdaw steno theory](https://sites.google.com/site/learnplover/jackdaw) created by **Jennifer Brien**.
 Dictionaries are stored in the firmware and Plover is not needed.
 The main goal for me is to be able to code with a chorded keyboard. It's still a prototype and hope to use it daily this year (2020) at work.
 It's a handwired and printable keyboard and use a Teensy 3.2
