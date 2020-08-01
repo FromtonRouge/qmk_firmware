@@ -178,6 +178,8 @@ Here is the result when it's done :
 
 ### Soldering diodes
 
+As an example we are working on the Right Plate here.
+
 For the diodes notice the black line on them :
 
 ![Diode](https://i.imgur.com/znROXWL.png)
@@ -207,6 +209,12 @@ And finally cut the legs :
 The result :
 
 ![Result](https://i.imgur.com/M9vMjZZ.jpg)
+
+That was the Right Plate, do the same withe Left Plate :
+
+![Left Plate thumb closeup](https://i.imgur.com/CcFFiGm.jpg)
+
+![Left Plate](https://i.imgur.com/Ld75Rol.jpg)
 
 ### Soldering column wires
 
