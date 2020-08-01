@@ -218,7 +218,33 @@ That was the Right Plate, do the same withe Left Plate :
 
 ### Soldering column wires
 
-... to be continued
+Here we'll work with the Right Plate.
+
+With a marker put a mark on the wire at pin locations :
+
+![Marks on wire](https://i.imgur.com/IiwuTTP.jpg)
+
+Then with a cutter or a scalpel make 3 incisions along the white lines on the photo (don't cut completely the wire). You'll be able to remove a portion of the wire sheath :
+
+![Remove sheath](https://i.imgur.com/WNOdzX7.png)
+
+You can now solder the wire on the pins :
+
+![Solder on pins](https://i.imgur.com/zY1d8zs.jpg)
+
+Don't cut the portion marked on the photo, we will need this after :
+
+![Don't cut](https://i.imgur.com/tG4cSaV.png)
+
+Do the same thing with other columns, as a helper use also different wire colors it will be easier to solder wires on the Teensy after. Also leave the last switch alone :
+
+![Result](https://i.imgur.com/tAuRmg3.png)
+
+Do the same thing with the Left Plate
+
+### Soldering plates with the Teensy
+
+To be continued...
 
 # Firmware
 
