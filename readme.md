@@ -2,10 +2,10 @@
 
 ![Kaladrius](https://i.imgur.com/UF7BSkB.jpg)
 
-The Kaladrius is an orthographic steno keyboard inspired by the [Jackdaw steno theory](https://sites.google.com/site/ploverdoc/jackdaw)
+The Kaladrius is an orthographic steno keyboard that uses a modified [Jackdaw steno theory](https://sites.google.com/site/ploverdoc/jackdaw)
 
 More information [here](keyboards/handwired/kaladrius/readme.md)
 
-# ErgoDox Steno Prototype [DEPRECATED]
+# ErgoDox with Jackdaw Prototype [DEPRECATED]
 
 This project is deprecated but you can still find information [here](users/fromtonrouge)
