@@ -29,6 +29,13 @@ The TEENSY key (RESET) is define in this layer
 ## Programmer Steno layout (experimental)
 **WARNING: I don't recommend this steno layout on an ErgoDox keyboard. Thumbs clusters are too far, I have been suffering from De Quervain tendinitis since April 2018 because of this. I'm waiting for a surgery on the left hand. My plan is to design a specific keyboard for this layout. If you still want to try this layout on the ErgoDox I recommend to reduce your training session time to under 30 minutes per day (be careful on left thumb moves). My speed was 140 wpm before the injury.**
 
+**EDIT: Surgery done on October 2018 :**
+
+![Surgery](https://i.imgur.com/xZ3XdZM.jpg)
+![Scar](https://i.imgur.com/OIYHb7z.jpg)
+
+**WARNING: I will remove this layout. If you want to use Jackdaw you need a [Kaladrius keyboard](https://github.com/FromtonRouge/qmk_firmware/tree/master/keyboards/handwired/kaladrius)**
+
 (Inspired by the Jackdaw steno theory https://sites.google.com/site/ploverdoc/jackdaw)
 
 By default the keyboard is in full NKRO, you can test the keyboard here http://random.xem.us/rollover.html
