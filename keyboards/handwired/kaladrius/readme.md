@@ -112,7 +112,9 @@ Put the Teensy on the 4cm x 6cm pcb like the image below :
 
 Here the left side of the Teensy is on the 4th column of the pcb
 
-Solder the Teensy, no need to cut the legs.
+Solder the Teensy and cut the legs :
+
+![Cut the legs](https://i.imgur.com/1XaKx59.jpg)
 
 Here is the schematic of a RGB Led (Common Cathod) :
 
