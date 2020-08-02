@@ -112,9 +112,7 @@ Put the Teensy on the 4cm x 6cm pcb like the image below :
 
 Here the left side of the Teensy is on the 4th column of the pcb
 
-Solder the Teensy and cut the legs :
-
-![Legs](https://i.imgur.com/1XaKx59.jpg)
+Solder the Teensy, no need to cut the legs.
 
 Here is the schematic of a RGB Led (Common Cathod) :
 
@@ -132,9 +130,9 @@ Now insert the cathod in the 4th column of the pcb like this :
 
 ![Cathod](https://i.imgur.com/CYTEYB8.png)
 
-and push the led down until the top of the led is under 12mm. If the led is too high you won't be able to put the Link Plate on the Link part :
+and push the led down until the top of the led is <= 13mm. If the led is too high you won't be able to put the Link Plate on the Link part :
 
-![RGB height](https://i.imgur.com/yHM8WzK.png)
+![RGB height](https://i.imgur.com/QFUjTAA.png)
 
 Solder the RGB led on the pcb, after that it's time to put the 220 Ohm resistors like this :
 
@@ -150,7 +148,7 @@ As a memo here is the Teensy 3.2 pinout :
 
 Now link the Teensy GND pin and the Led cathod with a wire like this :
 
-![GND to Led](https://i.imgur.com/daBkKMe.png)
+![GND to Led](https://i.imgur.com/5hwMAk3.png)
 
 Now you can do a basic test :
 
