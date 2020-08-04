@@ -303,13 +303,13 @@ And here is a closer look of the back of the Teensy, I added some hot glue for t
 
 When it's done put the Teensy in the case and pass the wires to the left and right sides.
 
-Now you can solder wires to colmnds and rows on the plate :
+Now you can solder wires to columns and rows on the plate :
 
 ![First column wiring](https://i.imgur.com/dAK7bq2.jpg)
 
 ![All columns wired](https://i.imgur.com/pFF9Nbf.jpg)
 
-![Columns and Rows wired]([img]https://i.imgur.com/uhn7Y1h.jpg[/img])
+![Columns and Rows wired](https://i.imgur.com/uhn7Y1h.jpg)
 
 You should have something like this :
 
