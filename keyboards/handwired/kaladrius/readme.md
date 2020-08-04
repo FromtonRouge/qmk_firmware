@@ -176,7 +176,7 @@ Here is the result when it's done :
 
 ![All switches](https://i.imgur.com/s6p6Aqh.jpg)
 
-### Soldering diodes
+### Soldering the rows (diodes)
 
 As an example we are working on the Right Plate here.
 
@@ -216,7 +216,7 @@ That was the Right Plate, do the same withe Left Plate :
 
 ![Left Plate](https://i.imgur.com/Ld75Rol.jpg)
 
-### Soldering column wires
+### Soldering the columns
 
 Here we'll work with the Right Plate.
 
@@ -242,9 +242,45 @@ Do the same thing with other columns, as a helper use also different wire colors
 
 Do the same thing with the Left Plate
 
-### Soldering plates with the Teensy
+### Connect columns and rows to the Teensy
 
-To be continued...
+Now that the columns and rows are done we can connect them to the Teensy. Here is a recap of columns/rows of the keyboard with the colors I used :
+
+![Keyboard Matrix](https://i.imgur.com/8CxN5bD.png)
+
+Same for the Teensy :
+
+![Teensy matrix](https://i.imgur.com/drTIG04.png)
+
+Use wires with the following lengths and solder rows and columns to the Teensy :
+
+- Col 0 and 15 (red) : 25 cm
+- Col 1 and 14 (red) : 23 cm
+- Col 2 and 13 (red) : 21 cm
+- Col 3 and 12 (yellow) : 20 cm
+- Col 4 and 11 (yellow) : 19 cm
+- Col 5 and 10 (yellow) : 18 cm
+- Col 6 and 9 (white) : 17 cm
+- Col 7 and 8 (white) : 30 cm
+- Row 0 (green) : 20 cm
+- Row 1 (blue) : 22 cm
+- Row 2 (black) : 24 cm
+- Row 3 (red) : 26 cm
+- Row 4 (yellow) : 28 cm
+
+![First column wiring](https://i.imgur.com/dAK7bq2.jpg)
+
+![All columns wired](https://i.imgur.com/pFF9Nbf.jpg)
+
+![Columns and Rows wired]([img]https://i.imgur.com/uhn7Y1h.jpg[/img])
+
+Connect and solder the wires to the Teensy :
+
+![Columns/Rows connected to the Teensy](https://i.imgur.com/S4a6mhf.jpg)
+
+And here is a closer look of the back of the Teensy, I added some hot glue for the row wires that go to the right side :
+
+![Back of the Teensy](https://i.imgur.com/C1qFQGj.jpg)
 
 # Firmware
 
