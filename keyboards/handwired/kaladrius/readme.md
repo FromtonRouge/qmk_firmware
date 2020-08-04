@@ -93,11 +93,11 @@ After this step you can assemble the case without the plates :
 
 You need :
 
-- 4 M3 of 10 mm (8 and 12mm also works)
-- 4 M3 nuts
+- 8 M3 screws of 10 mm (8 and 12mm also works)
+- 8 M3 nuts
 - (optional) 1 M3 ring
 
-Try to put a M3 nut in this nut slot on the case :
+Try to put a M3 nut in this slot on the case :
 
 ![Nut in the slot](https://i.imgur.com/OvC76Wg.jpg)
 
@@ -314,6 +314,16 @@ Now you can solder wires to columns and rows on the plate :
 You should have something like this :
 
 ![Final result](https://i.imgur.com/S4a6mhf.jpg)
+
+### Final assembly
+
+You can put all plates on the case, you'll need :
+
+- 18 M3 of 12mm screws for left and right plates
+- 18 M3 nuts
+
+![Final assembly](https://i.imgur.com/H7YYoBu.jpg)
+- 14 nuts
 
 # Firmware
 
