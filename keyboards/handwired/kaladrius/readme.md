@@ -89,6 +89,31 @@ About print times, it depends on your printer and print settings. For my setting
 - Link : 7h25
 - Link Plate : 58 minutes
 
+After this step you can assemble the case without the plates :
+
+You need :
+
+- 8 M3 screws of 10 mm (8 and 12mm also works)
+- 8 M3 nuts
+- (optional) 1 M3 ring
+
+Try to put a M3 nut in this slot on the case :
+
+![Nut in the slot](https://i.imgur.com/OvC76Wg.jpg)
+
+If you can't push the nut by hand use a M3 screw with a ring and use it to insert the nut :
+
+![Screw with ring](https://i.imgur.com/QkL1VnF.jpg)
+
+Screw until the nut is fully inserted
+![Insert with screw](https://i.imgur.com/Os5aCzP.jpg)
+
+Once the nut is fully inserted remove the screw, at the end you should have something like this :
+
+![Nuts inserted](https://i.imgur.com/mios9k6.jpg)
+
+![All nuts inserted](https://i.imgur.com/SjaDlf2.jpg)
+
 ## Electronic
 
 You'll need : 
@@ -176,7 +201,7 @@ Here is the result when it's done :
 
 ![All switches](https://i.imgur.com/s6p6Aqh.jpg)
 
-### Soldering diodes
+### Soldering the rows (diodes)
 
 As an example we are working on the Right Plate here.
 
@@ -216,7 +241,7 @@ That was the Right Plate, do the same withe Left Plate :
 
 ![Left Plate](https://i.imgur.com/Ld75Rol.jpg)
 
-### Soldering column wires
+### Soldering the columns
 
 Here we'll work with the Right Plate.
 
@@ -242,9 +267,63 @@ Do the same thing with other columns, as a helper use also different wire colors
 
 Do the same thing with the Left Plate
 
-### Soldering plates with the Teensy
+### Connect columns and rows to the Teensy
 
-To be continued...
+Now that the columns and rows are done we can connect them to the Teensy. Here is a recap of columns/rows of the keyboard with the colors I used :
+
+![Keyboard Matrix](https://i.imgur.com/8CxN5bD.png)
+
+Same for the Teensy :
+
+![Teensy matrix](https://i.imgur.com/drTIG04.png)
+
+Use wires with the following lengths and solder them on the Teensy first **At the moment don't solder wires on the plate**:
+
+- Col 0 and 15 (red) : 25 cm
+- Col 1 and 14 (red) : 23 cm
+- Col 2 and 13 (red) : 21 cm
+- Col 3 and 12 (yellow) : 20 cm
+- Col 4 and 11 (yellow) : 19 cm
+- Col 5 and 10 (yellow) : 18 cm
+- Col 6 and 9 (white) : 17 cm
+- Col 7 and 8 (white) : 30 cm
+- Row 0 (green) : 20 cm
+- Row 1 (blue) : 22 cm
+- Row 2 (black) : 24 cm
+- Row 3 (red) : 26 cm
+- Row 4 (yellow) : 28 cm
+
+Connect and solder the wires to the Teensy :
+
+![Wires on Teensy](https://i.imgur.com/ELaBAtf.jpg)
+
+And here is a closer look of the back of the Teensy, I added some hot glue for the row wires that go to the right side :
+
+![Back of the Teensy](https://i.imgur.com/C1qFQGj.jpg)
+
+When it's done put the Teensy in the case and pass the wires to the left and right sides.
+
+Now you can solder wires to columns and rows on the plate :
+
+![First column wiring](https://i.imgur.com/dAK7bq2.jpg)
+
+![All columns wired](https://i.imgur.com/pFF9Nbf.jpg)
+
+![Columns and Rows wired](https://i.imgur.com/uhn7Y1h.jpg)
+
+You should have something like this :
+
+![Final result](https://i.imgur.com/S4a6mhf.jpg)
+
+### Final assembly
+
+You can put all plates on the case, you'll need :
+
+- 18 M3 of 12mm screws for left and right plates
+- 18 M3 nuts
+
+![Final assembly](https://i.imgur.com/H7YYoBu.jpg)
+- 14 nuts
 
 # Firmware
 
