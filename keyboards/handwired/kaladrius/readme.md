@@ -89,6 +89,31 @@ About print times, it depends on your printer and print settings. For my setting
 - Link : 7h25
 - Link Plate : 58 minutes
 
+After this step you can assemble the case without the plates :
+
+You need :
+
+- 4 M3 of 10 mm (8 and 12mm also works)
+- 4 M3 nuts
+- (optional) 1 M3 ring
+
+Try to put a M3 nut in this nut slot on the case :
+
+![Nut in the slot](https://i.imgur.com/OvC76Wg.jpg)
+
+If you can't push the nut by hand use a M3 screw with a ring and use it to insert the nut :
+
+![Screw with ring](https://i.imgur.com/QkL1VnF.jpg)
+
+Screw until the nut is fully inserted
+![Insert with screw](https://i.imgur.com/Os5aCzP.jpg)
+
+Once the nut is fully inserted remove the screw, at the end you should have something like this :
+
+![Nuts inserted](https://i.imgur.com/mios9k6.jpg)
+
+![All nuts inserted](https://i.imgur.com/SjaDlf2.jpg)
+
 ## Electronic
 
 You'll need : 
@@ -252,7 +277,7 @@ Same for the Teensy :
 
 ![Teensy matrix](https://i.imgur.com/drTIG04.png)
 
-Use wires with the following lengths and solder rows and columns to the Teensy :
+Use wires with the following lengths and solder them on the Teensy first **At the moment don't solder wires on the plate**:
 
 - Col 0 and 15 (red) : 25 cm
 - Col 1 and 14 (red) : 23 cm
@@ -268,19 +293,27 @@ Use wires with the following lengths and solder rows and columns to the Teensy :
 - Row 3 (red) : 26 cm
 - Row 4 (yellow) : 28 cm
 
+Connect and solder the wires to the Teensy :
+
+![Wires on Teensy](https://i.imgur.com/ELaBAtf.jpg)
+
+And here is a closer look of the back of the Teensy, I added some hot glue for the row wires that go to the right side :
+
+![Back of the Teensy](https://i.imgur.com/C1qFQGj.jpg)
+
+When it's done put the Teensy in the case and pass the wires to the left and right sides.
+
+Now you can solder wires to colmnds and rows on the plate :
+
 ![First column wiring](https://i.imgur.com/dAK7bq2.jpg)
 
 ![All columns wired](https://i.imgur.com/pFF9Nbf.jpg)
 
 ![Columns and Rows wired]([img]https://i.imgur.com/uhn7Y1h.jpg[/img])
 
-Connect and solder the wires to the Teensy :
+You should have something like this :
 
-![Columns/Rows connected to the Teensy](https://i.imgur.com/S4a6mhf.jpg)
-
-And here is a closer look of the back of the Teensy, I added some hot glue for the row wires that go to the right side :
-
-![Back of the Teensy](https://i.imgur.com/C1qFQGj.jpg)
+![Final result](https://i.imgur.com/S4a6mhf.jpg)
 
 # Firmware
 
