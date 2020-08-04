@@ -174,11 +174,11 @@ Tenting_Angle = 5.4; // [5.4:0.1:10.5]
 Tilt_Angle = 6; // [0:0.1:10]
 
 // (mm)
-Tent_Distance = 103.5; // [95:0.1:110]
+Tent_Distance = 102.5; // [95:0.1:110]
 
-tent_pos = [84.5, Pinky_Finger_Offset-70];
+tent_pos = [86.5, Pinky_Finger_Offset-70];
 
-Tent_Profile_Cube = [51, 70, 1];
+Tent_Profile_Cube = [49, 70, 1];
 
 Tent_Thumb_Scale = 0.75;
 
