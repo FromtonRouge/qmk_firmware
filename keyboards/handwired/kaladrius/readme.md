@@ -62,7 +62,36 @@ If you are interested by using Jackdaw and the Kaladrius here are some things to
 To build the Kaladrius you have to :
 
 - 3D print 6 different parts. If you don't have a 3D printer you can print them via an online 3D print service (like https://www.3dhubs.com for example) but it's very expensive.
-- Do the electronic by yourself. (I'll try to design later a small pcb)
+- Do the electronic by yourself...
+
+## Parts
+
+You'll need : 
+
+- [1x Teensy 3.2 with pins](https://www.pjrc.com/store/teensy32_pins.html)
+- [1x (4cm x 6cm) prototype pcb](https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F)
+- 1x 5mm Common Cathode RGB led
+- 3x 220 Ohms resistors (for the RGB led)
+- 72x 1N4148 Commutation diodes
+- 72x Gateron Clear Keyswitch - Plate Mount (35g)
+- 64x [1 space G20 keycaps](https://pimpmykeyboard.com/g20-1-space-pack-of-10)
+- 4x [1.5 space G20 keycaps)](https://pimpmykeyboard.com/g20-1-5-pack-of-4)
+- 4x [2 space G20 keycaps](https://pimpmykeyboard.com/g20-2-space-pack-of-4)
+- Electrical Wires 28 AWG
+- 26x M3 nuts
+- 18x M3 screws of 12mm
+- 8x M3 screws of 10mm
+- 4x M2 screws of 6 mm
+- 4x M2 rings
+- 4x M2 nuts
+- 1 micro usb magnetic cable
+
+Tools :
+
+- Soldering iron
+- Solder wire
+- 1 Hot Glue gun + Glue Sticks
+- 1 mini electric screw driver (very useful for this build)
 
 ## 3D Printed parts
 
@@ -114,23 +143,7 @@ Once the nut is fully inserted remove the screw, at the end you should have some
 
 ![All nuts inserted](https://i.imgur.com/SjaDlf2.jpg)
 
-## Electronic
-
-You'll need : 
-
-- [1x Teensy 3.2 with pins](https://www.pjrc.com/store/teensy32_pins.html)
-- [1x (4cm x 6cm) prototype pcb](https://www.amazon.com/ELEGOO-Prototype-Soldering-Compatible-Arduino/dp/B072Z7Y19F)
-- 1x 5mm Common Cathode RGB led
-- 3x 220 Ohms resistors (for the RGB led)
-- 70x 1N4148 Commutation diodes
-- 70x Gateron Clear Keyswitch - Plate Mount (35g)
-- Electrical Wires 28 AWG
-
-Tools :
-
-- 1 Hot Glue gun + Glue Sticks
-
-### Teensy 3.2 soldering
+## Teensy 3.2 soldering
 
 Put the Teensy on the 4cm x 6cm pcb like the image below :
 ![Teensy](https://i.imgur.com/ybeFHPk.png)
@@ -182,7 +195,7 @@ Now you can do a basic test :
 - Compile and flash the Kaladrius firmware on the Teensy
 - After the reboot you should see the RGB led blinking like in this video : [Kaladrius boot blinking test](https://youtu.be/ky0wmrFHCOY)
 
-### Switches
+## Switches
 
 Puth the switches on the plate :
 
@@ -201,7 +214,7 @@ Here is the result when it's done :
 
 ![All switches](https://i.imgur.com/s6p6Aqh.jpg)
 
-### Soldering the rows (diodes)
+## Soldering the rows (diodes)
 
 As an example we are working on the Right Plate here.
 
@@ -241,7 +254,7 @@ That was the Right Plate, do the same withe Left Plate :
 
 ![Left Plate](https://i.imgur.com/Ld75Rol.jpg)
 
-### Soldering the columns
+## Soldering the columns
 
 Here we'll work with the Right Plate.
 
@@ -267,7 +280,7 @@ Do the same thing with other columns, as a helper use also different wire colors
 
 Do the same thing with the Left Plate
 
-### Connect columns and rows to the Teensy
+## Connect columns and rows to the Teensy
 
 Now that the columns and rows are done we can connect them to the Teensy. Here is a recap of columns/rows of the keyboard with the colors I used :
 
@@ -315,7 +328,7 @@ You should have something like this :
 
 ![Final result](https://i.imgur.com/S4a6mhf.jpg)
 
-### Final assembly
+## Final assembly
 
 You can put all plates on the case, you'll need :
 
@@ -323,6 +336,10 @@ You can put all plates on the case, you'll need :
 - 18 M3 nuts
 
 ![Final assembly](https://i.imgur.com/H7YYoBu.jpg)
+
+With G20 keycags :
+
+![With keycaps](https://i.imgur.com/UWdOisa.jpg)
 
 # Firmware
 
