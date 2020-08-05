@@ -51,7 +51,7 @@ If you are interested by using Jackdaw and the Kaladrius here are some things to
 - I made some modifications to the Jackdaw theory and added/removed some features. I'll list them later
 - I may add/remove features, change dictionaries and/or change the fingers layout and the keyboard design to improve the keyboard.
 - If I change the dictionary or the design you may need to relearn some things (maybe a lots of things for major dictionary changes)
-- The build of the keyboard is easy but very very long
+- The build of the keyboard takes time...
 - At the moment there is no real proof that Jackdaw will allow me to code faster. I have some intuitions but I need to really practice to find the limits or other problems. My last typing test was 145 wpm but it was on a 200 common words test and I need to do measurements on real text and C++ code, I can't do that now because I still don't know to type properly with this...
 - **So to really learn to type with this keyboard I'm working on an application called [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)**
 
