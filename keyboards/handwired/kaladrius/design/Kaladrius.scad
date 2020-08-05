@@ -1654,7 +1654,7 @@ module link_center_walls()
         {
             transform_place_pcb_on_mount()
             {
-                clearance = [Electronic_Pcb_Dimensions[0]+2, Electronic_Pcb_Dimensions[1], 20];
+                clearance = [Electronic_Pcb_Dimensions[0]+1, Electronic_Pcb_Dimensions[1], 20];
                 translate([0, 0, clearance[2]/2])
                 {
                     cube(clearance, true);
