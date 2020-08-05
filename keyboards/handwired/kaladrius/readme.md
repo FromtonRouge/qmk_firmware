@@ -343,6 +343,39 @@ With G20 keycags :
 
 # Firmware
 
+In your keymap.c file, create a layer for the Jackdaw layout, for example :
+
+```C
+    [LAYER_JACKDAW] = LAYOUT(
+        KC_F1,     KC_F2,     KC_F3,     KC_F4,     KC_F5,     KC_F6,     KC_LGUI,      KC_TRNS,   KC_F7,     KC_F8,     KC_F9,     KC_F10,    KC_F11,    KC_F12, 
+        KC_NO,     CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,    CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,    CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                          CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO, 
+        CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,                                                                      CKC_STENO, CKC_STENO, CKC_STENO, CKC_STENO,
+                                                               CKC_STENO,                          CKC_STENO, 
+                                         CKC_STENO, CKC_STENO, CKC_STENO,                          CKC_STENO, CKC_STENO, CKC_STENO, 
+                                                               CKC_STENO,                          CKC_STENO ),
+```
+
+and add also this:
+
+``` C
+// Steno keymap
+const uint32_t PROGMEM g_steno_layout[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
+        0,  0,   0,   0,   0,   0,  0,             0,      0,   0,   0,   0,   0,    0, 
+        0,  0,   0,  L2,  L1,  L0,  S_ENT,         SC_SEP, R0,  R1,  R2,  0,   0,    0,
+        0,  0,  L3,  L_C, L_W, L_N, SC_STAR,       SC_SEP, R_R, R_L, R_C, R3,  R4,   0,
+        0,  L4, L_A, L_T, L_H, L_R,                        R_N, R_G, R_H, R_T, RP_E, 0,
+        0,  L5, L_S, 0,                                              0,   R_S, RP_Y, 0,
+                                   SC_STAR,        SC_SEP, 
+                        SC_LPLUS, T_E, T_O,        T_Y, T_I, SC_RPLUS, 
+                                       T_A,        T_U );
+
+steno_layout_t* get_steno_layout(void) { return g_steno_layout; }
+```
+
+You'll find an example in my personal keymap [here](https://github.com/FromtonRouge/qmk_firmware/blob/master/keyboards/handwired/kaladrius/keymaps/fromtonrouge/keymap.c)
+
 By default the keyboard is in full NKRO, you can test the keyboard here http://random.xem.us/rollover.html
 
 - Keyboard Maintainer: [FromtonRouge](https://github.com/FromtonRouge)
