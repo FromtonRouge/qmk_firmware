@@ -321,9 +321,9 @@ You can put all plates on the case, you'll need :
 
 - 18 M3 of 12mm screws for left and right plates
 - 18 M3 nuts
+- 14 nuts
 
 ![Final assembly](https://i.imgur.com/H7YYoBu.jpg)
-- 14 nuts
 
 # Firmware
 
