@@ -90,8 +90,12 @@ Tools :
 
 - Soldering iron
 - Solder wire
+- Electronic tweezers
+- Electronic third hand
 - 1 Hot Glue gun + Glue Sticks
 - 1 mini electric screw driver (very useful for this build)
+- A marker
+- A ruler
 
 ## 3D Printed parts
 
@@ -258,7 +262,7 @@ That was the Right Plate, do the same withe Left Plate :
 
 Here we'll work with the Right Plate.
 
-With a marker put a mark on the wire at pin locations :
+Put marks on the wire at pin locations :
 
 ![Marks on wire](https://i.imgur.com/IiwuTTP.jpg)
 
