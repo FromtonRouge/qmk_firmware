@@ -66,7 +66,7 @@ Nut_Slot_Diameter = 10; // [9:0.1:12]
 
 // Note: 0.06 press fit
 // (mm)
-Nut_Hole_3mm_Tolerance = 0.065; // [0:0.05:1]
+Nut_Hole_3mm_Tolerance = 0.13; // [0:0.05:1]
 
 // Note: 0.16 press fit
 // (mm)
@@ -822,7 +822,7 @@ module left_case(printable = true)
             {
                 minkowski()
                 {
-                    cube(Tent_Profile_Cube + [0, -20, Case_Shell_Thickness]);
+                    translate([2, 0, 0]) cube(Tent_Profile_Cube + [-2, -20, Case_Shell_Thickness]);
                     cylinder(h=10, r=4, $fn = fragments_number);
                 }
             }
