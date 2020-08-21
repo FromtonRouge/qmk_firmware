@@ -346,9 +346,6 @@ void stroke(void)
             stroke_element_t* stroke_element = &g_stroke_buffer[0];
             switch (stroke_element->keycode)
             {
-            case _COMM:
-            case _DOT:
-            case _SCLN:
             case KC_ESC:
             case KC_ENT:
             case KC_END:
