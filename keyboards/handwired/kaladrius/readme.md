@@ -367,10 +367,10 @@ and add also this:
 // Steno keymap
 const uint32_t PROGMEM g_steno_layout[MATRIX_ROWS][MATRIX_COLS] = LAYOUT(
         0,  0,   0,   0,   0,   0,  0,             0,      0,   0,   0,   0,   0,    0, 
-        0,  0,   0,  L2,  L1,  L0,  S_ENT,         SC_SEP, R0,  R1,  R2,  0,   0,    0,
-        0,  0,  L3,  L_C, L_W, L_N, SC_STAR,       SC_SEP, R_R, R_L, R_C, R3,  R4,   0,
-        0,  L4, L_A, L_T, L_H, L_R,                        R_N, R_G, R_H, R_T, RP_E, 0,
-        0,  L5, L_S, 0,                                              0,   R_S, RP_Y, 0,
+        0,  0,  L3,  L2,  L1,  L0,  S_ENT,         SC_SEP, R0,  R1,  R2,  R3,  R4,   0,
+        0,  L4, L_A, L_C, L_W, L_N, SC_STAR,       SC_SEP, R_R, R_L, R_C, R_T, RP_E, 0,
+        0,  L5, L_S, L_T, L_H, L_R,                        R_N, R_G, R_H, R_S, RP_Y, 0,
+        0,   0,   0, 0,                                              0,     0,    0, 0,
                                    SC_STAR,        SC_SEP, 
                         SC_LPLUS, T_E, T_O,        T_Y, T_I, SC_RPLUS, 
                                        T_A,        T_U );
