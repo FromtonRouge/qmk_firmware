@@ -356,7 +356,7 @@ void stroke(void)
                 }
             default:
                 {
-                    if (punctuation_mode && *left_controls_bits && !choose_separator_mode)
+                    if (punctuation_mode && !choose_separator_mode)
                     {
                         can_send_separator = false;
                     }

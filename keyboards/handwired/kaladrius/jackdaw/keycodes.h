@@ -47,8 +47,8 @@ enum kaladrius_custom_keycodes
 #define _SUP2   FR_SUP2
 #define _AMP    FR_AMP
 #define _EACU   FR_EACU
-#define _DQUOT  FR_QUOT
-#define _APOS   FR_APOS
+#define _DQUOT  FR_DQUO
+#define _APOS   FR_QUOT
 #define _LPRN   FR_LPRN
 #define _MINS   FR_MINS
 #define _EGRV   FR_EGRV
