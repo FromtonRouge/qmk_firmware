@@ -171,10 +171,11 @@ teensy_case_parameters = get_box_parameters(Teensy_Plate_Size, Teensy_Case_Round
 Tenting_Angle = 5.4; // [5.4:0.1:10.5]
 
 // (degree)
-Tilt_Angle = 6; // [0:0.1:10]
+Tilt_Angle = 0; // [0:0.1:10]
 
 // (mm)
-Tent_Distance = 102.5; // [95:0.1:110]
+Tent_Distance_X = 103; // [95:0.1:110]
+Tent_Distance_Y = -0.8; // [-5:0.1:5]
 
 tent_pos = [86.5, Pinky_Finger_Offset-70];
 
@@ -1137,7 +1138,7 @@ module left_keycaps()
 // Kaladrius link system
 module transform_link_system()
 {
-    translate([-Tent_Distance, 0, 0])
+    translate([-Tent_Distance_X, Tent_Distance_Y, 0])
     {
         translate(-get_tent_origin())
         {
