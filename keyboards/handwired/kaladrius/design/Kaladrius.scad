@@ -40,7 +40,7 @@ Switch_Hole_Width = 14;
 Switch_Hole_Tolerance = -0.1;
 
 // (mm)
-Space_Between_Switches = 5.00; // [4.8:0.05:6]
+Space_Between_Switch_Holes = 5.00; // [4.8:0.05:6]
 
 // (mm)
 Switch_Hole_Height = 22;
@@ -196,13 +196,13 @@ Link_Reinforcement_Radius = 107; // [100:1:130]
 Link_Plate_Screw_Holes = true;
 
 point_pinky_last = [get_kaladrius_origin()[0] + Case_Outer_Border, get_kaladrius_origin()[1]];
-point_pinky = [point_pinky_last[0] + Switch_Hole_Width + Space_Between_Switches, point_pinky_last[1]];
-point_ring = [point_pinky[0] +  Switch_Hole_Width + Space_Between_Switches, point_pinky[1] + Pinky_Finger_Offset];
-point_middle = [point_ring[0] + Switch_Hole_Width + Space_Between_Switches, point_ring[1] + Ring_Finger_Offset];
-point_index3 = [point_middle[0] + Switch_Hole_Width + Space_Between_Switches, point_middle[1] + Middle_Finger_Offset];
-point_index2 = [point_index3[0] + Switch_Hole_Width + Space_Between_Switches, point_index3[1]];
-point_index1 = [point_index2[0] + Switch_Hole_Width + Space_Between_Switches, point_index2[1]];
-point_star_key = [point_index1[0], point_index1[1] - 2*(Switch_Hole_Width + Space_Between_Switches)];
+point_pinky = [point_pinky_last[0] + Switch_Hole_Width + Space_Between_Switch_Holes, point_pinky_last[1]];
+point_ring = [point_pinky[0] +  Switch_Hole_Width + Space_Between_Switch_Holes, point_pinky[1] + Pinky_Finger_Offset];
+point_middle = [point_ring[0] + Switch_Hole_Width + Space_Between_Switch_Holes, point_ring[1] + Ring_Finger_Offset];
+point_index3 = [point_middle[0] + Switch_Hole_Width + Space_Between_Switch_Holes, point_middle[1] + Middle_Finger_Offset];
+point_index2 = [point_index3[0] + Switch_Hole_Width + Space_Between_Switch_Holes, point_index3[1]];
+point_index1 = [point_index2[0] + Switch_Hole_Width + Space_Between_Switch_Holes, point_index2[1]];
+point_star_key = [point_index1[0], point_index1[1] - 2*(Switch_Hole_Width + Space_Between_Switch_Holes)];
 
 function switches(color, rows, cols, origin, vertical=false) = [color, rows, cols, origin, vertical];
 function is_rect_plate() = Middle_Finger_Offset == 0 && Ring_Finger_Offset == 0 && Pinky_Finger_Offset == 0;
@@ -223,30 +223,30 @@ k = [
 
     // Thumbs
     switches("red", 1, 1, [0, 0]),
-    switches("green", 1, 1, [-(Switch_Hole_Width + Space_Between_Switches)/2 - (Switch_Hole_Width + Space_Between_Switches), -(Switch_Hole_Width + Space_Between_Switches) - (Switch_Hole_Width + Space_Between_Switches)/2], true),
-    switches("blue", 1, 2, [-(Switch_Hole_Width + Space_Between_Switches)/2, -(Switch_Hole_Width + Space_Between_Switches)]),
-    switches("lightBlue", 1, 1, [0, -2*(Switch_Hole_Width + Space_Between_Switches)]),
+    switches("green", 1, 1, [-(Switch_Hole_Width + Space_Between_Switch_Holes)/2 - (Switch_Hole_Width + Space_Between_Switch_Holes), -(Switch_Hole_Width + Space_Between_Switch_Holes) - (Switch_Hole_Width + Space_Between_Switch_Holes)/2], true),
+    switches("blue", 1, 2, [-(Switch_Hole_Width + Space_Between_Switch_Holes)/2, -(Switch_Hole_Width + Space_Between_Switch_Holes)]),
+    switches("lightBlue", 1, 1, [0, -2*(Switch_Hole_Width + Space_Between_Switch_Holes)]),
 ];
 
 hole_positions = [
     k[0][3],
-    k[3][3] + [(Switch_Hole_Width + 2*Space_Between_Switches)/2, Space_Between_Switches/2],
-    k[6][3] + [(Switch_Hole_Width + 2*Space_Between_Switches), 0],
-    k[7][3] + [(Switch_Hole_Width + 2*Space_Between_Switches), -k[7][1]*Switch_Hole_Width - (k[7][1]+1)*Space_Between_Switches],
-    k[0][3] - [0, k[0][1]*Switch_Hole_Width + (k[0][1]+1)*Space_Between_Switches],
+    k[3][3] + [(Switch_Hole_Width + 2*Space_Between_Switch_Holes)/2, Space_Between_Switch_Holes/2],
+    k[6][3] + [(Switch_Hole_Width + 2*Space_Between_Switch_Holes), 0],
+    k[7][3] + [(Switch_Hole_Width + 2*Space_Between_Switch_Holes), -k[7][1]*Switch_Hole_Width - (k[7][1]+1)*Space_Between_Switch_Holes],
+    k[0][3] - [0, k[0][1]*Switch_Hole_Width + (k[0][1]+1)*Space_Between_Switch_Holes],
 
     // Thumb
-    [-1.75*(Switch_Hole_Width + Space_Between_Switches) + 3*Switch_Hole_Width + 4*Space_Between_Switches, 0],
-    [-1.75*(Switch_Hole_Width + Space_Between_Switches) + 3*Switch_Hole_Width + 4*Space_Between_Switches,  -3*Switch_Hole_Width - 4*Space_Between_Switches],
-    [-1.75*(Switch_Hole_Width + Space_Between_Switches), -3*Switch_Hole_Width - 4*Space_Between_Switches],
+    [-1.75*(Switch_Hole_Width + Space_Between_Switch_Holes) + 3*Switch_Hole_Width + 4*Space_Between_Switch_Holes, 0],
+    [-1.75*(Switch_Hole_Width + Space_Between_Switch_Holes) + 3*Switch_Hole_Width + 4*Space_Between_Switch_Holes,  -3*Switch_Hole_Width - 4*Space_Between_Switch_Holes],
+    [-1.75*(Switch_Hole_Width + Space_Between_Switch_Holes), -3*Switch_Hole_Width - 4*Space_Between_Switch_Holes],
 ];
 
 function get_kaladrius_origin() = [0, 0, 0];
-function get_thumb_anchor() = k[6][3] - [0, 3*(Switch_Hole_Width+Space_Between_Switches)];
+function get_thumb_anchor() = k[6][3] - [0, 3*(Switch_Hole_Width+Space_Between_Switch_Holes)];
 function get_thumb_origin() = get_thumb_anchor() + [Thumb_Zone_Origin_X, -Thumb_Zone_Origin_Y];
 function get_tent_origin() = get_kaladrius_origin() + tent_pos;
 function get_tenting_angle() = Tenting_Angle;
-function get_cells(height, rows, columns, xy_scale = 1) = [xy_scale*(columns*Switch_Hole_Width + (columns+1)*Space_Between_Switches), xy_scale*(rows*Switch_Hole_Width + (rows+1)*Space_Between_Switches), height];
+function get_cells(height, rows, columns, xy_scale = 1) = [xy_scale*(columns*Switch_Hole_Width + (columns+1)*Space_Between_Switch_Holes), xy_scale*(rows*Switch_Hole_Width + (rows+1)*Space_Between_Switch_Holes), height];
 function get_thumb_profile_cube() = get_cells(1, 3, 3, Tent_Thumb_Scale);
 function get_points_from_cube(c) = [[0, 0], [c[0], 0], [c[0], c[1]], [0, c[1]]];
 function get_tent_screw_locations() = [[Tent_Profile_Cube[0], Tent_Profile_Cube[1]], [0, Tent_Profile_Cube[1]]];
@@ -294,7 +294,7 @@ module transform_tilt()
 
 module transform_star_key()
 {
-    translate([0, -(Switch_Hole_Width+Space_Between_Switches)/4, 0])
+    translate([0, -(Switch_Hole_Width+Space_Between_Switch_Holes)/4, 0])
     {
         children();
     }
@@ -315,12 +315,12 @@ module transform_thumb_profile()
 {
     transform_thumb()
     {
-        original_width = 3*Switch_Hole_Width + 4*Space_Between_Switches;
+        original_width = 3*Switch_Hole_Width + 4*Space_Between_Switch_Holes;
         translate([(original_width-Tent_Thumb_Scale*original_width)/2, -(original_width-Tent_Thumb_Scale*original_width)/2, 0])
         {
-            translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
+            translate([-(Switch_Hole_Width+Space_Between_Switch_Holes)/4, 0, 0])
             {
-                translate([-1.5*(Switch_Hole_Width+ Space_Between_Switches), 0, 0])
+                translate([-1.5*(Switch_Hole_Width+ Space_Between_Switch_Holes), 0, 0])
                 {
                     translate([0, -get_thumb_profile_cube()[1], 0]) children();
                 }
@@ -353,7 +353,7 @@ module holes(height = Switch_Hole_Height, has_additional_border = true)
     transform_thumb()
     {
         make_keyboard_hole(8);
-        translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
+        translate([-(Switch_Hole_Width+Space_Between_Switch_Holes)/4, 0, 0])
         {
             for (index = [9:11])
             {
@@ -436,7 +436,7 @@ module create_hole(height, has_additional_border = true, vertical = false)
     roundness = 0.5;
     x = Switch_Hole_Width - 2*roundness + 2*additional_border_width + Switch_Hole_Tolerance;
     y = Switch_Hole_Width - 2*roundness + Switch_Hole_Tolerance;
-    translate([Space_Between_Switches + (Switch_Hole_Width-((vertical?y:x)+2*roundness))/2, -Space_Between_Switches - (Switch_Hole_Width-((vertical?x:y)+2*roundness))/2, 0])
+    translate([Space_Between_Switch_Holes + (Switch_Hole_Width-((vertical?y:x)+2*roundness))/2, -Space_Between_Switch_Holes - (Switch_Hole_Width-((vertical?x:y)+2*roundness))/2, 0])
     {
         translate([roundness, -roundness, 0]) // minkowski compensation
         {
@@ -502,10 +502,10 @@ module create_holes(height, rows, columns, origin, has_additional_border = true,
     {
         for (col = [0:columns-1])
         {
-            col_offset = col*(Switch_Hole_Width + Space_Between_Switches);
+            col_offset = col*(Switch_Hole_Width + Space_Between_Switch_Holes);
             for (row = [0:rows-1])
             {
-                translate([col_offset, -row*(Switch_Hole_Width+Space_Between_Switches), 0])
+                translate([col_offset, -row*(Switch_Hole_Width+Space_Between_Switch_Holes), 0])
                 {
                     create_hole(height, has_additional_border, vertical);
                 }
@@ -527,7 +527,7 @@ module plate(total_height = Plate_Height, chamfer = false)
                 // Fingers plate
                 hull()
                 {
-                    top_point_offset = [(Switch_Hole_Width+2*Space_Between_Switches)/2, Space_Between_Switches];
+                    top_point_offset = [(Switch_Hole_Width+2*Space_Between_Switch_Holes)/2, Space_Between_Switch_Holes];
                     top_control_points =  [
                         k[0][3] + [0, Plate_Control_Top_0],
                         k[1][3] + top_point_offset + [0, Plate_Control_Top_1],
@@ -535,17 +535,17 @@ module plate(total_height = Plate_Height, chamfer = false)
                         k[3][3] + top_point_offset + [0, Plate_Control_Top_3],
                         k[4][3] + top_point_offset + [0, Plate_Control_Top_4],
                         k[5][3] + top_point_offset + [0, Plate_Control_Top_5],
-                        k[6][3] + [Switch_Hole_Width + 2*Space_Between_Switches, Plate_Control_Top_6],
+                        k[6][3] + [Switch_Hole_Width + 2*Space_Between_Switch_Holes, Plate_Control_Top_6],
                     ];
 
                         bottom_control_points =  [
-                            k[0][3] + [0, -k[0][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches + Plate_Control_Bottom_0],
-                            k[1][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[1][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_1],
-                            k[2][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[2][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_2],
-                            k[3][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[3][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_3],
-                            k[4][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[4][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_4],
-                            k[5][3] + [Space_Between_Switches + Switch_Hole_Width/2, -k[5][1]*(Space_Between_Switches+Switch_Hole_Width) - 2*Space_Between_Switches + Plate_Control_Bottom_5],
-                            k[7][3]  + [2*Space_Between_Switches + Switch_Hole_Width, -k[7][1]*(Space_Between_Switches+Switch_Hole_Width) - Space_Between_Switches + Plate_Control_Bottom_6],
+                            k[0][3] + [0, -k[0][1]*(Space_Between_Switch_Holes+Switch_Hole_Width) - Space_Between_Switch_Holes + Plate_Control_Bottom_0],
+                            k[1][3] + [Space_Between_Switch_Holes + Switch_Hole_Width/2, -k[1][1]*(Space_Between_Switch_Holes+Switch_Hole_Width) - 2*Space_Between_Switch_Holes + Plate_Control_Bottom_1],
+                            k[2][3] + [Space_Between_Switch_Holes + Switch_Hole_Width/2, -k[2][1]*(Space_Between_Switch_Holes+Switch_Hole_Width) - 2*Space_Between_Switch_Holes + Plate_Control_Bottom_2],
+                            k[3][3] + [Space_Between_Switch_Holes + Switch_Hole_Width/2, -k[3][1]*(Space_Between_Switch_Holes+Switch_Hole_Width) - 2*Space_Between_Switch_Holes + Plate_Control_Bottom_3],
+                            k[4][3] + [Space_Between_Switch_Holes + Switch_Hole_Width/2, -k[4][1]*(Space_Between_Switch_Holes+Switch_Hole_Width) - 2*Space_Between_Switch_Holes + Plate_Control_Bottom_4],
+                            k[5][3] + [Space_Between_Switch_Holes + Switch_Hole_Width/2, -k[5][1]*(Space_Between_Switch_Holes+Switch_Hole_Width) - 2*Space_Between_Switch_Holes + Plate_Control_Bottom_5],
+                            k[7][3]  + [2*Space_Between_Switch_Holes + Switch_Hole_Width, -k[7][1]*(Space_Between_Switch_Holes+Switch_Hole_Width) - Space_Between_Switch_Holes + Plate_Control_Bottom_6],
                         ];
 
                     difference()
@@ -579,9 +579,9 @@ module plate(total_height = Plate_Height, chamfer = false)
             {
                 transform_thumb()
                 {
-                    translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
+                    translate([-(Switch_Hole_Width+Space_Between_Switch_Holes)/4, 0, 0])
                     {
-                        translate([-1.5*(Switch_Hole_Width+ Space_Between_Switches), 0, 0]) create_cells(basic_height, 3, 3, [0,0]);
+                        translate([-1.5*(Switch_Hole_Width+ Space_Between_Switch_Holes), 0, 0]) create_cells(basic_height, 3, 3, [0,0]);
                     }
                 }
             }
@@ -628,7 +628,7 @@ module plate_supports()
         hull()
         {
             support_diameter = 3.5;
-            y = -row*(Space_Between_Switches + Switch_Hole_Width);
+            y = -row*(Space_Between_Switch_Holes + Switch_Hole_Width);
             translate([0, y-support_diameter/2])
             {
                 cylinder(h=support_height-3, d=3.5, $fn=30);
@@ -655,7 +655,7 @@ module plate_supports()
         }
     }
 
-    supports_pos = k[2][3] + [3*Space_Between_Switches/2 + Switch_Hole_Width, 0];
+    supports_pos = k[2][3] + [3*Space_Between_Switch_Holes/2 + Switch_Hole_Width, 0];
     translate(supports_pos)
     {
         for (row = [1:4])
@@ -903,7 +903,7 @@ module left_tent(angle, printable = true, holes_only = false, plain = false)
 
         adjacent_main_tent = get_tent_origin()[0] + Tent_Profile_Cube[0] + minkowski_radius;
 
-        additional_length = Tent_Thumb_Scale*(-1.75*(Switch_Hole_Width + Space_Between_Switches) + 3*Switch_Hole_Width + 4*Space_Between_Switches);
+        additional_length = Tent_Thumb_Scale*(-1.75*(Switch_Hole_Width + Space_Between_Switch_Holes) + 3*Switch_Hole_Width + 4*Space_Between_Switch_Holes);
         adjacent_thumb_tent = get_thumb_origin()[0] + additional_length + minkowski_radius;
 
         adjacent = max(adjacent_main_tent, adjacent_thumb_tent);
@@ -1049,7 +1049,7 @@ module create_keycap(vertical = false, horizontal_stretch = 1)
     base_size = 14;
     x = horizontal_stretch*(base_size + 2*offset) - 2*roundness;
     y = (base_size + 2*offset - 2*roundness);
-    translate([Space_Between_Switches + (base_size-((vertical?y:x)+2*roundness))/2, -Space_Between_Switches - (base_size-((vertical?x:y)+2*roundness))/2, 0])
+    translate([Space_Between_Switch_Holes + (base_size-((vertical?y:x)+2*roundness))/2, -Space_Between_Switch_Holes - (base_size-((vertical?x:y)+2*roundness))/2, 0])
     {
         translate([roundness, -roundness, 0]) // minkowski compensation
         {
@@ -1095,10 +1095,10 @@ module create_keycaps(rows, columns, origin, vertical = false, horizontal_stretc
     {
         for (col = [0:columns-1])
         {
-            col_offset = col*(Switch_Hole_Width + Space_Between_Switches);
+            col_offset = col*(Switch_Hole_Width + Space_Between_Switch_Holes);
             for (row = [0:rows-1])
             {
-                translate([col_offset, -row*(Switch_Hole_Width+Space_Between_Switches), 0])
+                translate([col_offset, -row*(Switch_Hole_Width+Space_Between_Switch_Holes), 0])
                 {
                     create_keycap(vertical, horizontal_stretch);
                 }
@@ -1125,11 +1125,11 @@ module left_keycaps()
         transform_thumb()
         {
             create_keycaps(k[8][1], k[8][2], k[8][3], k[8][4], horizontal_stretch=1.5);
-            translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
+            translate([-(Switch_Hole_Width+Space_Between_Switch_Holes)/4, 0, 0])
             {
-                create_keycaps(1, 1, [-(Switch_Hole_Width + Space_Between_Switches)/2 - (Switch_Hole_Width + Space_Between_Switches), -(Switch_Hole_Width + Space_Between_Switches) - (Switch_Hole_Width + Space_Between_Switches)/2], vertical = true, horizontal_stretch = 2);
-                create_keycaps(1, 2, [-(Switch_Hole_Width + Space_Between_Switches)/2, -(Switch_Hole_Width + Space_Between_Switches)]);
-                create_keycaps(1, 1, [0, -2*(Switch_Hole_Width + Space_Between_Switches)], horizontal_stretch = 2);
+                create_keycaps(1, 1, [-(Switch_Hole_Width + Space_Between_Switch_Holes)/2 - (Switch_Hole_Width + Space_Between_Switch_Holes), -(Switch_Hole_Width + Space_Between_Switch_Holes) - (Switch_Hole_Width + Space_Between_Switch_Holes)/2], vertical = true, horizontal_stretch = 2);
+                create_keycaps(1, 2, [-(Switch_Hole_Width + Space_Between_Switch_Holes)/2, -(Switch_Hole_Width + Space_Between_Switch_Holes)]);
+                create_keycaps(1, 1, [0, -2*(Switch_Hole_Width + Space_Between_Switch_Holes)], horizontal_stretch = 2);
             }
         }
     }
@@ -1177,7 +1177,7 @@ module test_right_top_plate()
             hull()
             {
                 height = 20;
-                translate([0, -2*(Space_Between_Switches+Switch_Hole_Width)]) 
+                translate([0, -2*(Space_Between_Switch_Holes+Switch_Hole_Width)]) 
                 {
                     for (i = [1:6])
                     {
@@ -1188,11 +1188,11 @@ module test_right_top_plate()
                 transform_thumb()
                 {
                     create_holes(height, 1, 1, [0, 0], true);
-                    translate([-(Switch_Hole_Width+Space_Between_Switches)/4, 0, 0])
+                    translate([-(Switch_Hole_Width+Space_Between_Switch_Holes)/4, 0, 0])
                     {
-                        create_holes(height, 1, 1, [-(Switch_Hole_Width + Space_Between_Switches)/2 - (Switch_Hole_Width + Space_Between_Switches), -(Switch_Hole_Width + Space_Between_Switches) - (Switch_Hole_Width + Space_Between_Switches)/2], has_additional_border = true, vertical = true);
-                        create_holes(height, 1, 2, [-(Switch_Hole_Width + Space_Between_Switches)/2, -(Switch_Hole_Width + Space_Between_Switches)], has_additional_border = true);
-                        create_holes(height, 1, 1, [0, -2*(Switch_Hole_Width + Space_Between_Switches)], has_additional_border=true);
+                        create_holes(height, 1, 1, [-(Switch_Hole_Width + Space_Between_Switch_Holes)/2 - (Switch_Hole_Width + Space_Between_Switch_Holes), -(Switch_Hole_Width + Space_Between_Switch_Holes) - (Switch_Hole_Width + Space_Between_Switch_Holes)/2], has_additional_border = true, vertical = true);
+                        create_holes(height, 1, 2, [-(Switch_Hole_Width + Space_Between_Switch_Holes)/2, -(Switch_Hole_Width + Space_Between_Switch_Holes)], has_additional_border = true);
+                        create_holes(height, 1, 1, [0, -2*(Switch_Hole_Width + Space_Between_Switch_Holes)], has_additional_border=true);
                     }
                 }
             }
