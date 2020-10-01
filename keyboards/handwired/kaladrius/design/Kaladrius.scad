@@ -39,9 +39,11 @@ Switch_Hole_Width = 14;
 // (mm)
 Switch_Hole_Tolerance = -0.1;
 
-// (mm)
+// (mm, 5.00mm for both MBK Choc and G20 Keycaps)
 Space_Between_Switch_Holes_X = 5.00; // [3.5:0.05:6]
-Space_Between_Switch_Holes_Y = 5.00; // [3.5:0.05:6]
+
+// (mm, 4.10mm for MBK Choc Keycaps, 5.00mm for G20 keycaps)
+Space_Between_Switch_Holes_Y = 4.10; // [3.5:0.05:6]
 
 // (mm)
 Switch_Hole_Height = 22;
