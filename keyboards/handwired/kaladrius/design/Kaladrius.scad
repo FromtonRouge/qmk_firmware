@@ -210,7 +210,7 @@ point_index2 = [point_index3[0] + switch_hole_and_space_x(), point_index3[1]];
 point_index1 = [point_index2[0] + switch_hole_and_space_x(), point_index2[1]];
 point_star_key = [point_index1[0], point_index1[1] - 2*(switch_hole_and_space_y())];
 
-function switches(color, rows, cols, origin, vertical=false) = [color, rows, cols, origin, vertical];
+function switches(color, rows, cols, origin, vertical=false, special_key = "") = [color, rows, cols, origin, vertical, special_key];
 function is_rect_plate() = Middle_Finger_Offset == 0 && Ring_Finger_Offset == 0 && Pinky_Finger_Offset == 0;
 
 k = [
@@ -219,13 +219,13 @@ k = [
     switches("red", 5, 1, point_pinky_last),
     switches("magenta", 5, 1, point_pinky),
     switches("green", 5, 1, point_ring),
-    switches("lightGreen", 5, 1, point_middle),
+    switches("lightGreen", 5, 1, point_middle, false, "alt_key"),
     switches("blue", 4, 1, point_index3),
     switches("lightBlue", 4, 1, point_index2),
     switches("cyan", 2, 1, point_index1),
     
     // Star key
-    switches("green", 1, 1, point_star_key, true),
+    switches("green", 1, 1, point_star_key, true, "star_key"),
 
     // Thumbs
     switches("red", 1, 1, [0, 0]),
@@ -340,7 +340,7 @@ module holes(height = Switch_Hole_Height, has_additional_border = true)
 {
     module make_keyboard_hole(i)
     {
-        color(k[i][0]) create_holes(height, k[i][1], k[i][2], k[i][3], has_additional_border, k[i][4]);
+        color(k[i][0]) create_holes(height, k[i][1], k[i][2], k[i][3], has_additional_border, k[i][4], k[i][5]);
     }
 
     // Fingers
@@ -502,7 +502,7 @@ module create_cells(height, rows, columns, origin)
     }
 }
 
-module create_holes(height, rows, columns, origin, has_additional_border = true, vertical = false)
+module create_holes(height, rows, columns, origin, has_additional_border = true, vertical = false, special_key = "")
 {
     translate(origin)
     {
@@ -511,9 +511,26 @@ module create_holes(height, rows, columns, origin, has_additional_border = true,
             col_offset = col*(switch_hole_and_space_x());
             for (row = [0:rows-1])
             {
-                translate([col_offset, -row*(switch_hole_and_space_y()), 0])
+                if (special_key == "alt_key" && row == 4)
                 {
-                    create_hole(height, has_additional_border, vertical);
+                    translate([col_offset + switch_hole_and_space_x()/4, -row*(switch_hole_and_space_y()), 0])
+                    {
+                        create_hole(height, has_additional_border, vertical);
+                    }
+                }
+                else if (special_key == "star_key")
+                {
+                    translate([col_offset, -row*(switch_hole_and_space_y()) - 0.2, 0])
+                    {
+                        create_hole(height, has_additional_border, vertical);
+                    }
+                }
+                else
+                {
+                    translate([col_offset, -row*(switch_hole_and_space_y()), 0])
+                    {
+                        create_hole(height, has_additional_border, vertical);
+                    }
                 }
             }
         }
