@@ -52,7 +52,7 @@ If you are interested by using Jackdaw and the Kaladrius here are some things to
 - If I change the dictionary or the design you may need to relearn some things (maybe a lots of things for major dictionary changes)
 - The build of the keyboard takes time
 - **The keyboard is designed by default for MBK Choc Keycaps and Kailh Low Profile Choc Switches**
-- **So to really learn to type with this keyboard I'm working on an application called [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)**
+- **To learn to type with this keyboard there is an application called [KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer)**
 
 ![KaladriusTrainer](https://github.com/FromtonRouge/KaladriusTrainer/blob/master/Resources/Images/1.png?raw=true)
 
