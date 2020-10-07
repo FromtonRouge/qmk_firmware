@@ -174,7 +174,7 @@ teensy_case_parameters = get_box_parameters(Teensy_Plate_Size, Teensy_Case_Round
 Tenting_Angle = 5.4; // [5.4:0.1:10.5]
 
 // (degree)
-Tilt_Angle = 0; // [0:0.1:10]
+Tilt_Angle = 5; // [0:0.1:10]
 
 // (mm)
 Tent_Distance_X = 103; // [95:0.1:110]
