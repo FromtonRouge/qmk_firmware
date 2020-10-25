@@ -1,6 +1,6 @@
 # Kaladrius Steno Keyboard
 
-![Kaladrius](https://i.imgur.com/UF7BSkB.jpg)
+![Kaladrius](https://github.com/FromtonRouge/KaladriusTrainer/blob/master/Resources/Images/keyboard.jpg?raw=true)
 
 The Kaladrius is an orthographic steno keyboard that uses a modified [Jackdaw steno theory](https://sites.google.com/site/ploverdoc/jackdaw)
 
