@@ -203,20 +203,18 @@ Now you can do a basic test :
 
 Puth the switches on the plate :
 
-![Switches on plate](https://i.imgur.com/NWSrIQq.jpg)
+![Switches on plate](https://i.imgur.com/tQwumVh.jpg)
 
 To be sure that they won't pop out glue them with a Hot Glue Gun :
 
-![Hot glue gun](https://i.imgur.com/BxH20qP.jpg)
-
-![Switches glued](https://i.imgur.com/KcKHWaS.jpg)
+![Hot glue gun](https://i.imgur.com/IzmUAM3.jpg)
 
 As you can see on the photo you can glue just one side, it's enough.
 **If you have to remove the switches from the plate you can use a Heat Gun**
 
 Here is the result when it's done :
 
-![All switches](https://i.imgur.com/s6p6Aqh.jpg)
+![All switches](https://i.imgur.com/sQP6kJv.jpg)
 
 ## Soldering the rows (diodes)
 
@@ -226,13 +224,21 @@ For the diodes notice the black line on them :
 
 ![Diode](https://i.imgur.com/znROXWL.png)
 
-Put the diode on the switch with the black line oriented like this :
+Put the diode on the switch with the black line oriented like this:
 
-![Diode on Switch](https://i.imgur.com/LW8NQsJ.jpg)
+![Diode on Switch](https://i.imgur.com/QL50oi7.jpg)
 
-Solder it then bend the leg at 90 degrees, do the same steps with another diode and solder them together like this :
+Bend the leg like the image below:
 
-![Diodes](https://i.imgur.com/0SJblpn.jpg)
+![Leg](https://i.imgur.com/19rxWJZ.jpg)
+
+Solder it and do the same with other diodes:
+
+![Diodes](https://i.imgur.com/KWSDkF5.jpg)
+
+Sold them together like below:
+
+![Soldered diodes](https://i.imgur.com/IUUtuls.jpg)
 
 Pay attention to the switch that is oriented at 90 degrees :
 
