@@ -306,7 +306,7 @@ You can put all plates on the case, you'll need :
 - 18 M3 of 12mm screws for left and right plates
 - 18 M3 nuts
 
-![Final assembly](https://i.imgur.com/H7YYoBu.jpg)
+![Final assembly](https://github.com/FromtonRouge/KaladriusTrainer/blob/master/Resources/Images/keyboard.jpg?raw=true)
 
 # Firmware
 
