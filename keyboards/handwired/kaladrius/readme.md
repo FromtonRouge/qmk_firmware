@@ -242,7 +242,7 @@ Sold them together like below:
 
 Pay attention to the switch that is oriented at 90 degrees :
 
-![Switch at 90](https://i.imgur.com/2HXYQFO.png)
+![Switch at 90](https://i.imgur.com/kJPuaRX.png)
 
 Continue until you reach the thumb cluster, I solder them like the following photos (always pay attention to the diode's black line):
 
