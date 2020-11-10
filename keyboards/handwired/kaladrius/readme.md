@@ -249,6 +249,8 @@ The final result:
 
 ![Thumb](https://i.imgur.com/nxiexfE.jpg)
 
+Do the same with the Right Plate
+
 ## Connect columns and rows to the Teensy
 
 Now that the columns and rows are done we can connect them to the Teensy. Here is a recap of columns/rows of the keyboard with the colors I used :
