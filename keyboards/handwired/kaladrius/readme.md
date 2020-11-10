@@ -203,92 +203,51 @@ Now you can do a basic test :
 
 Puth the switches on the plate :
 
-![Switches on plate](https://i.imgur.com/tQwumVh.jpg)
+![Switches on left plate](https://i.imgur.com/2x4k4o1.jpg)
 
 To be sure that they won't pop out glue them with a Hot Glue Gun :
 
-![Hot glue gun](https://i.imgur.com/IzmUAM3.jpg)
+![Hot glue gun](https://i.imgur.com/rQjI5nx.jpg)
 
 As you can see on the photo you can glue just one side, it's enough.
 **If you have to remove the switches from the plate you can use a Heat Gun**
 
-Here is the result when it's done :
+## Soldering the columns
 
-![All switches](https://i.imgur.com/sQP6kJv.jpg)
+Here we'll work with the Left Plate.
+
+Put the wire like this:
+
+![Column](https://i.imgur.com/jmWYtGc.jpg)
+
+Put marks on the wire:
+
+![Marks](https://i.imgur.com/N7fFeP3.jpg)
+
+Strip the wire:
+
+![Cut](https://i.imgur.com/WAnNkWy.jpg)
+
+The final result after soldering:
+
+![Final result](https://i.imgur.com/yDjJjl5.jpg)
+
 
 ## Soldering the rows (diodes)
 
-As an example we are working on the Right Plate here.
+Put diodes on the row like this (pay attention to the black line of the diode):
 
-For the diodes notice the black line on them :
+![Row](https://i.imgur.com/f1mBhmu.jpg)
 
-![Diode](https://i.imgur.com/znROXWL.png)
+Solder them like this:
 
-Put the diode on the switch with the black line oriented like this:
+![Soldered Row](https://i.imgur.com/QG0PrI8.jpg)
 
-![Diode on Switch](https://i.imgur.com/QL50oi7.jpg)
+The final result:
 
-Bend the leg like the image below:
+![Final result](https://i.imgur.com/G6CjWEf.jpg)
 
-![Leg](https://i.imgur.com/19rxWJZ.jpg)
-
-Solder it and do the same with other diodes:
-
-![Diodes](https://i.imgur.com/KWSDkF5.jpg)
-
-Sold them together like below:
-
-![Soldered diodes](https://i.imgur.com/IUUtuls.jpg)
-
-Pay attention to the switch that is oriented at 90 degrees :
-
-![Switch at 90](https://i.imgur.com/kJPuaRX.png)
-
-Continue until you reach the thumb cluster, I solder them like the following photos (always pay attention to the diode's black line):
-
-![Thumb 1](https://i.imgur.com/HtfrcPo.jpg)
-![Thumb 2](https://i.imgur.com/qMZVlOw.jpg)
-![Thumb 3](https://i.imgur.com/mmnyIIg.jpg)
-
-And finally cut the legs :
-
-![Thumb 4](https://i.imgur.com/Matmlyz.jpg)
-
-The result :
-
-![Result](https://i.imgur.com/M9vMjZZ.jpg)
-
-That was the Right Plate, do the same withe Left Plate :
-
-![Left Plate thumb closeup](https://i.imgur.com/CcFFiGm.jpg)
-
-![Left Plate](https://i.imgur.com/Ld75Rol.jpg)
-
-## Soldering the columns
-
-Here we'll work with the Right Plate.
-
-Put marks on the wire at pin locations :
-
-![Marks on wire](https://i.imgur.com/IiwuTTP.jpg)
-
-Then with a cutter or a scalpel make 3 incisions along the white lines on the photo (don't cut completely the wire). You'll be able to remove a portion of the wire sheath :
-
-![Remove sheath](https://i.imgur.com/WNOdzX7.png)
-
-You can now solder the wire on the pins :
-
-![Solder on pins](https://i.imgur.com/zY1d8zs.jpg)
-
-Don't cut the portion marked on the photo, we will need this after :
-
-![Don't cut](https://i.imgur.com/tG4cSaV.png)
-
-Do the same thing with other columns, as a helper use also different wire colors it will be easier to solder wires on the Teensy after. Also leave the last switch alone :
-
-![Result](https://i.imgur.com/tAuRmg3.png)
-
-Do the same thing with the Left Plate
+![Thumb](https://i.imgur.com/nxiexfE.jpg)
 
 ## Connect columns and rows to the Teensy
 
