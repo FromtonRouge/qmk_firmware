@@ -88,7 +88,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 
     [L_STANDARD] = LAYOUT(
         _AMP,    _LBRC,   _LCBR,   _RCBR, _LPRN, _EQL, KC_LGUI,                TG(L_STENO), _ASTR, _RPRN, _PLUS,    _RBRC, _EXLM, _HASH, 
-        _DLR,    _Q,      _W,      _F,    _P,    _G,   TG(L_FN),               TG(L_FN),    _J,    _L,    _U,       _Y,    _SCLN, _SLSH, 
+        _DLR,    _Q,      _W,      _F,    _P,    _G,   KC_GRV,                 KC_GRV,    _J,    _L,    _U,       _Y,    _SCLN, _SLSH, 
         KC_TAB,  _A,      _R,      _S,    _T,    _D,   KC_ESC,                 KC_PSCR,     _H,    _N,    _E,       _I,    _O,    _MINS, 
         CKC_SFT, _Z,      _X,      _C,    _V,    _B,                                        _K,    _M,    _COMM,    _DOT,  _APOS, CKC_SFT, 
         KC_LCTL, _AMP,    KC_LALT, MO(L_FN),                                                              MO(L_FN), _BSLS, _AT,   KC_RCTL,

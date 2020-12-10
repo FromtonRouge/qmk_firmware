@@ -67,13 +67,11 @@ Nut_Slot_Tolerance = 0.0; // [0:0.01:0.2]
 // (mm)
 Nut_Slot_Diameter = 10; // [9:0.1:12]
 
-// Note: 0.06 press fit
 // (mm)
-Nut_Hole_3mm_Tolerance = 0.13; // [0:0.05:1]
+Nut_Hole_3mm_Tolerance = 0.22; // [0:0.01:0.5]
 
-// Note: 0.16 press fit
 // (mm)
-Nut_Hole_2mm_Tolerance = 0.175; // [0:0.05:1]
+Nut_Hole_2mm_Tolerance = 0.22; // [0:0.01:0.5]
 
 /* [Thumb Zone Position] */
 
