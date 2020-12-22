@@ -51,8 +51,9 @@ const uint16_t g_special_shift_table[SPECIAL_SHIFT_TABLE_SIZE] =
 #define L_STENO 1
 #define L_SHIFT_COLEMAK 2
 #define L_ACCENTS 3
-#define L_FN 4
-#define L_CUBE_TIMER 5
+#define L_FN_L 4
+#define L_FN_R 5
+#define L_CUBE_TIMER 6
 
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes
@@ -88,12 +89,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 
     [L_STANDARD] = LAYOUT(
         _AMP,    _LBRC,   _LCBR,   _RCBR, _LPRN, _EQL, KC_LGUI,                TG(L_STENO), _ASTR, _RPRN, _PLUS,    _RBRC, _EXLM, _HASH, 
-        _DLR,    _Q,      _W,      _F,    _P,    _G,   KC_GRV,                 KC_GRV,    _J,    _L,    _U,       _Y,    _SCLN, _SLSH, 
+        _DLR,    _Q,      _W,      _F,    _P,    _G,   KC_GRV,                 KC_RALT,     _J,    _L,    _U,       _Y,    _SCLN, _SLSH, 
         KC_TAB,  _A,      _R,      _S,    _T,    _D,   KC_ESC,                 KC_PSCR,     _H,    _N,    _E,       _I,    _O,    _MINS, 
         CKC_SFT, _Z,      _X,      _C,    _V,    _B,                                        _K,    _M,    _COMM,    _DOT,  _APOS, CKC_SFT, 
-        KC_LCTL, _AMP,    KC_LALT, MO(L_FN),                                                              MO(L_FN), _BSLS, _AT,   KC_RCTL,
-                                                     TG(L_FN),               TG(L_FN), 
-                                   KC_ENT, KC_BSPC,  KC_NO,                  KC_NO, KC_DEL, KC_SPC,  
+        KC_LCTL, _AMP,    KC_LALT, MO(L_FN_L),                                                            MO(L_FN_R), _BSLS, _AT,   KC_RCTL,
+                                                     TG(L_FN_L),             TG(L_FN_R), 
+                                   KC_ENT, KC_BSPC,  KC_NO,                  KC_INS, KC_DEL, KC_SPC,  
                                                      MO(L_ACCENTS),          MO(L_ACCENTS)),
     [L_SHIFT_COLEMAK] = LAYOUT(
         FR_UGRV,  KC_7,    KC_5,    KC_3,    KC_1,    KC_9,    KC_TRNS,     KC_NO,   KC_0,    KC_2,    KC_4,     KC_6,     KC_8,     CKC_SFUN, 
@@ -113,12 +114,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
                                            KC_NO,                      KC_NO, 
                              KC_NO, KC_TRNS, KC_TRNS,                  KC_TRNS, KC_TRNS, KC_NO, 
                                            KC_TRNS,                    KC_TRNS ),
-    [L_FN] = LAYOUT(
+    [L_FN_L] = LAYOUT(
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   TG(L_CUBE_TIMER),         KC_NO,   KC_F7,          KC_F8,   KC_F9,   KC_F10,  KC_F11,      KC_F12, 
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                  KC_TRNS, KC_KP_ASTERISK, KC_KP_7, KC_KP_8, KC_KP_9, KC_KP_MINUS, KC_TRNS, 
+        KC_LSFT, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  KC_TRNS, RESET,                    KC_TRNS, KC_KP_SLASH,    KC_KP_4, KC_KP_5, KC_KP_6, KC_KP_PLUS,  KC_RSFT, 
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                                    KC_KP_0,        KC_KP_1, KC_KP_2, KC_KP_3, KC_KP_DOT,   KC_TRNS,
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                                                                               KC_TRNS, KC_TRNS, KC_TRNS,     KC_TRNS, 
+                                                      KC_TRNS,                          KC_TRNS, 
+                                    KC_TRNS, KC_TRNS, KC_TRNS,                          KC_TRNS, KC_TRNS, KC_TRNS, 
+                                                      KC_TRNS,                          KC_TRNS ),
+
+    [L_FN_R] = LAYOUT(
         KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   TG(L_CUBE_TIMER),         KC_NO,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,   KC_F12, 
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                  KC_TRNS, KC_TRNS, KC_TRNS, KC_ESC,  KC_TRNS, KC_TRNS,  KC_TRNS, 
         KC_LSFT, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  KC_TRNS, RESET,                    KC_TRNS, KC_TRNS, KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT, KC_RSFT, 
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                           KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, 
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                                                               KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, 
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                                    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, 
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,                                                                        KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, 
                                                       KC_TRNS,                          KC_TRNS, 
                                     KC_TRNS, KC_TRNS, KC_TRNS,                          KC_TRNS, KC_TRNS, KC_TRNS, 
                                                       KC_TRNS,                          KC_TRNS ),
@@ -234,8 +245,11 @@ void matrix_scan_user(void)
     case L_STENO:
         set_leds(true, false, false);
         break;
-    case L_FN:
+    case L_FN_L:
         set_leds(false, true, false);
+        break;
+    case L_FN_R:
+        set_leds(true, false, true);
         break;
     case L_ACCENTS:
         set_leds(false, false, true);
